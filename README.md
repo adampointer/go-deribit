@@ -8,6 +8,8 @@ Deribit is a modern, fast BitCoin derivatives exchange. If you are using BitMex 
 
 This library is a limited port of the [official wrapper libraries](https://github.com/deribit) to Go.
 
+If you wish to try it out, be kind and use my affiliate link [https://www.deribit.com/reg-3027.8327](https://www.deribit.com/reg-3027.8327)
+
 ## Current Limitations
 
 This is a work in progress! As I am building this library as I develop my own trading bot, I am only implementing features as and when I need them. I have not gone and added every single RPC method. It is, however, trivial to do so and I absolutely accept pull requests.
