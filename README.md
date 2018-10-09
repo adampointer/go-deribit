@@ -39,11 +39,11 @@ func main() {
 	}
 	defer logger.Sync()
 
-    // Trap ctrl+c
+        // Trap ctrl+c
 	terminate := make(chan os.Signal, 1)
 	signal.Notify(terminate, syscall.SIGTERM, syscall.SIGINT, syscall.SIGKILL)
 
-    // Create channels to receive errors and to stop
+        // Create channels to receive errors and to stop
 	errs := make(chan error)
 	stop := make(chan bool)
 	deribit, err := api.NewExchange("YOUR-API-KEY", "YOUR-SECRET-KEY", true, errs, stop)
@@ -54,7 +54,7 @@ func main() {
 		logger.Fatal("Error connecting to exchange", zap.String("message", err.Error()))
 	}
 
-    // Hit the test RPC endpoint
+        // Hit the test RPC endpoint
 	res, err := deribit.Test(true)
 	if err != nil {
 		logger.Fatal("Error testing connection", zap.String("message", err.Error()))
@@ -67,12 +67,12 @@ func main() {
 		logger.Fatal("Error subscribing to trades", zap.String("message", err.Error()))
 	}
 
-    // Enter the main loop
+        // Enter the main loop
 Loop:
 	for {
 		select {
 		case <-terminate:
-            // On ctrl+c
+                        // On ctrl+c
 			logger.Warn("Terminating")
 			if err := deribit.Close(); err != nil {
 				logger.Fatal("Error closing websocket", zap.String("message", err.Error()))
@@ -80,7 +80,7 @@ Loop:
 			//stop <- true
 			break Loop
 		case trade := <-trades:
-            // Log out Trade events as we receieve them
+                        // Log out Trade events as we receieve them
 			for _, trd := range trade {
 				var evt api.EvtTradeResponse
 				if err := mapstructure.Decode(trd, &evt); err != nil {
