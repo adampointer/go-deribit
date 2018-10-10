@@ -3,6 +3,7 @@ package deribit
 import (
 	"crypto/sha256"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"sort"
 	"strconv"
@@ -80,17 +81,37 @@ type RPCResponse struct {
 	UsIn          uint64             `json:"usIn"`
 	UsOut         uint64             `json:"usOut"`
 	UsDiff        uint64             `json:"usDiff"`
-	Result        interface{}        `json:"result"`
+	Result        json.RawMessage    `json:"result"`
 	APIBuild      string             `json:"apiBuild"`
 	Notifications []*RPCNotification `json:"notifications"`
+}
+
+// TradeResponse is the data returned by a trade event notification
+type TradeResponse struct {
+	TradeID       int     `json:"tradeId"`
+	Timestamp     int64   `json:"timeStamp"`
+	Instrument    string  `json:"instrument"`
+	Quantity      int     `json:"quantity"`
+	Price         float64 `json:"price"`
+	State         string  `json:"state"`
+	Direction     string  `json:"direction"`
+	OrderID       int     `json:"orderId"`
+	MatchingID    int     `json:"matchingId"`
+	MakerComm     float64 `json:"makerComm"`
+	TakerComm     float64 `json:"takerComm"`
+	IndexPrice    float64 `json:"indexPrice"`
+	Label         string  `json:"label"`
+	Me            string  `json:"me"`
+	TickDirection int     `json:"tickDirection"`
 }
 
 // RPCCall represents the entire call from request to response
 type RPCCall struct {
 	Req   RPCRequest
 	Res   RPCResponse
-	Done  chan bool
 	Error error
+	Type  string
+	Done  chan bool
 }
 
 // NewRPCCall returns a new RPCCall initialised with a done channel and request
@@ -103,16 +124,14 @@ func NewRPCCall(req RPCRequest) *RPCCall {
 }
 
 // makeRequest makes a request over the websocket and waits for a response with a timeout
-func (e *Exchange) makeRequest(req RPCRequest) (*RPCResponse, error) {
+func (e *Exchange) makeRequest(req RPCRequest, reqType string) (*RPCResponse, error) {
 	e.mutex.Lock()
 	id := e.counter
 	e.counter++
 	req.ID = id
 	call := NewRPCCall(req)
+	call.Type = reqType
 	e.pending[id] = call
-
-	//j, _ := json.Marshal(req)
-	//fmt.Printf("Req: %s\n", j)
 
 	if err := e.conn.WriteJSON(&req); err != nil {
 		delete(e.pending, id)
@@ -122,37 +141,49 @@ func (e *Exchange) makeRequest(req RPCRequest) (*RPCResponse, error) {
 	e.mutex.Unlock()
 	select {
 	case <-call.Done:
-	case <-time.After(2 * time.Second):
+	case <-time.After(10 * time.Second):
 		call.Error = fmt.Errorf("Request %d timed out", id)
 	}
 
-	if !call.Res.Success {
-		call.Error = fmt.Errorf("Request failed with: %s", call.Res.Message)
-	}
 	if call.Error != nil {
 		return nil, call.Error
+	}
+	if !call.Res.Success {
+		return nil, fmt.Errorf("Request failed with code (%d): %s", call.Res.Error, call.Res.Message)
 	}
 	return &call.Res, nil
 }
 
+// This is also ugly AF
+func (e *Exchange) decodeResponse(msg json.RawMessage, resType string) ([]interface{}, error) {
+	// We obviously don't care about converting this to a concrete type so just return a slice of interfaces
+	if len(resType) == 0 || len(msg) == 0 {
+		return make([]interface{}, 0), nil
+	}
+	if _, ok := responseHandlers[resType]; ok {
+		resStruct := responseHandlers[resType]()
+		if err := json.Unmarshal(msg, &resStruct); err != nil {
+			return nil, fmt.Errorf("Unable to unmarshal result: %s", err)
+		}
+		return resStruct, nil
+	}
+	return nil, fmt.Errorf("No response handler found for response type '%s'", resType)
+}
+
 // read takes messages off the websocket and deals with them accordingly
+// This method is ugly AF as needs refactoring
 func (e *Exchange) read() {
-	var err error
+	var resErr error
 Loop:
 	for {
 		select {
 		case <-e.stop:
-			fmt.Println("HELLO")
 			break Loop
 		default:
 			var res RPCResponse
 			if err := e.conn.ReadJSON(&res); err != nil {
-				err = fmt.Errorf("Error reading message: %q", err)
-				break Loop
+				e.errors <- fmt.Errorf("Error reading message: %q", err)
 			}
-			//j, _ := json.Marshal(res)
-			//fmt.Printf("Res: %s\n", j)
-
 			// Notifications do not have an ID field
 			if res.Notifications != nil {
 				for _, n := range res.Notifications {
@@ -162,10 +193,13 @@ Loop:
 					if sub == nil {
 						// Send error to main error channel
 						e.errors <- fmt.Errorf("No subscription found for %s", n.Message)
-						break Loop
+					}
+					decoded, err := e.decodeResponse(n.Result, sub.Type)
+					if err != nil {
+						e.errors <- err
 					}
 					// Send the notification to the right channel
-					sub.Data <- n.Result
+					sub.Data <- decoded
 				}
 			} else {
 				e.mutex.Lock()
@@ -174,20 +208,18 @@ Loop:
 				e.mutex.Unlock()
 
 				if call == nil {
-					err = fmt.Errorf("No pending request found for response ID %d", res.ID)
+					resErr = fmt.Errorf("No pending request found for response ID %d", res.ID)
 					break Loop
 				}
-				// Attach the response to the call and close
 				call.Res = res
 				call.Done <- true
 			}
 		}
 	}
-	// On error, terminate all calls by sending on their done channels
-	if err != nil {
+	if resErr != nil {
 		e.mutex.Lock()
 		for _, call := range e.pending {
-			call.Error = err
+			call.Error = resErr
 			call.Done <- true
 		}
 		e.mutex.Unlock()

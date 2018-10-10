@@ -1,6 +1,13 @@
 package deribit
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
+
+var responseHandlers = map[string]func() []interface{}{
+	"trade": func() []interface{} { return []interface{}{&TradeResponse{}} },
+}
 
 // Test makes a request to the public/test endpoint
 func (e *Exchange) Test(forceException bool) (*RPCResponse, error) {
@@ -8,34 +15,34 @@ func (e *Exchange) Test(forceException bool) (*RPCResponse, error) {
 	if forceException {
 		req.Arguments = map[string]interface{}{"expired": "true"}
 	}
-	return e.makeRequest(req)
+	return e.makeRequest(req, "")
 }
 
 // Ping the remote to check for stale connections
 func (e *Exchange) Ping() (*RPCResponse, error) {
 	req := RPCRequest{Action: "/api/v1/public/ping"}
-	return e.makeRequest(req)
+	return e.makeRequest(req, "")
 }
 
-// Subscribe to notifications about an event
-func (e *Exchange) Subscribe(event SubscriptionEvent, c chan []interface{}) error {
-	req := &RPCRequest{
-		Action: "/api/v1/private/subscribe",
-		Arguments: map[string]interface{}{
-			"event":      []SubscriptionEvent{event},
-			"continue":   true,
-			"instrument": []string{"BTC-PERPETUAL"},
-		},
+// GetLastTrades returns the latest trades for an instrument
+func (e *Exchange) GetLastTrades(count, since int) (*RPCResponse, []*TradeResponse, error) {
+	req := RPCRequest{Action: "/api/v1/public/getlasttrades"}
+	req.Arguments = map[string]interface{}{"instrument": "BTC-PERPETUAL"}
+	if count != 0 {
+		req.Arguments["count"] = count
 	}
-	req.GenerateSig(e.key, e.secret)
-	res, err := e.makeRequest(*req)
+	if since != 0 {
+		req.Arguments["since"] = since
+	}
+	res, err := e.makeRequest(req, "trade")
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
-	if !res.Success {
-		return fmt.Errorf("Subscription to %s was not successful: %s", event, res.Message)
+	trades := make([]*TradeResponse, 0)
+	if len(res.Result) != 0 {
+		if err := json.Unmarshal(res.Result, &trades); err != nil {
+			return nil, nil, fmt.Errorf("Unable to unmarshal result: %s", err)
+		}
 	}
-	sub := &RPCSubscription{Data: c}
-	e.subscriptions[string(event)+"_event"] = sub
-	return nil
+	return res, trades, nil
 }
