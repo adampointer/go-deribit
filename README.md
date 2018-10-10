@@ -25,18 +25,18 @@ package main
 
 import (
 	"fmt"
-    "log"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
 func main() {
-    // Trap ctrl+c
+	// Trap ctrl+c
 	terminate := make(chan os.Signal, 1)
 	signal.Notify(terminate, syscall.SIGTERM, syscall.SIGINT, syscall.SIGKILL)
 
-    // Create channels to receive errors and to stop
+	// Create channels to receive errors and to stop
 	errs := make(chan error)
 	stop := make(chan bool)
 	deribit, err := api.NewExchange("YOUR-API-KEY", "YOUR-SECRET-KEY", true, errs, stop)
@@ -47,7 +47,7 @@ func main() {
 		log.Fatalf("Error connecting to exchange: %s", err)
 	}
 
-    // Hit the test RPC endpoint
+	// Hit the test RPC endpoint
 	res, err := deribit.Test(true)
 	if err != nil {
 		log.Fatalf("Error testing connection: %s", err)
@@ -61,12 +61,12 @@ func main() {
 	}
 	log.Print("Subscribed to trades")
 
-    // Enter the main loop and wait for things to pop out of channels
+	// Enter the main loop and wait for things to pop out of channels
 Loop:
 	for {
 		select {
 		case <-terminate:
-            // On ctrl+c
+			// On ctrl+c
 			logger.Warn("Terminating")
 			if err := deribit.Close(); err != nil {
 				log.Fatalf("Error closing websocket: %s", err)
@@ -74,10 +74,10 @@ Loop:
 			//stop <- true
 			break Loop
 		case trade := <-trades:
-            // Log out Trade events as we receieve them
+			// Log out Trade events as we receieve them
 			for _, trd := range trade {
 				if evt, ok := trd.(*api.TradeResponse); ok {
-					log.Print("Trade %f %s", evt.Price, evt.Direction)
+					log.Printf("Trade %f %s", evt.Price, evt.Direction)
 				}
 			}
 		case err := <-errs:
