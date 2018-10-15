@@ -5,10 +5,6 @@ import (
 	"fmt"
 )
 
-var responseHandlers = map[string]func() []interface{}{
-	"trade": func() []interface{} { return []interface{}{&TradeResponse{}} },
-}
-
 // Test makes a request to the public/test endpoint
 func (e *Exchange) Test(forceException bool) (*RPCResponse, error) {
 	req := RPCRequest{Action: "/api/v1/public/test"}

@@ -28,24 +28,56 @@ type RPCNotification struct {
 	Result  json.RawMessage `json:"result"`
 }
 
+// DecodeTrades takes the result from the notification response and decodes it into a slice of trade responses
+func (n *RPCNotification) DecodeTrades() ([]*TradeResponse, error) {
+	if n.Message != fmt.Sprintf("%s_event", evtTrade) {
+		return nil, fmt.Errorf("Attempt to convert %s notification to trades")
+	}
+	var ret []*TradeResponse
+	if err := json.Unmarshal(n.Result, &ret); err != nil {
+		return nil, fmt.Errorf("Unable to unmarshal result: %s", err)
+	}
+	return ret, nil
+}
+
+// DecodeOrderBook takes the result from the notification response and decodes it an orderbook response
+func (n *RPCNotification) DecodeOrderBook() (*OrderBookResponse, error) {
+	if n.Message != fmt.Sprintf("%s_event", evtOrderBook) {
+		return nil, fmt.Errorf("Attempt to convert %s notification to an order book")
+	}
+	var ret OrderBookResponse
+	if err := json.Unmarshal(n.Result, &ret); err != nil {
+		return nil, fmt.Errorf("Unable to unmarshal result: %s", err)
+	}
+	return &ret, nil
+}
+
 // RPCSubscription is a subscription to an event type to receive notifications about
 type RPCSubscription struct {
-	Data chan []interface{}
+	Data chan *RPCNotification
 	Type string
 }
 
 // SubscribeTrades subscribes to trade notifications which are sent on the returned channel
-// You will need to cast interface{} to *TradeResponse the other end
-func (e *Exchange) SubscribeTrades() (chan []interface{}, error) {
-	c := make(chan []interface{})
+func (e *Exchange) SubscribeTrades() (chan *RPCNotification, error) {
+	c := make(chan *RPCNotification)
 	if err := e.subscribe(evtTrade, c); err != nil {
 		return c, err
 	}
 	return c, nil
 }
 
+// SubscribeOrderBook subscribes to orderbook notifications which are sent on the returned channel
+func (e *Exchange) SubscribeOrderBook() (chan *RPCNotification, error) {
+	c := make(chan *RPCNotification)
+	if err := e.subscribe(evtOrderBook, c); err != nil {
+		return c, err
+	}
+	return c, nil
+}
+
 // subscribe to notifications about an event
-func (e *Exchange) subscribe(event SubscriptionEvent, c chan []interface{}) error {
+func (e *Exchange) subscribe(event SubscriptionEvent, c chan *RPCNotification) error {
 	req := &RPCRequest{
 		Action: "/api/v1/private/subscribe",
 		Arguments: map[string]interface{}{

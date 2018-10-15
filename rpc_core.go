@@ -105,6 +105,27 @@ type TradeResponse struct {
 	TickDirection int     `json:"tickDirection"`
 }
 
+// OrderBookResponse is the data returned by an orderbook change
+type OrderBookResponse struct {
+	State           string            `json:"state"`
+	SettlementPrice float64           `json:"settlementPrice"`
+	Instrument      string            `json:"instrument"`
+	Timestamp       int64             `json:"tstamp"`
+	Last            float64           `json:"last"`
+	Low             float64           `json:"low"`
+	High            float64           `json:"high"`
+	Mark            float64           `json:"mark"`
+	Bids            []*OrderBookEntry `json:"bids"`
+	Asks            []*OrderBookEntry `json:"asks"`
+}
+
+// OrderBookEntry is an entry in the orderbook
+type OrderBookEntry struct {
+	Quantity int64   `json:"quantity"`
+	Price    float64 `json:"price"`
+	Cm       int64   `json:"cm"`
+}
+
 // RPCCall represents the entire call from request to response
 type RPCCall struct {
 	Req   RPCRequest
@@ -154,22 +175,6 @@ func (e *Exchange) makeRequest(req RPCRequest, reqType string) (*RPCResponse, er
 	return &call.Res, nil
 }
 
-// This is also ugly AF
-func (e *Exchange) decodeResponse(msg json.RawMessage, resType string) ([]interface{}, error) {
-	// We obviously don't care about converting this to a concrete type so just return a slice of interfaces
-	if len(resType) == 0 || len(msg) == 0 {
-		return make([]interface{}, 0), nil
-	}
-	if _, ok := responseHandlers[resType]; ok {
-		resStruct := responseHandlers[resType]()
-		if err := json.Unmarshal(msg, &resStruct); err != nil {
-			return nil, fmt.Errorf("Unable to unmarshal result: %s", err)
-		}
-		return resStruct, nil
-	}
-	return nil, fmt.Errorf("No response handler found for response type '%s'", resType)
-}
-
 // read takes messages off the websocket and deals with them accordingly
 // This method is ugly AF as needs refactoring
 func (e *Exchange) read() {
@@ -194,12 +199,8 @@ Loop:
 						// Send error to main error channel
 						e.errors <- fmt.Errorf("No subscription found for %s", n.Message)
 					}
-					decoded, err := e.decodeResponse(n.Result, sub.Type)
-					if err != nil {
-						e.errors <- err
-					}
 					// Send the notification to the right channel
-					sub.Data <- decoded
+					sub.Data <- n
 				}
 			} else {
 				e.mutex.Lock()
