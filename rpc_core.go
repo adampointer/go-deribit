@@ -86,52 +86,11 @@ type RPCResponse struct {
 	Notifications []*RPCNotification `json:"notifications"`
 }
 
-// TradeResponse is the data returned by a trade event notification
-type TradeResponse struct {
-	TradeID       int     `json:"tradeId"`
-	Timestamp     int64   `json:"timeStamp"`
-	Instrument    string  `json:"instrument"`
-	Quantity      int     `json:"quantity"`
-	Price         float64 `json:"price"`
-	State         string  `json:"state"`
-	Direction     string  `json:"direction"`
-	OrderID       int     `json:"orderId"`
-	MatchingID    int     `json:"matchingId"`
-	MakerComm     float64 `json:"makerComm"`
-	TakerComm     float64 `json:"takerComm"`
-	IndexPrice    float64 `json:"indexPrice"`
-	Label         string  `json:"label"`
-	Me            string  `json:"me"`
-	TickDirection int     `json:"tickDirection"`
-}
-
-// OrderBookResponse is the data returned by an orderbook change
-type OrderBookResponse struct {
-	State           string            `json:"state"`
-	SettlementPrice float64           `json:"settlementPrice"`
-	Instrument      string            `json:"instrument"`
-	Timestamp       int64             `json:"tstamp"`
-	Last            float64           `json:"last"`
-	Low             float64           `json:"low"`
-	High            float64           `json:"high"`
-	Mark            float64           `json:"mark"`
-	Bids            []*OrderBookEntry `json:"bids"`
-	Asks            []*OrderBookEntry `json:"asks"`
-}
-
-// OrderBookEntry is an entry in the orderbook
-type OrderBookEntry struct {
-	Quantity int64   `json:"quantity"`
-	Price    float64 `json:"price"`
-	Cm       int64   `json:"cm"`
-}
-
 // RPCCall represents the entire call from request to response
 type RPCCall struct {
 	Req   RPCRequest
 	Res   RPCResponse
 	Error error
-	Type  string
 	Done  chan bool
 }
 
@@ -145,13 +104,12 @@ func NewRPCCall(req RPCRequest) *RPCCall {
 }
 
 // makeRequest makes a request over the websocket and waits for a response with a timeout
-func (e *Exchange) makeRequest(req RPCRequest, reqType string) (*RPCResponse, error) {
+func (e *Exchange) makeRequest(req RPCRequest) (*RPCResponse, error) {
 	e.mutex.Lock()
 	id := e.counter
 	e.counter++
 	req.ID = id
 	call := NewRPCCall(req)
-	call.Type = reqType
 	e.pending[id] = call
 
 	if err := e.conn.WriteJSON(&req); err != nil {

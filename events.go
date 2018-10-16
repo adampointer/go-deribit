@@ -20,6 +20,62 @@ const (
 	evtDelivery     SubscriptionEvent = "delivery"
 )
 
+// SubscribeTrades subscribes to trade notifications which are sent on the returned channel
+func (e *Exchange) SubscribeTrades() (chan *RPCNotification, error) {
+	c := make(chan *RPCNotification)
+	if err := e.subscribe(evtTrade, c); err != nil {
+		return c, err
+	}
+	return c, nil
+}
+
+// SubscribeOrderBook subscribes to orderbook notifications which are sent on the returned channel
+func (e *Exchange) SubscribeOrderBook() (chan *RPCNotification, error) {
+	c := make(chan *RPCNotification)
+	if err := e.subscribe(evtOrderBook, c); err != nil {
+		return c, err
+	}
+	return c, nil
+}
+
+// SubscribeUserOrders subscribes to changes of your orders
+func (e *Exchange) SubscribeUserOrders() (chan *RPCNotification, error) {
+	c := make(chan *RPCNotification)
+	if err := e.subscribe(evtUserOrder, c); err != nil {
+		return c, err
+	}
+	return c, nil
+}
+
+// subscribe to notifications about an event
+func (e *Exchange) subscribe(event SubscriptionEvent, c chan *RPCNotification) error {
+	req := &RPCRequest{
+		Action: "/api/v1/private/subscribe",
+		Arguments: map[string]interface{}{
+			"event":      []SubscriptionEvent{event},
+			"continue":   true,
+			"instrument": []string{"BTC-PERPETUAL"},
+		},
+	}
+	req.GenerateSig(e.key, e.secret)
+	res, err := e.makeRequest(*req)
+	if err != nil {
+		return err
+	}
+	if !res.Success {
+		return fmt.Errorf("Subscription to %s was not successful: %s", event, res.Message)
+	}
+	sub := &RPCSubscription{Data: c, Type: string(event)}
+	e.subscriptions[string(event)+"_event"] = sub
+	return nil
+}
+
+// RPCSubscription is a subscription to an event type to receive notifications about
+type RPCSubscription struct {
+	Data chan *RPCNotification
+	Type string
+}
+
 // RPCNotification is a notification which we have subscribed to
 type RPCNotification struct {
 	Success bool            `json:"success"`
@@ -52,49 +108,14 @@ func (n *RPCNotification) DecodeOrderBook() (*OrderBookResponse, error) {
 	return &ret, nil
 }
 
-// RPCSubscription is a subscription to an event type to receive notifications about
-type RPCSubscription struct {
-	Data chan *RPCNotification
-	Type string
-}
-
-// SubscribeTrades subscribes to trade notifications which are sent on the returned channel
-func (e *Exchange) SubscribeTrades() (chan *RPCNotification, error) {
-	c := make(chan *RPCNotification)
-	if err := e.subscribe(evtTrade, c); err != nil {
-		return c, err
+// DecodeUserOrder takes the result from the notification response and decodes it an order response
+func (n *RPCNotification) DecodeUserOrder() (*OrderResponseDetail, error) {
+	if n.Message != fmt.Sprintf("%s_event", evtUserOrder) {
+		return nil, fmt.Errorf("Attempt to convert %s notification to a user order")
 	}
-	return c, nil
-}
-
-// SubscribeOrderBook subscribes to orderbook notifications which are sent on the returned channel
-func (e *Exchange) SubscribeOrderBook() (chan *RPCNotification, error) {
-	c := make(chan *RPCNotification)
-	if err := e.subscribe(evtOrderBook, c); err != nil {
-		return c, err
+	var ret OrderResponseDetail
+	if err := json.Unmarshal(n.Result, &ret); err != nil {
+		return nil, fmt.Errorf("Unable to unmarshal result: %s", err)
 	}
-	return c, nil
-}
-
-// subscribe to notifications about an event
-func (e *Exchange) subscribe(event SubscriptionEvent, c chan *RPCNotification) error {
-	req := &RPCRequest{
-		Action: "/api/v1/private/subscribe",
-		Arguments: map[string]interface{}{
-			"event":      []SubscriptionEvent{event},
-			"continue":   true,
-			"instrument": []string{"BTC-PERPETUAL"},
-		},
-	}
-	req.GenerateSig(e.key, e.secret)
-	res, err := e.makeRequest(*req, "")
-	if err != nil {
-		return err
-	}
-	if !res.Success {
-		return fmt.Errorf("Subscription to %s was not successful: %s", event, res.Message)
-	}
-	sub := &RPCSubscription{Data: c, Type: string(event)}
-	e.subscriptions[string(event)+"_event"] = sub
-	return nil
+	return &ret, nil
 }
