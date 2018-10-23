@@ -1,5 +1,7 @@
 package deribit
 
+import "encoding/json"
+
 // TradeResponse is the data returned by a trade event notification
 type TradeResponse struct {
 	TradeID       int     `json:"tradeId"`
@@ -43,8 +45,8 @@ type OrderBookEntry struct {
 // OrderResponse is a response to an OrderRequest
 // It contains two fields: the created order in order and a list of the resulting trades in trades
 type OrderResponse struct {
-	Order  *OrderResponseDetail `json:"order"`
-	Trades *OrderResponseTrades `json:"trades"`
+	Order  *OrderResponseDetail   `json:"order"`
+	Trades []*OrderResponseTrades `json:"trades"`
 }
 
 // OrderResponseTrades trades is populated when a trade is executed immediately
@@ -59,14 +61,17 @@ type OrderResponseTrades struct {
 
 // OrderResponseDetail is the full details of the order
 type OrderResponseDetail struct {
-	OrderID        string  `json:"orderId"`
-	Direction      string  `json:"direction"`
-	FilledQuantity int     `json:"filledQuantity"`
-	AvgPrice       float64 `json:"avgPrice"`
-	Commission     float64 `json:"commission"`
-	Created        int64   `json:"created"`
-	LastUpdate     int64   `json:"lastUpdate"`
-	State          string  `json:"state"`
-	API            bool    `json:"api"`
-	Triggered      bool    `json:"triggered"`
+	OrderID        json.Number `json:"orderId"`
+	Direction      string      `json:"direction"`
+	FilledQuantity int         `json:"filledQuantity"`
+	Quantity       int         `json:"quantity"`
+	AvgPrice       float64     `json:"avgPrice"`
+	Price          float64     `json:"price"`
+	Label          string      `json:"label"`
+	Commission     float64     `json:"commission"`
+	Created        int64       `json:"created"`
+	LastUpdate     int64       `json:"lastUpdate"`
+	State          string      `json:"state"`
+	API            bool        `json:"api"`
+	Triggered      bool        `json:"triggered"`
 }

@@ -28,7 +28,7 @@ func (r *RPCRequest) GenerateSig(key, secret string) error {
 	if len(r.Arguments) != 0 {
 		var argsString string
 
-		// We have to this to sort by keys
+		// We have to do this to sort by keys
 		keys := make([]string, 0, len(r.Arguments))
 		for key := range r.Arguments {
 			keys = append(keys, key)
@@ -51,9 +51,11 @@ func (r *RPCRequest) GenerateSig(key, secret string) error {
 			case bool:
 				s = strconv.FormatBool(t)
 			case int:
-				s = string(t)
+				s = strconv.FormatInt(int64(t), 10)
+			case int64:
+				s = strconv.FormatInt(t, 10)
 			case float64:
-				s = fmt.Sprintf("%f", t)
+				s = strconv.FormatFloat(t, 'f', -1, 64)
 			case string:
 				s = t
 			default:
@@ -82,8 +84,8 @@ type RPCResponse struct {
 	UsOut         uint64             `json:"usOut"`
 	UsDiff        uint64             `json:"usDiff"`
 	Result        json.RawMessage    `json:"result"`
-	APIBuild      string             `json:"apiBuild"`
-	Notifications []*RPCNotification `json:"notifications"`
+	APIBuild      string             `json:"apiBuild,omitempty"`
+	Notifications []*RPCNotification `json:"notifications,omitempty"`
 }
 
 // RPCCall represents the entire call from request to response
@@ -111,6 +113,9 @@ func (e *Exchange) makeRequest(req RPCRequest) (*RPCResponse, error) {
 	req.ID = id
 	call := NewRPCCall(req)
 	e.pending[id] = call
+
+	//j, _ := json.Marshal(req)
+	//fmt.Printf("Req: %s\n", j)
 
 	if err := e.conn.WriteJSON(&req); err != nil {
 		delete(e.pending, id)
@@ -147,6 +152,10 @@ Loop:
 			if err := e.conn.ReadJSON(&res); err != nil {
 				e.errors <- fmt.Errorf("Error reading message: %q", err)
 			}
+
+			//j, _ := json.Marshal(res)
+			//fmt.Printf("Res: %s\n", j)
+
 			// Notifications do not have an ID field
 			if res.Notifications != nil {
 				for _, n := range res.Notifications {

@@ -48,23 +48,61 @@ func (e *Exchange) Buy(or *OrderRequest) (*RPCResponse, *OrderResponse, error) {
 	return e.placeOrder("buy", or)
 }
 
-// Sell places a buy order
+// Sell places a sell order
 func (e *Exchange) Sell(or *OrderRequest) (*RPCResponse, *OrderResponse, error) {
-	return e.placeOrder("buy", or)
+	return e.placeOrder("sell", or)
+}
+
+// Edit edits an existing order
+func (e *Exchange) Edit(oid string, qty int, price, stopPrice float64, postOnly bool) (*RPCResponse, *OrderResponse, error) {
+	req := RPCRequest{
+		Action: "/api/v1/private/edit",
+		Arguments: map[string]interface{}{
+			"orderId":   oid,
+			"quantity":  qty,
+			"post_only": postOnly,
+		},
+	}
+	if stopPrice > 0 {
+		req.Arguments["stopPx"] = stopPrice
+	}
+	if price > 0 {
+		req.Arguments["price"] = price
+	}
+	req.GenerateSig(e.key, e.secret)
+	res, err := e.makeRequest(req)
+	if err != nil {
+		return nil, nil, err
+	}
+	var ret OrderResponse
+	if err := json.Unmarshal(res.Result, &ret); err != nil {
+		return nil, nil, fmt.Errorf("Unable to unmarshal result: %s", err)
+	}
+	return res, &ret, nil
+}
+
+// CancelAll orders
+func (e *Exchange) CancelAll() (*RPCResponse, error) {
+	req := RPCRequest{
+		Action: "/api/v1/private/cancelall",
+		Arguments: map[string]interface{}{
+			"instrument": "BTC-PERPETUAL",
+			"type":       "futures",
+		},
+	}
+	req.GenerateSig(e.key, e.secret)
+	return e.makeRequest(req)
 }
 
 func (e *Exchange) placeOrder(action string, or *OrderRequest) (*RPCResponse, *OrderResponse, error) {
 	if len(action) == 0 {
 		return nil, nil, fmt.Errorf("Action must be passed")
 	}
-	args, err := or.toMap()
-	if err != nil {
-		return nil, nil, err
-	}
 	req := RPCRequest{
 		Action:    "/api/v1/private/" + action,
-		Arguments: args,
+		Arguments: or.toMap(),
 	}
+	req.GenerateSig(e.key, e.secret)
 	res, err := e.makeRequest(req)
 	if err != nil {
 		return nil, nil, err
