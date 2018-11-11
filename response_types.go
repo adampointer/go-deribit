@@ -40,6 +40,7 @@ type OrderBookEntry struct {
 	Quantity json.Number `json:"quantity"`
 	Price    float64     `json:"price"`
 	Cm       int64       `json:"cm"`
+	CmAmount float64     `json:"cm_amount"`
 }
 
 // OrderResponse is a response to an OrderRequest

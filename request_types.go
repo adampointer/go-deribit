@@ -16,6 +16,18 @@ type OrderRequest struct {
 	ExecInst    string  `json:"execInst"`
 }
 
+// DefaultMarketOrderRequest returns a limit type OrderRequest with defaults
+func DefaultMarketOrderRequest(quantity int) *OrderRequest {
+	return &OrderRequest{
+		Instrument:  "BTC-PERPETUAL",
+		Quantity:    quantity,
+		MaxShow:     quantity,
+		Type:        "market",
+		TimeInForce: "good_til_cancelled",
+		PostOnly:    false,
+	}
+}
+
 // DefaultLimitOrderRequest returns a limit type OrderRequest with defaults
 func DefaultLimitOrderRequest(price float64, quantity int, label string) *OrderRequest {
 	return &OrderRequest{
