@@ -70,10 +70,10 @@ Loop:
 			//stop <- true
 			break Loop
 		case notification := <-trades:
-            trds, err := notification.DecodeTrades()
-            if err != nil {
-			    log.Fatalf("Decode error: %s", err)
-            }
+            		trds, err := notification.DecodeTrades()
+            		if err != nil {
+			    	log.Fatalf("Decode error: %s", err)
+            		}
 			// Log out Trade events as we get them
 			for _, trd := range trds {
 				log.Printf("Trade %f %s", evt.Price, evt.Direction)
