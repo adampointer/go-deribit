@@ -17,9 +17,9 @@ type OrderRequest struct {
 }
 
 // DefaultMarketOrderRequest returns a limit type OrderRequest with defaults
-func DefaultMarketOrderRequest(quantity int) *OrderRequest {
+func DefaultMarketOrderRequest(quantity int, instrument string) *OrderRequest {
 	return &OrderRequest{
-		Instrument:  "BTC-PERPETUAL",
+		Instrument:  instrument,
 		Quantity:    quantity,
 		MaxShow:     quantity,
 		Type:        "market",
@@ -29,9 +29,9 @@ func DefaultMarketOrderRequest(quantity int) *OrderRequest {
 }
 
 // DefaultLimitOrderRequest returns a limit type OrderRequest with defaults
-func DefaultLimitOrderRequest(price float64, quantity int, label string) *OrderRequest {
+func DefaultLimitOrderRequest(price float64, quantity int, label, instrument string) *OrderRequest {
 	return &OrderRequest{
-		Instrument:  "BTC-PERPETUAL",
+		Instrument:  instrument,
 		Quantity:    quantity,
 		MaxShow:     quantity,
 		Type:        "limit",
@@ -43,9 +43,9 @@ func DefaultLimitOrderRequest(price float64, quantity int, label string) *OrderR
 }
 
 // DefaultStopOrderRequest returns a stop market type OrderRequest with defaults
-func DefaultStopOrderRequest(stopPrice float64, quantity int, label string) *OrderRequest {
+func DefaultStopOrderRequest(stopPrice float64, quantity int, label, instrument string) *OrderRequest {
 	return &OrderRequest{
-		Instrument:  "BTC-PERPETUAL",
+		Instrument:  instrument,
 		Quantity:    quantity,
 		MaxShow:     quantity,
 		Type:        "stop_market",

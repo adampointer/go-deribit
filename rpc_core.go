@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"sort"
 	"strconv"
@@ -21,6 +22,9 @@ type RPCRequest struct {
 
 // GenerateSig creates the signature required for private endpoints
 func (r *RPCRequest) GenerateSig(key, secret string) error {
+	if len(key) == 0 || len(secret) == 0 {
+		return errors.New("You must supply an access key and an access secret")
+	}
 	nonce := time.Now().UnixNano() / int64(time.Millisecond)
 	sigString := fmt.Sprintf("_=%d&_ackey=%s&_acsec=%s&_action=%s", nonce, key, secret, r.Action)
 
@@ -114,9 +118,6 @@ func (e *Exchange) makeRequest(req RPCRequest) (*RPCResponse, error) {
 	call := NewRPCCall(req)
 	e.pending[id] = call
 
-	//j, _ := json.Marshal(req)
-	//fmt.Printf("Req: %s\n", j)
-
 	if err := e.conn.WriteJSON(&req); err != nil {
 		delete(e.pending, id)
 		e.mutex.Unlock()
@@ -152,9 +153,6 @@ Loop:
 			if err := e.conn.ReadJSON(&res); err != nil {
 				e.errors <- fmt.Errorf("Error reading message: %q", err)
 			}
-
-			//j, _ := json.Marshal(res)
-			//fmt.Printf("Res: %s\n", j)
 
 			// Notifications do not have an ID field
 			if res.Notifications != nil {

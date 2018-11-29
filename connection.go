@@ -32,6 +32,7 @@ type Exchange struct {
 }
 
 // NewExchange creates a new API wrapper
+// key and secret can be ignored if you are only calling public endpoints
 func NewExchange(key, secret string, test bool, errs chan error, stop chan bool) (*Exchange, error) {
 	exc := &Exchange{
 		pending:       make(map[uint64]*RPCCall, 1),
@@ -45,9 +46,6 @@ func NewExchange(key, secret string, test bool, errs chan error, stop chan bool)
 	if test {
 		exc.test = true
 		exc.url = testURL
-	}
-	if len(key) == 0 || len(secret) == 0 {
-		return nil, errors.New("You must supply an access key and an access secret")
 	}
 	exc.key = key
 	exc.secret = secret

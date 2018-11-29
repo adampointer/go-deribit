@@ -21,27 +21,27 @@ const (
 )
 
 // SubscribeTrades subscribes to trade notifications which are sent on the returned channel
-func (e *Exchange) SubscribeTrades() (chan *RPCNotification, error) {
+func (e *Exchange) SubscribeTrades(instrument string) (chan *RPCNotification, error) {
 	c := make(chan *RPCNotification)
-	if err := e.subscribe(evtTrade, c, "BTC-PERPETUAL"); err != nil {
+	if err := e.subscribe(evtTrade, c, instrument); err != nil {
 		return c, err
 	}
 	return c, nil
 }
 
 // SubscribeOrderBook subscribes to orderbook notifications which are sent on the returned channel
-func (e *Exchange) SubscribeOrderBook() (chan *RPCNotification, error) {
+func (e *Exchange) SubscribeOrderBook(instrument string) (chan *RPCNotification, error) {
 	c := make(chan *RPCNotification)
-	if err := e.subscribe(evtOrderBook, c, "BTC-PERPETUAL"); err != nil {
+	if err := e.subscribe(evtOrderBook, c, instrument); err != nil {
 		return c, err
 	}
 	return c, nil
 }
 
 // SubscribeUserOrders subscribes to changes of your orders
-func (e *Exchange) SubscribeUserOrders() (chan *RPCNotification, error) {
+func (e *Exchange) SubscribeUserOrders(instrument string) (chan *RPCNotification, error) {
 	c := make(chan *RPCNotification)
-	if err := e.subscribe(evtUserOrder, c, "all"); err != nil {
+	if err := e.subscribe(evtUserOrder, c, instrument); err != nil {
 		return c, err
 	}
 	return c, nil
@@ -57,7 +57,9 @@ func (e *Exchange) subscribe(event SubscriptionEvent, c chan *RPCNotification, i
 			"instrument": []string{instrument},
 		},
 	}
-	req.GenerateSig(e.key, e.secret)
+	if err := req.GenerateSig(e.key, e.secret); err != nil {
+		return err
+	}
 	res, err := e.makeRequest(*req)
 	if err != nil {
 		return err

@@ -21,9 +21,9 @@ func (e *Exchange) Ping() (*RPCResponse, error) {
 }
 
 // GetLastTrades returns the latest trades for an instrument
-func (e *Exchange) GetLastTrades(count, since int) (*RPCResponse, []*TradeResponse, error) {
+func (e *Exchange) GetLastTrades(count, since int, instrument string) (*RPCResponse, []*TradeResponse, error) {
 	req := RPCRequest{Action: "/api/v1/public/getlasttrades"}
-	req.Arguments = map[string]interface{}{"instrument": "BTC-PERPETUAL"}
+	req.Arguments = map[string]interface{}{"instrument": instrument}
 	if count != 0 {
 		req.Arguments["count"] = count
 	}
@@ -69,7 +69,9 @@ func (e *Exchange) Edit(oid string, qty int, price, stopPrice float64, postOnly 
 	if price > 0 {
 		req.Arguments["price"] = price
 	}
-	req.GenerateSig(e.key, e.secret)
+	if err := req.GenerateSig(e.key, e.secret); err != nil {
+		return nil, nil, err
+	}
 	res, err := e.makeRequest(req)
 	if err != nil {
 		return nil, nil, err
@@ -82,15 +84,17 @@ func (e *Exchange) Edit(oid string, qty int, price, stopPrice float64, postOnly 
 }
 
 // CancelAll orders
-func (e *Exchange) CancelAll() (*RPCResponse, error) {
+func (e *Exchange) CancelAll(instrument string) (*RPCResponse, error) {
 	req := RPCRequest{
 		Action: "/api/v1/private/cancelall",
 		Arguments: map[string]interface{}{
-			"instrument": "BTC-PERPETUAL",
+			"instrument": instrument,
 			"type":       "futures",
 		},
 	}
-	req.GenerateSig(e.key, e.secret)
+	if err := req.GenerateSig(e.key, e.secret); err != nil {
+		return nil, err
+	}
 	return e.makeRequest(req)
 }
 
@@ -102,7 +106,9 @@ func (e *Exchange) placeOrder(action string, or *OrderRequest) (*RPCResponse, *O
 		Action:    "/api/v1/private/" + action,
 		Arguments: or.toMap(),
 	}
-	req.GenerateSig(e.key, e.secret)
+	if err := req.GenerateSig(e.key, e.secret); err != nil {
+		return nil, nil, err
+	}
 	res, err := e.makeRequest(req)
 	if err != nil {
 		return nil, nil, err

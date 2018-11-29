@@ -14,10 +14,6 @@ If you wish to try it out, be kind and use my affiliate link [https://www.deribi
 
 This is a work in progress! As I am building this library as I develop my own trading bot, I am only implementing features as and when I need them. I have not gone and added every single RPC method. It is, however, trivial to do so and I absolutely accept pull requests.
 
-Clean shutdown does not work properly. Calling `Close()` should close the websocket connection and all its associated channels, but doesn't as it is blocking trying to read from the socket.
-
-I have lazily hardcoded all instrument arguments to be "BTC-PERPETUAL".
-
 ## Example Usage
 
 ```
@@ -55,7 +51,7 @@ func main() {
 	log.Printf("Connected to Deribit API v%s", res.APIBuild)
 
 	// Test subs and notifications
-	trades, err := deribit.SubscribeTrades()
+	trades, err := deribit.SubscribeTrades("BTC-PERPETUAL")
 	if err != nil {
 		log.Fatalf("Error subscribing to trades: %s", err)
 	}
