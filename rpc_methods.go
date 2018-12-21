@@ -21,14 +21,17 @@ func (e *Exchange) Ping() (*RPCResponse, error) {
 }
 
 // GetLastTrades returns the latest trades for an instrument
-func (e *Exchange) GetLastTrades(count, since int, instrument string) (*RPCResponse, []*TradeResponse, error) {
+func (e *Exchange) GetLastTrades(count int, startSeq, endSeq int64, instrument string) (*RPCResponse, []*TradeResponse, error) {
 	req := RPCRequest{Action: "/api/v1/public/getlasttrades"}
 	req.Arguments = map[string]interface{}{"instrument": instrument}
 	if count != 0 {
 		req.Arguments["count"] = count
 	}
-	if since != 0 {
-		req.Arguments["since"] = since
+	if startSeq != 0 {
+		req.Arguments["startSeq"] = startSeq
+	}
+	if endSeq != 0 {
+		req.Arguments["endSeq"] = startSeq
 	}
 	res, err := e.makeRequest(req)
 	if err != nil {
@@ -37,7 +40,7 @@ func (e *Exchange) GetLastTrades(count, since int, instrument string) (*RPCRespo
 	trades := make([]*TradeResponse, 0)
 	if len(res.Result) != 0 {
 		if err := json.Unmarshal(res.Result, &trades); err != nil {
-			return nil, nil, fmt.Errorf("Unable to unmarshal result: %s", err)
+			return nil, nil, fmt.Errorf("unable to unmarshal result: %s", err)
 		}
 	}
 	return res, trades, nil
@@ -78,7 +81,7 @@ func (e *Exchange) Edit(oid string, qty int, price, stopPrice float64, postOnly 
 	}
 	var ret OrderResponse
 	if err := json.Unmarshal(res.Result, &ret); err != nil {
-		return nil, nil, fmt.Errorf("Unable to unmarshal result: %s", err)
+		return nil, nil, fmt.Errorf("unable to unmarshal result: %s", err)
 	}
 	return res, &ret, nil
 }

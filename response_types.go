@@ -19,6 +19,7 @@ type TradeResponse struct {
 	Label         string      `json:"label"`
 	Me            string      `json:"me"`
 	TickDirection int         `json:"tickDirection"`
+	TradeSeq      int64       `json:"tradeSeq"`
 }
 
 // OrderBookResponse is the data returned by an orderbook change
@@ -39,7 +40,7 @@ type OrderBookResponse struct {
 type OrderBookEntry struct {
 	Quantity json.Number `json:"quantity"`
 	Price    float64     `json:"price"`
-	Cm       int64       `json:"cm"`
+	Cm       float64     `json:"cm"`
 	CmAmount float64     `json:"cm_amount"`
 }
 
