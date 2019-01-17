@@ -31,13 +31,14 @@ func (e *Exchange) GetLastTrades(count int, startSeq, endSeq int64, instrument s
 		req.Arguments["startSeq"] = startSeq
 	}
 	if endSeq != 0 {
-		req.Arguments["endSeq"] = startSeq
+		req.Arguments["endSeq"] = endSeq
 	}
+	fmt.Printf("%v\n", req)
 	res, err := e.makeRequest(req)
 	if err != nil {
 		return nil, nil, err
 	}
-	trades := make([]*TradeResponse, 0)
+	trades := make([]*TradeResponse, count)
 	if len(res.Result) != 0 {
 		if err := json.Unmarshal(res.Result, &trades); err != nil {
 			return nil, nil, fmt.Errorf("unable to unmarshal result: %s", err)
