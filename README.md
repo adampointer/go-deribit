@@ -2,7 +2,7 @@
 
 ## Overview
 
-Go library for using the [Deribit's](https://www.deribit.com/reg-3027.8327) Websocket API. 
+Go library for using the [Deribit's](https://www.deribit.com/reg-3027.8327) v1 Websocket API. 
 
 Deribit is a modern, fast BitCoin derivatives exchange. If you are using BitMex then you are doing it wrong! Deribit does not freeze up during higher than average load. Also, it is peer-to-peer, not run by market makers on lucrative contracts who want to liquidate you.
 
@@ -13,6 +13,8 @@ If you wish to try it out, be kind and use my affiliate link [https://www.deribi
 ## Current Limitations
 
 This is a work in progress! As I am building this library as I develop my own trading bot, I am only implementing features as and when I need them. I have not gone and added every single RPC method. It is, however, trivial to do so and I absolutely accept pull requests.
+
+I Will likely not do any further work on this v1 implementation as the v2 API is on test. The v2 version of this library is in the pipeline.
 
 ## Example Usage
 
@@ -67,7 +69,7 @@ Loop:
 			if err := deribit.Close(); err != nil {
 				log.Fatalf("Error closing websocket: %s", err)
 			}
-			//stop <- true
+			stop <- true
 			break Loop
 		case notification := <-trades:
             		trds, err := notification.DecodeTrades()
