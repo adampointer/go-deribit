@@ -1,0 +1,28 @@
+{
+    "params": {
+        "channel": "user.trades.BTC-PERPETUAL.raw",
+        "data": [
+            {
+                "amount": 10,
+                "direction": "buy",
+                "fee_currency": "BTC",
+                "fee": 0.00000128,
+                "index_price": 3892.24,
+                "instrument_name": "BTC-PERPETUAL",
+                "liquidity": "T",
+                "matching_id": null,
+                "order_id": "39632",
+                "order_type": "limit",
+                "price": 3912.47,
+                "self_trade": false,
+                "state": "open",
+                "tick_direction": 3,
+                "timestamp": 1550744762917,
+                "trade_id": "15038",
+                "trade_seq": 1588
+            }
+        ]
+    },
+    "method": "subscription",
+    "jsonrpc": "2.0"
+}

@@ -1,0 +1,11 @@
+{
+    "jsonrpc": "2.0",
+    "id": 1469,
+    "method": "public/get_last_trades_by_currency_and_time",
+    "params": {
+        "currency": "BTC",
+        "start_timestamp": 1550045469414,
+        "end_timestamp": 1550055556414,
+        "count": 1
+    }
+}

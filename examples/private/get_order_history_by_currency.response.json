@@ -1,0 +1,28 @@
+{
+  "jsonrpc": "2.0",
+  "id": 9305,
+  "result": [
+    {
+      "time_in_force": "good_til_cancelled",
+      "reduce_only": false,
+      "profit_loss": 0,
+      "price": 3886.5,
+      "post_only": false,
+      "order_type": "limit",
+      "order_state": "filled",
+      "order_id": "146475",
+      "max_show": 40,
+      "last_update_timestamp": 1550661808761,
+      "label": "",
+      "is_liquidation": false,
+      "instrument_name": "BTC-PERPETUAL",
+      "filled_amount": 40,
+      "direction": "buy",
+      "creation_timestamp": 1550661808761,
+      "commission": 0.00000547,
+      "average_price": 3659.8,
+      "api": true,
+      "amount": 40
+    }
+  ]
+}

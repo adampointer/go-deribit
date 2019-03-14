@@ -2,24 +2,18 @@ package deribit
 
 import (
 	"errors"
-<<<<<<< Updated upstream
-=======
 	"github.com/adampointer/go-deribit/models/public"
 	"github.com/gorilla/websocket"
->>>>>>> Stashed changes
 	"sync"
-	"time"
-
-	"github.com/gorilla/websocket"
 )
 
 const (
-	liveURL = "wss://www.deribit.com/ws/api/v1/"
-	testURL = "wss://test.deribit.com/ws/api/v1/"
+	liveURL = "wss://www.deribit.com/ws/api/v2/"
+	testURL = "wss://test.deribit.com/ws/api/v2/"
 )
 
 // ErrTimeout - request timed out
-var ErrTimeout = errors.New("Timed out waiting for a response")
+var ErrTimeout = errors.New("timed out waiting for a response")
 
 // Exchange is an API wrapper with the exchange
 type Exchange struct {
@@ -63,7 +57,7 @@ func (e *Exchange) Connect() error {
 	e.conn = c
 	// Start listening for responses
 	go e.read()
-	go e.heartbeat()
+	//go e.heartbeat()
 	return nil
 }
 
@@ -74,7 +68,7 @@ func (e *Exchange) Close() error {
 	return e.conn.Close()
 }
 
-func (e *Exchange) heartbeat() {
+/*func (e *Exchange) heartbeat() {
 	ticker := time.NewTicker(10 * time.Second)
 	go func() {
 		for {
@@ -89,4 +83,4 @@ func (e *Exchange) heartbeat() {
 			}
 		}
 	}()
-}
+}*/

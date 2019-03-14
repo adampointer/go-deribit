@@ -1,0 +1,9 @@
+{
+    "jsonrpc": "2.0",
+    "id": 2841,
+    "method": "public/hello",
+    "params": {
+        "client_name": "My Trading Software",
+        "client_version": "1.0.2"
+    }
+}

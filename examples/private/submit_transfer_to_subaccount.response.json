@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 210,
+  "result": {
+    "updated_timestamp": 1550226218504,
+    "type": "subaccount",
+    "state": "confirmed",
+    "other_side": "MySubAccount",
+    "id": 1,
+    "direction": "payment",
+    "currency": "ETH",
+    "created_timestamp": 1550226218504,
+    "amount": 12.1234
+  }
+}

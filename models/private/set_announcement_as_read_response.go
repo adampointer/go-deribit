@@ -1,0 +1,3 @@
+package private
+
+type SetAnnouncementAsReadResponse string

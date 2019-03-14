@@ -1,0 +1,11 @@
+{
+  "jsonrpc": "2.0",
+  "id": 6931,
+  "method": "private/withdraw",
+  "params": {
+      "currency": "BTC",
+      "address": "2NBqqD5GRJ8wHy1PYyCXTe9ke5226FhavBz",
+      "amount": 0.4,
+      "priority": "mid"
+  }
+}

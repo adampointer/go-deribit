@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": 210,
+  "method": "private/submit_transfer_to_subaccount",
+  "params": {
+    "currency": "ETH",
+    "amount": 12.1234,
+    "destination": 20
+  }
+}

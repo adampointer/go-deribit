@@ -17,6 +17,7 @@ func main() {
 	errs := make(chan error)
 	stop := make(chan bool)
 	e, err := deribit.NewExchange(false, errs, stop)
+
 	if err != nil {
 		log.Fatalf("Error creating connection: %s", err)
 	}

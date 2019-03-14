@@ -1,0 +1,9 @@
+{
+  "jsonrpc": "2.0",
+  "id": 1032,
+  "method": "private/get_order_history_by_instrument",
+  "params": {
+    "instrument_name": "BTC-PERPETUAL",
+    "count": 1
+  }
+}

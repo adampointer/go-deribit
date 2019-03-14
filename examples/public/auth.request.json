@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": 9929,
+  "method": "public/auth",
+  "params": {
+      "grant_type": "client_credentials",
+      "client_id": "fo7WAPRm4P",
+      "client_secret": "W0H6FJW4IRPZ1MOQ8FP6KMC5RZDUUKXS"
+  }
+}
