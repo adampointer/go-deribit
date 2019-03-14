@@ -1,0 +1,37 @@
+{
+    "jsonrpc": "2.0",
+    "id": 5414,
+    "result": {
+        "email": "user_AAA@email.com",
+        "id": 13,
+        "is_password": false,
+        "login_enabled": false,
+        "portfolio": {
+            "eth": {
+                "available_funds": 0,
+                "available_withdrawal_funds": 0,
+                "balance": 0,
+                "currency": "eth",
+                "equity": 0,
+                "initial_margin": 0,
+                "maintenance_margin": 0,
+                "margin_balance": 0
+            },
+            "btc": {
+                "available_funds": 0,
+                "available_withdrawal_funds": 0,
+                "balance": 0,
+                "currency": "btc",
+                "equity": 0,
+                "initial_margin": 0,
+                "maintenance_margin": 0,
+                "margin_balance": 0
+            }
+        },
+        "receive_notifications": false,
+        "system_name": "user_1_4",
+        "tfa_enabled": false,
+        "type": "subaccount",
+        "username": "user_1_4"
+    }
+}

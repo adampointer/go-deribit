@@ -1,0 +1,19 @@
+{
+  "jsonrpc": "2.0",
+  "id": 5482,
+  "result": {
+    "settlements": [
+      {
+        "type": "settlement",
+        "timestamp": 1550502000023,
+        "session_profit_loss": 0.116509752,
+        "profit_loss": -9.999999999886402e-10,
+        "position": 240,
+        "mark_price": 3578.16,
+        "instrument_name": "BTC-22FEB19",
+        "index_price": 3796.43
+      }
+    ],
+    "continuation": "2Z7mdtavzYvfuyYcHkJXvPTr9ZSMsEzM3sLCH7AbYEDd1AzTXY2hnhegQDiaP1TtU4b5iSJZ4"
+  }
+}

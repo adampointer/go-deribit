@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": 9367,
+  "method": "private/get_user_trades_by_currency",
+  "params": {
+    "currency": "ETH",
+    "start_id": "ETH-34066",
+    "count": 2
+  }
+}

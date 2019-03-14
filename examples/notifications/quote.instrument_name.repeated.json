@@ -1,0 +1,15 @@
+{
+  "params": {
+      "data": {
+          "best_ask_amount": 50,
+          "best_ask_price": 3996.61,
+          "best_bid_amount": 40,
+          "best_bid_price": 3914.97,
+          "instrument_name": "BTC-PERPETUAL",
+          "timestamp": 1550658624149
+      },
+      "channel": "quote.BTC-PERPETUAL"
+  },
+  "method": "subscription",
+  "jsonrpc": "2.0"
+}

@@ -1,0 +1,8 @@
+{
+  "jsonrpc": "2.0",
+  "id": 5147,
+  "method": "private/set_announcement_as_read",
+  "params": {
+    "announcement_id": 1550058362418
+  }
+}

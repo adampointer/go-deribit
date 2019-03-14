@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 9421,
+  "result": {
+    "updated_timestamp": 1550232862350,
+    "type": "user",
+    "state": "prepared",
+    "other_side": "0x4aa0753d798d668056920094d65321a8e8913e26",
+    "id": 3,
+    "direction": "payment",
+    "currency": "ETH",
+    "created_timestamp": 1550232862350,
+    "amount": 13.456
+  }
+}

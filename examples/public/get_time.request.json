@@ -1,0 +1,6 @@
+{
+  "jsonrpc": "2.0",
+  "id": 7365,
+  "method": "public/get_time",
+  "params": {}
+}

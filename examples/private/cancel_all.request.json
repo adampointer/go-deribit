@@ -1,0 +1,6 @@
+{
+  "jsonrpc": "2.0",
+  "id": 8748,
+  "method": "private/cancel_all",
+  "params": {}
+}

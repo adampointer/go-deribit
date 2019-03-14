@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": 4497,
+  "method": "public/get_last_settlements_by_currency",
+  "params": {
+    "currency": "BTC",
+    "type": "delivery",
+    "count": 2
+  }
+}

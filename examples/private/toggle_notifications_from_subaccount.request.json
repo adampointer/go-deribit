@@ -1,0 +1,9 @@
+{
+  "jsonrpc": "2.0",
+  "id": 9995,
+  "method": "private/toggle_notifications_from_subaccount",
+  "params": {
+      "sid": 7,
+      "state": true
+  }
+}
