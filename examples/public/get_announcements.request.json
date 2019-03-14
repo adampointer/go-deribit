@@ -1,0 +1,6 @@
+{
+  "jsonrpc": "2.0",
+  "id": 7661,
+  "method": "public/get_announcements",
+  "params": {}
+}

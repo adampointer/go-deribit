@@ -1,0 +1,33 @@
+{
+    "params": {
+        "data": {
+            "available_funds": 4.6997875,
+            "available_withdrawal_funds": 4.6997875,
+            "balance": 4.70074515,
+            "currency": "BTC",
+            "delta_total": 0.0178,
+            "equity": 4.70061342,
+            "futures_pl": 0.00018062,
+            "futures_session_rpl": -0.00003045,
+            "futures_session_upl": -0.00010129,
+            "initial_margin": 0.00082592,
+            "maintenance_margin": 0.00038279,
+            "margin_balance": 4.70061342,
+            "options_delta": 0,
+            "options_gamma": 0,
+            "options_pl": 0,
+            "options_session_rpl": 0,
+            "options_session_upl": 0,
+            "options_theta": 0,
+            "options_vega": 0,
+            "portfolio_margining_enabled": false,
+            "session_funding": -0.00001997,
+            "session_rpl": -0.00003045,
+            "session_upl": -0.00010129,
+            "total_pl": 0.00018062
+        },
+        "channel": "user.portfolio.btc"
+    },
+    "method": "subscription",
+    "jsonrpc": "2.0"
+}

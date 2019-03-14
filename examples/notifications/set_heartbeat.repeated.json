@@ -1,0 +1,7 @@
+{
+  "params": {
+    "type": "heartbeat"
+  },
+  "method": "heartbeat",
+  "jsonrpc": "2.0"
+}

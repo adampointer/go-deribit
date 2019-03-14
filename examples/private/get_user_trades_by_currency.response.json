@@ -1,0 +1,49 @@
+{
+  "jsonrpc": "2.0",
+  "id": 9367,
+  "result": {
+    "trades": [
+      {
+        "trade_seq": 3,
+        "trade_id": "ETH-34066",
+        "timestamp": 1550219814585,
+        "tick_direction": 1,
+        "state": "open",
+        "self_trade": false,
+        "price": 0.04,
+        "order_type": "limit",
+        "order_id": "ETH-334607",
+        "matching_id": null,
+        "liquidity": "M",
+        "iv": 56.83,
+        "instrument_name": "ETH-22FEB19-120-C",
+        "index_price": 121.37,
+        "fee_currency": "ETH",
+        "fee": 0.0011,
+        "direction": "buy",
+        "amount": 11
+      },
+      {
+        "trade_seq": 4,
+        "trade_id": "ETH-36286",
+        "timestamp": 1550219953466,
+        "tick_direction": 1,
+        "state": "closed",
+        "self_trade": false,
+        "price": 0.04,
+        "order_type": "limit",
+        "order_id": "ETH-334607",
+        "matching_id": null,
+        "liquidity": "M",
+        "iv": 56.5,
+        "instrument_name": "ETH-22FEB19-120-C",
+        "index_price": 121.41,
+        "fee_currency": "ETH",
+        "fee": 0.000055,
+        "direction": "buy",
+        "amount": 0.55
+      }
+    ],
+    "has_more": true
+  }
+}

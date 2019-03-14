@@ -1,0 +1,10 @@
+{
+  "params": {
+      "data": {
+          "interest": 0.004999511380756577
+      },
+      "channel": "perpetual.BTC-PERPETUAL.raw"
+  },
+  "method": "subscription",
+  "jsonrpc": "2.0"
+}

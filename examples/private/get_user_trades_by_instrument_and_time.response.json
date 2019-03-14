@@ -1,0 +1,28 @@
+{
+  "jsonrpc": "2.0",
+  "id": 276,
+  "result": {
+    "trades": [
+      {
+        "trade_seq": 22295,
+        "trade_id": "65211",
+        "timestamp": 1550219715972,
+        "tick_direction": 1,
+        "state": "closed",
+        "self_trade": false,
+        "price": 3595,
+        "order_type": "limit",
+        "order_id": "438746",
+        "matching_id": null,
+        "liquidity": "M",
+        "instrument_name": "BTC-PERPETUAL",
+        "index_price": 3579.46,
+        "fee_currency": "BTC",
+        "fee": 5.6e-7,
+        "direction": "buy",
+        "amount": 20
+      }
+    ],
+    "has_more": false
+  }
+}

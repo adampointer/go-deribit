@@ -1,0 +1,29 @@
+{
+  "jsonrpc": "2.0",
+  "id": 2148,
+  "result": {
+    "trades": [],
+    "order": {
+      "triggered": false,
+      "trigger": "last_price",
+      "time_in_force": "good_til_cancelled",
+      "stop_price": 145,
+      "reduce_only": false,
+      "profit_loss": 0,
+      "price": 145.61,
+      "post_only": false,
+      "order_type": "stop_limit",
+      "order_state": "untriggered",
+      "order_id": "ETH-SLTS-28",
+      "max_show": 123,
+      "last_update_timestamp": 1550659803407,
+      "label": "",
+      "is_liquidation": false,
+      "instrument_name": "ETH-PERPETUAL",
+      "direction": "sell",
+      "creation_timestamp": 1550659803407,
+      "api": true,
+      "amount": 123
+    }
+  }
+}

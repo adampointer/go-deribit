@@ -1,0 +1,12 @@
+{
+  "jsonrpc": "2.0",
+  "id": 5625,
+  "method": "private/get_order_margin_by_ids",
+  "params": {
+    "ids": [
+      "ETH-349280",
+      "ETH-349279",
+      "ETH-349278"
+    ]
+  }
+}

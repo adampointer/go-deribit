@@ -1,0 +1,11 @@
+{
+  "jsonrpc": "2.0",
+  "id": 9292,
+  "method": "private/get_user_trades_by_currency_and_time",
+  "params": {
+    "currency": "ETH",
+    "start_timestamp": 1550219991813,
+    "end_timestamp": 1550219814586,
+    "count": 2
+  }
+}

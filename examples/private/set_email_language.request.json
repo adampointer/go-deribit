@@ -1,0 +1,8 @@
+{
+  "jsonrpc": "2.0",
+  "id": 3269,
+  "method": "private/set_email_language",
+  "params": {
+    "language": "en"
+  }
+}

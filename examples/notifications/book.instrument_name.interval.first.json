@@ -1,0 +1,25 @@
+{
+  "params": {
+    "data": {
+      "timestamp": 1550761777012,
+      "instrument_name": "BTC-PERPETUAL",
+      "change_id": 475300,
+      "bids": [
+        [
+          "new",
+          3940.75,
+          258.96
+        ],
+        [
+          "new",
+          3423,
+          125.15
+        ]
+      ],
+      "asks": []
+    },
+    "channel": "book.BTC-PERPETUAL.100ms"
+  },
+  "method": "subscription",
+  "jsonrpc": "2.0"
+}

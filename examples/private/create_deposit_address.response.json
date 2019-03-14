@@ -1,0 +1,10 @@
+{
+    "jsonrpc": "2.0",
+    "id": 7538,
+    "result": {
+        "address": "2N8udZGBc1hLRCFsU9kGwMPpmYUwMFTuCwB",
+        "creation_timestamp": 1550575165170,
+        "currency": "BTC",
+        "type": "deposit"
+    }
+}
