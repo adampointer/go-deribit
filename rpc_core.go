@@ -6,8 +6,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+<<<<<<< Updated upstream
 	"sort"
 	"strconv"
+=======
+	"github.com/mitchellh/mapstructure"
+>>>>>>> Stashed changes
 	"strings"
 	"time"
 )
@@ -20,6 +24,7 @@ type RPCRequest struct {
 	Sig       string                 `json:"sig,omitempty"`
 }
 
+<<<<<<< Updated upstream
 // GenerateSig creates the signature required for private endpoints
 func (r *RPCRequest) GenerateSig(key, secret string) error {
 	if len(key) == 0 || len(secret) == 0 {
@@ -75,6 +80,14 @@ func (r *RPCRequest) GenerateSig(key, secret string) error {
 	sigHash := base64.StdEncoding.EncodeToString(hasher.Sum(nil))
 	r.Sig = fmt.Sprintf("%s.%d.%s", key, nonce, sigHash)
 	return nil
+=======
+func NewRPCRequest(method string) *RPCRequest {
+	return &RPCRequest{
+		JsonRpc: rpcVersion,
+		Method:  method,
+		Params:  make(map[string]interface{}),
+	}
+>>>>>>> Stashed changes
 }
 
 // RPCResponse is what we receive from the remote
@@ -109,8 +122,41 @@ func NewRPCCall(req RPCRequest) *RPCCall {
 	}
 }
 
+<<<<<<< Updated upstream
 // makeRequest makes a request over the websocket and waits for a response with a timeout
 func (e *Exchange) makeRequest(req RPCRequest) (*RPCResponse, error) {
+=======
+// RPCSubscription is a subscription to an event type to receive notifications about
+type RPCSubscription struct {
+	Data    chan *RPCNotification
+	Channel string
+}
+
+// RPCNotification is a notification which we have subscribed to
+type RPCNotification struct {
+	JsonRpc string `json:"jsonrpc"`
+	Method  string `json:"action"`
+	Params  struct {
+		Data    map[string]interface{} `json:"data"`
+		Channel string                 `json:"channel"`
+	} `json:"params,omitempty"`
+}
+
+func (e *Exchange) rpcRequest(method string, params interface{}) (*RPCResponse, error) {
+	req := NewRPCRequest(method)
+	call := NewRPCCall(req)
+
+	// Encode parameters to map
+	if params != nil {
+		if err := mapstructure.Decode(params, &req.Params); err != nil {
+			return nil, fmt.Errorf("error encoding parameters: %s", err)
+		}
+	}
+	if strings.HasPrefix(method, "private/") && e.auth != nil {
+		req.Params["access_token"] = e.auth.AccessToken
+	}
+	// Create a new request ID
+>>>>>>> Stashed changes
 	e.mutex.Lock()
 	id := e.counter
 	e.counter++
@@ -153,6 +199,7 @@ Loop:
 			if err := e.conn.ReadJSON(&res); err != nil {
 				e.errors <- fmt.Errorf("Error reading message: %q", err)
 			}
+<<<<<<< Updated upstream
 
 			// Notifications do not have an ID field
 			if res.Notifications != nil {
@@ -166,15 +213,45 @@ Loop:
 					}
 					// Send the notification to the right channel
 					sub.Data <- n
+=======
+
+			f := func(key string) bool { _, ok := raw[key]; return ok }
+
+			if f("id") || f("error") {
+				var res RPCResponse
+				if err := mapstructure.Decode(raw, &res); err != nil {
+					resErr = fmt.Errorf("unable to to decode message to RPCResponse: %s", err)
+					break Loop
+>>>>>>> Stashed changes
 				}
 			} else {
 				e.mutex.Lock()
 				call := e.pending[res.ID]
-				delete(e.pending, res.ID)
 				e.mutex.Unlock()
 
+<<<<<<< Updated upstream
 				if call == nil {
 					resErr = fmt.Errorf("No pending request found for response ID %d", res.ID)
+=======
+				if res.Error != nil && res.Error.Code != 0 {
+					resErr = fmt.Errorf("request failed with code (%d): %s", res.Error.Code, res.Error.Message)
+					break Loop
+				} else {
+					if call == nil {
+						resErr = fmt.Errorf("no pending request found for response ID %d", res.ID)
+						break Loop
+					}
+					call.Res = &res
+					call.Done <- true
+					e.mutex.Lock()
+					delete(e.pending, res.ID)
+					e.mutex.Unlock()
+				}
+			} else if _, ok := raw["method"]; ok {
+				var res RPCNotification
+				if err := mapstructure.Decode(raw, &res); err != nil {
+					resErr = fmt.Errorf("unable to to decode message to RPCNotification: %s", err)
+>>>>>>> Stashed changes
 					break Loop
 				}
 				call.Res = res

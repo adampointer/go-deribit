@@ -2,6 +2,11 @@ package deribit
 
 import (
 	"errors"
+<<<<<<< Updated upstream
+=======
+	"github.com/adampointer/go-deribit/models/public"
+	"github.com/gorilla/websocket"
+>>>>>>> Stashed changes
 	"sync"
 	"time"
 
@@ -18,8 +23,6 @@ var ErrTimeout = errors.New("Timed out waiting for a response")
 
 // Exchange is an API wrapper with the exchange
 type Exchange struct {
-	key           string
-	secret        string
 	url           string
 	test          bool
 	conn          *websocket.Conn
@@ -29,11 +32,12 @@ type Exchange struct {
 	counter       uint64
 	errors        chan error
 	stop          chan bool
+	auth          *public.AuthResponse
 }
 
 // NewExchange creates a new API wrapper
 // key and secret can be ignored if you are only calling public endpoints
-func NewExchange(key, secret string, test bool, errs chan error, stop chan bool) (*Exchange, error) {
+func NewExchange(test bool, errs chan error, stop chan bool) (*Exchange, error) {
 	exc := &Exchange{
 		pending:       make(map[uint64]*RPCCall, 1),
 		subscriptions: make(map[string]*RPCSubscription),
@@ -47,8 +51,6 @@ func NewExchange(key, secret string, test bool, errs chan error, stop chan bool)
 		exc.test = true
 		exc.url = testURL
 	}
-	exc.key = key
-	exc.secret = secret
 	return exc, nil
 }
 
