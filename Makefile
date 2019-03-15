@@ -1,6 +1,9 @@
 .DEFAULT_GOAL := default
 
-default: generate-models generate-methods
+default: build
+
+build: cmd/example/main.go
+	@go build ./cmd/example
 
 generate-models:
 	@go get github.com/ChimeraCoder/gojson/gojson

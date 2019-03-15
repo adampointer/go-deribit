@@ -20,6 +20,11 @@ If you wish to try it out, be kind and use my affiliate link [https://www.deribi
 
 Look at `cmd/example/main.go`
 
+```
+make build
+example --access-key XXX --secret-key YYYYYY
+```
+
 ## Development
 
 The `models` directory is where all the requests and responses are stored. The contents is automatically generated from the example json snippets from `examples` which were kindly provided to me by Deribit from their Slate documentation sources.
