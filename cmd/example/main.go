@@ -3,9 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/adampointer/go-deribit/models/private"
-	"log"
-
 	flag "github.com/spf13/pflag"
+	"log"
 
 	"github.com/adampointer/go-deribit"
 )
@@ -42,5 +41,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error getting account summary: %s", err)
 	}
-	fmt.Println(summary.AvailableFunds)
+	fmt.Printf("Available funds: %f\n", summary.AvailableFunds)
+	book, err := e.SubscribeBookInterval("BTC-PERPETUAL", "none", "1", "100ms")
+	if err != nil {
+		log.Fatalf("Error subscribing to the book: %s", err)
+	}
+	for b := range book {
+		fmt.Printf("Top bid: %f Top ask: %f\n", b.Bids[0][0], b.Asks[0][0])
+	}
 }

@@ -133,10 +133,18 @@ Loop:
 
 			if f("id") || f("error") {
 				var res RPCResponse
+				// Type munging :)
+				switch t := raw["result"].(type) {
+				case []interface{}:
+					result := make(map[string]interface{})
+					for i, v := range t {
+						result[fmt.Sprintf("%d", i)] = v
+					}
+					raw["result"] = result
+				}
 				if err := mapstructure.Decode(raw, &res); err != nil {
 					resErr = fmt.Errorf("unable to to decode message to RPCResponse: %s", err)
 					break Loop
-
 				}
 				e.mutex.Lock()
 				call := e.pending[res.ID]
@@ -156,7 +164,7 @@ Loop:
 					delete(e.pending, res.ID)
 					e.mutex.Unlock()
 				}
-			} else if _, ok := raw["method"]; ok {
+			} else if f("method") && raw["method"] == "subscription" {
 				var res RPCNotification
 				if err := mapstructure.Decode(raw, &res); err != nil {
 					resErr = fmt.Errorf("unable to to decode message to RPCNotification: %s", err)

@@ -1,8 +1,10 @@
 # go-deribit
 
-## Under Development!
+## V2 API - Major Breaking Changes
 
-This is the **v2** API and I am still working on subscriptions. The deprecated, but still functioning v1 API has been tagged `v1`.
+Both the remote API and this implementation have changed a lot since v1. The deprecated, but still functioning v1 API has been tagged `v1.0.0`.
+
+[V2 API Documentation](http://docs.deribit.com/v2/?javascript#deribit-api-v2-0-0)
 
 ## Overview
 
@@ -24,4 +26,4 @@ The `models` directory is where all the requests and responses are stored. The c
 
 If you need to rebuild these use `make generate-models`.
 
-The RPC methods are also auto-generated. Use `make generate-methods` to rebuild these. They are in `rpc_methods.go` and you will need to run `goimports` afterward (or just let your IDE do it for you :)).
+The RPC methods and subscriptions are also auto-generated. Use `make generate-methods` to rebuild these. They are in `rpc_methods.go` and `rpc_subscriptions.go`.
