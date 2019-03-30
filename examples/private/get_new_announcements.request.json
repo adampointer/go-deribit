@@ -1,7 +1,0 @@
-{
-  "jsonrpc": "2.0",
-  "id": 3022,
-  "method": "private/get_new_announcements",
-  "params": {
-  }
-}

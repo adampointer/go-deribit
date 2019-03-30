@@ -1,8 +1,0 @@
-{
-  "jsonrpc": "2.0",
-  "id": 4316,
-  "method": "private/get_order_state",
-  "params": {
-    "order_id": "ETH-331562"
-  }
-}

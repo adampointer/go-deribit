@@ -1,7 +1,0 @@
-{
-  "jsonrpc": "2.0",
-  "id": 1569,
-  "method": "private/disable_cancel_on_disconnect",
-  "params": {
-  }
-}

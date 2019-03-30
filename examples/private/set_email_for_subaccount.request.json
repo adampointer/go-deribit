@@ -1,9 +1,0 @@
-{
-  "jsonrpc": "2.0",
-  "id": 1667,
-  "method": "private/set_email_for_subaccount",
-  "params": {
-      "sid": 7,
-      "email": "user_1_1@email.com"
-  }
-}

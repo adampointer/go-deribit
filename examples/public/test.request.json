@@ -1,6 +1,0 @@
-{
-  "jsonrpc": "2.0",
-  "id": 8212,
-  "method": "public/test",
-  "params": {}
-}

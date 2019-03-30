@@ -1,9 +1,0 @@
-{
-  "jsonrpc": "2.0",
-  "id": 5663,
-  "method": "private/cancel_all_by_currency",
-  "params": {
-    "currency": "BTC",
-    "kind": "option"
-  }
-}

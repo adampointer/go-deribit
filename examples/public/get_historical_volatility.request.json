@@ -1,8 +1,0 @@
-{
-  "jsonrpc": "2.0",
-  "id": 8387,
-  "method": "public/get_historical_volatility",
-  "params": {
-      "currency": "BTC"
-  }
-}

@@ -1,8 +1,0 @@
-{
-    "jsonrpc": "2.0",
-    "id": 9098,
-    "method": "public/set_heartbeat",
-    "params": {
-        "interval": 30
-    }
-}

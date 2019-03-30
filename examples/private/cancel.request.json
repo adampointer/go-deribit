@@ -1,8 +1,0 @@
-{
-  "jsonrpc": "2.0",
-  "id": 4214,
-  "method": "private/cancel",
-  "params": {
-    "order_id": "ETH-SLIS-12"
-  }
-}

@@ -1,8 +1,0 @@
-{
-    "jsonrpc": "2.0",
-    "id": 1953,
-    "method": "private/get_open_orders_by_currency",
-    "params": {
-        "currency": "BTC"
-    }
-}

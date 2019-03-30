@@ -1,8 +1,0 @@
-{
-  "jsonrpc": "2.0",
-  "id": 3466,
-  "method": "private/get_user_trades_by_order",
-  "params": {
-    "order_id": "ETH-332357"
-  }
-}

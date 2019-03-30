@@ -2,19 +2,23 @@
 
 default: build
 
-build: cmd/example/main.go
+build: build-example build-gen
+
+build-example: cmd/example/main.go
 	@go build ./cmd/example
 
+build-gen: cmd/gen/main.go
+	@go build ./cmd/gen
+
 generate-models:
-	@go get github.com/ChimeraCoder/gojson/gojson
-	@scripts/generate-models.sh
+	@go get -u github.com/go-swagger/go-swagger/cmd/swagger
+	@swagger generate model -f schema/swagger.json
+
+generate-client:
+	@go get -u github.com/go-swagger/go-swagger/cmd/swagger
+	@swagger generate client -f schema/swagger.json
 
 generate-methods:
-	@go get golang.org/x/tools/cmd/goimports
-	@scripts/generate-methods.sh
-	@goimports -w rpc_methods.go
-	@gofmt -w rpc_methods.go
-	@goimports -w rpc_subscriptions.go
-	@gofmt -w rpc_subscriptions.go
+	@sh scripts/generate-methods.sh
 
-.PHONY: generate-models generate-methods
+.PHONY: generate-models

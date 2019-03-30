@@ -1,9 +1,0 @@
-{
-  "jsonrpc": "2.0",
-  "id": 4122,
-  "method": "private/cancel_all_by_instrument",
-  "params": {
-    "instrument_name": "ETH-22FEB19-120-P",
-    "type": "all"
-  }
-}

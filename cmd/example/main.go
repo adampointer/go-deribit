@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/adampointer/go-deribit/models/private"
+	"github.com/adampointer/go-deribit/client/operations"
 	flag "github.com/spf13/pflag"
 	"log"
 
@@ -24,29 +24,30 @@ func main() {
 		log.Fatalf("Error connecting to exchange: %s", err)
 	}
 	go func() {
-		err := <- errs
+		err := <-errs
 		stop <- true
 		log.Fatalf("RPC error: %s", err)
 	}()
+	client := e.Client()
 	// Hit the test RPC endpoint
-	res, err := e.PublicTest(nil)
+	res, err := client.GetPublicTest(&operations.GetPublicTestParams{})
 	if err != nil {
 		log.Fatalf("Error testing connection: %s", err)
 	}
-	log.Printf("Connected to Deribit API v%s", res.Version)
-	if err := e.Authenticate(*key, *secret);err != nil {
+	log.Printf("Connected to Deribit API v%s", *res.Payload.Result.Version)
+	if err := e.Authenticate(*key, *secret); err != nil {
 		log.Fatalf("Error authenticating: %s", err)
 	}
-	summary, err := e.PrivateGetAccountSummary(&private.GetAccountSummaryRequest{Currency:"BTC"})
+	summary, err := client.GetPrivateGetAccountSummary(&operations.GetPrivateGetAccountSummaryParams{Currency: "BTC"})
 	if err != nil {
 		log.Fatalf("Error getting account summary: %s", err)
 	}
-	fmt.Printf("Available funds: %f\n", summary.AvailableFunds)
-	book, err := e.SubscribeBookInterval("BTC-PERPETUAL", "none", "1", "100ms")
+	fmt.Printf("Available funds: %f\n", *summary.Payload.Result.AvailableFunds)
+	/*book, err := e.SubscribeBookGroup("BTC-PERPETUAL", "none", "1", "100ms")
 	if err != nil {
 		log.Fatalf("Error subscribing to the book: %s", err)
 	}
 	for b := range book {
 		fmt.Printf("Top bid: %f Top ask: %f\n", b.Bids[0][0], b.Asks[0][0])
-	}
+	}*/
 }

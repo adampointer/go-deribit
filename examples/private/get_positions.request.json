@@ -1,9 +1,0 @@
-{
-  "jsonrpc": "2.0",
-  "id": 2236,
-  "method": "private/get_positions",
-  "params": {
-      "currency": "BTC",
-      "kind": "future"
-  }
-}

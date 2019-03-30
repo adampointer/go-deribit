@@ -1,8 +1,0 @@
-{
-  "jsonrpc": "2.0",
-  "id": 3659,
-  "method": "public/get_book_summary_by_instrument",
-  "params": {
-    "instrument_name": "ETH-22FEB19-140-P"
-  }
-}

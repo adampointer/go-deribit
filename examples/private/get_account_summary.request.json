@@ -1,9 +1,0 @@
-{
-  "jsonrpc": "2.0",
-  "id": 2515,
-  "method": "private/get_account_summary",
-  "params": {
-      "currency": "BTC",
-      "extended": true
-  }
-}

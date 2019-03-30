@@ -1,3 +1,0 @@
-package private
-
-type CancelAllByInstrumentResponse string

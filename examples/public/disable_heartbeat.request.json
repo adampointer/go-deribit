@@ -1,6 +1,0 @@
-{
-    "jsonrpc": "2.0",
-    "id": 3562,
-    "method": "public/disable_heartbeat",
-    "params": {}
-}

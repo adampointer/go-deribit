@@ -1,8 +1,0 @@
-{
-  "jsonrpc": "2.0",
-  "id": 7538,
-  "method": "private/create_deposit_address",
-  "params": {
-      "currency": "BTC"
-  }
-}

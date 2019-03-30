@@ -1,9 +1,0 @@
-{
-  "jsonrpc": "2.0",
-  "id": 938,
-  "method": "private/toggle_subaccount_login",
-  "params": {
-      "sid": 7,
-      "state": "enable"
-  }
-}

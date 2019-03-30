@@ -2,24 +2,25 @@ package main
 
 import (
 	"github.com/iancoleman/strcase"
+	flag "github.com/spf13/pflag"
 	"log"
 	"os"
 	"regexp"
 	"strings"
 	"text/template"
-
-	flag "github.com/spf13/pflag"
 )
 
+const apiUrl = "https://test.deribit.com/api/v2"
+
 type data struct {
-	Name, Method, Namespace, FuncName, Args, Format, Type, Channel string
+	Name, Method, FuncName, Args, Format, Type, Channel string
 }
 
 var subscriptions = map[string]struct {
 	funcName, notificationType string
 }{
-	"book.{instrument_name}.{group}.{depth}.{interval}": {"BookInterval", "BookInstrumentNameGroupDepthIntervalRepeated"},
-	"book.{instrument_name}.{interval}":                 {"BookGroup", "BookInstrumentNameGroupDepthIntervalRepeated"},
+	"book.{instrument_name}.{group}.{depth}.{interval}": {"BookGroup", "BookInstrumentNameGroupDepthIntervalRepeated"},
+	"book.{instrument_name}.{interval}":                 {"BookInterval", "BookInstrumentIntervalRepeated"},
 	"deribit_price_index.{index_name}":                  {"DeribitPriceIndex", "DeribitPriceIndexIndexNameRepeated"},
 	"deribit_price_ranking.{index_name}":                {"DeribitPriceRanking", "DeribitPriceRankingIndexNameRepeated"},
 	"estimated_expiration_price.{index_name}":           {"EstimatedExpirationPrice", "EstimatedExpirationPriceIndexNameRepeated"},
@@ -28,7 +29,7 @@ var subscriptions = map[string]struct {
 	"quote.{instrument_name}":                           {"Quote", "QuoteInstrumentNameRepeated"},
 	"ticker.{instrument_name}.{interval}":               {"Ticker", "TickerInstrumentNameIntervalRepeated"},
 	"trades.{instrument_name}.{interval}":               {"Trades", "TradesInstrumentNameIntervalRepeated"},
-	"user.orders.{instrument_name}.{interval}":          {"UserOrdersInstrumentName", "UserOrdersInstrumentNameIntervalRepeated",},
+	"user.orders.{instrument_name}.{interval}":          {"UserOrdersInstrumentName", "UserOrdersInstrumentNameIntervalRepeated"},
 	"user.orders.{kind}.{currency}.{interval}":          {"UserOrdersKind", "UserOrdersKindCurrencyIntervalRepeated"},
 	"user.portfolio.{currency}":                         {"UserPortfolio", "UserPortfolioCurrencyRepeated"},
 	"user.trades.{instrument_name}.{interval}":          {"UserTradesInstrument", "UserTradesInstrumentNameIntervalRepeated"},
@@ -36,11 +37,16 @@ var subscriptions = map[string]struct {
 	"announcements":                                     {"Announcements", "Announcements"},
 }
 
+type Method struct {
+	Name     string `json:"name" mapstructure:"name"`
+	Category string `json:"category" mapstructure:"category"`
+}
+
 func main() {
 	var d data
 	var t *template.Template
-	flag.StringVar(&d.Method, "method", "", "The method e.g. cancel_all_by_currency.")
-	flag.StringVar(&d.Namespace, "namespace", "", "The namespace e.g. private")
+	flag.StringVar(&d.Method, "method", "", "The method e.g. private/cancel_all_by_currency.")
+	flag.StringVar(&d.Type, "type", "", "The response type e.g. #/definitions/private_cancel_response")
 	subs := flag.Bool("subscriptions", false, "Write out subscriptions code")
 	flag.Parse()
 	if *subs {
@@ -67,8 +73,9 @@ func main() {
 			}
 		}
 	} else {
-		d.Name = strcase.ToCamel(d.Method)
-		d.FuncName = strcase.ToCamel(d.Namespace + d.Name)
+		d.Name = strcase.ToCamel(strings.Replace(d.Method, "/", "_", -1))
+		parts := strings.Split(d.Type, "/")
+		d.Type = strcase.ToCamel(parts[2])
 		t = template.Must(template.New("rpcMethod").Parse(methodTemplate))
 		err := t.Execute(os.Stdout, d)
 		if err != nil {
@@ -79,13 +86,13 @@ func main() {
 
 var methodTemplate = `
 
-// {{.FuncName}} makes a request to {{.Namespace}}/{{.Method}}
-func (e *Exchange) {{.FuncName}}(params *{{.Namespace}}.{{.Name}}Request) (*{{.Namespace}}.{{.Name}}Response, error) {
-	res, err := e.rpcRequest("{{.Namespace}}/{{.Method}}", params)
+// {{.Name}} makes a request to {{.Method}}
+func (e *Exchange) {{.Name}}(params *operations.Get{{.Name}}Parameters) (*models.{{.Type}}, error) {
+	res, err := e.rpcRequest("{{.Method}}", params)
 	if err != nil {
 		return nil, err
 	}
-	var ret {{.Namespace}}.{{.Name}}Response
+	var ret models.{{.Type}}
 	var toDecode interface{}
 	rt := reflect.TypeOf(ret)
 	switch rt.Kind() {
