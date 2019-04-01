@@ -27,8 +27,8 @@ example --access-key XXX --secret-key YYYYYY
 
 ## Development
 
-The `models` directory is where all the requests and responses are stored. The contents is automatically generated from the example json snippets from `examples` which were kindly provided to me by Deribit from their Slate documentation sources.
+The `models` and `client` directories are where all the requests and responses are stored. The contents is automatically generated from the `schema` directory by `go-swagger`.
 
 If you need to rebuild these use `make generate-models`.
 
-The RPC methods and subscriptions are also auto-generated. Use `make generate-methods` to rebuild these. They are in `rpc_methods.go` and `rpc_subscriptions.go`.
+The RPC subscriptions are also auto-generated. Use `make generate-methods` to rebuild these. They are in `rpc_subscriptions.go`.

@@ -4539,10 +4539,24 @@
     "book_notification": {
       "properties": {
         "asks": {
-          "$ref": "#/definitions/asks"
+          "items": {
+            "description": "The first notification will contain the amounts for all price levels (a list of [\"new\", price, amount] tuples). All following notifications will contain a list of tuples with action, price level and new amount ([action, price, amount]). Action can be 'new', 'change' or 'delete'.",
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "type": "array"
         },
         "bids": {
-          "$ref": "#/definitions/bids"
+          "items": {
+            "description": "(See 'asks' above.)",
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "type": "array"
         },
         "change_id": {
           "description": "id of the notification",
@@ -4568,7 +4582,7 @@
           "items": {
             "description": "The first notification will contain the amounts for all price levels (a list of [\"new\", price, amount] tuples). All following notifications will contain a list of tuples with action, price level and new amount ([action, price, amount]). Action can be 'new', 'change' or 'delete'.",
             "items": {
-              "type": "string"
+              "type": "number"
             },
             "type": "array"
           },
@@ -4578,7 +4592,7 @@
           "items": {
             "description": "(See 'asks' above.)",
             "items": {
-              "type": "string"
+              "type": "number"
             },
             "type": "array"
           },
@@ -9667,10 +9681,7 @@
             }
           },
           "schema": {
-            "items": {
-              "$ref": "#/definitions/order"
-            },
-            "type": "array"
+            "$ref": "#/definitions/order"
           }
         },
         "summary": "Get notifications about changes in user's orders for given instrument."
@@ -9697,10 +9708,7 @@
             }
           },
           "schema": {
-            "items": {
-              "$ref": "#/definitions/order"
-            },
-            "type": "array"
+            "$ref": "#/definitions/order"
           }
         },
         "summary": "Get notifications about changes in user's orders in instruments of given kind and currency."
@@ -9745,10 +9753,7 @@
             }
           },
           "schema": {
-            "items": {
-              "$ref": "#/definitions/user_trade"
-            },
-            "type": "array"
+            "$ref": "#/definitions/user_trade"
           }
         },
         "summary": "Get notifications about user's trades in an instrument."
@@ -9775,10 +9780,7 @@
             }
           },
           "schema": {
-            "items": {
-              "$ref": "#/definitions/user_trade"
-            },
-            "type": "array"
+            "$ref": "#/definitions/user_trade"
           }
         },
         "summary": "Get notifications about user's trades in any instrument of given kind in given currency."

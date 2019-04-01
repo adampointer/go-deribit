@@ -3681,10 +3681,7 @@
             }
           },
           "schema": {
-            "items": {
-              "$ref": "#/components/schemas/user_trade"
-            },
-            "type": "array"
+            "$ref": "#/components/schemas/user_trade"
           }
         },
         "tags": [
@@ -3729,10 +3726,7 @@
             }
           },
           "schema": {
-            "items": {
-              "$ref": "#/components/schemas/order"
-            },
-            "type": "array"
+            "$ref": "#/components/schemas/order"
           }
         },
         "tags": [
@@ -3841,10 +3835,7 @@
             }
           },
           "schema": {
-            "items": {
-              "$ref": "#/components/schemas/order"
-            },
-            "type": "array"
+            "$ref": "#/components/schemas/order"
           }
         },
         "tags": [
@@ -3928,10 +3919,7 @@
             }
           },
           "schema": {
-            "items": {
-              "$ref": "#/components/schemas/user_trade"
-            },
-            "type": "array"
+            "$ref": "#/components/schemas/user_trade"
           }
         },
         "tags": [
@@ -6582,7 +6570,7 @@
             "items": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "number"
               },
               "description": "The first notification will contain the amounts for all price levels (a list of [\"new\", price, amount] tuples). All following notifications will contain a list of tuples with action, price level and new amount ([action, price, amount]). Action can be 'new', 'change' or 'delete'."
             },
@@ -6599,7 +6587,7 @@
             "items": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "number"
               },
               "description": "(See 'asks' above.)"
             },
@@ -6623,10 +6611,24 @@
             "$ref": "#/components/schemas/instrument_name"
           },
           "bids": {
-            "$ref": "#/components/schemas/bids"
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "description": "(See 'asks' above.)"
+            },
+            "type": "array"
           },
           "asks": {
-            "$ref": "#/components/schemas/asks"
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "description": "The first notification will contain the amounts for all price levels (a list of [\"new\", price, amount] tuples). All following notifications will contain a list of tuples with action, price level and new amount ([action, price, amount]). Action can be 'new', 'change' or 'delete'."
+            },
+            "type": "array"
           },
           "timestamp": {
             "$ref": "#/components/schemas/timestamp_for_book_notifications"

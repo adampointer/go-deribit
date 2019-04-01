@@ -43,11 +43,11 @@ func main() {
 		log.Fatalf("Error getting account summary: %s", err)
 	}
 	fmt.Printf("Available funds: %f\n", *summary.Payload.Result.AvailableFunds)
-	/*book, err := e.SubscribeBookGroup("BTC-PERPETUAL", "none", "1", "100ms")
+	book, err := e.SubscribeBookGroup("BTC-PERPETUAL", "none", "1", "100ms")
 	if err != nil {
 		log.Fatalf("Error subscribing to the book: %s", err)
 	}
 	for b := range book {
 		fmt.Printf("Top bid: %f Top ask: %f\n", b.Bids[0][0], b.Asks[0][0])
-	}*/
+	}
 }

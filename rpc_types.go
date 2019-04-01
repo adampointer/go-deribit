@@ -13,6 +13,8 @@ import (
 
 const rpcVersion = "2.0"
 
+var forceSliceKeys = []string{"channels"}
+
 // RPCRequest is what we send to the remote
 // Implements runtime.ClientRequest
 type RPCRequest struct {
@@ -39,12 +41,11 @@ func (RPCRequest) GetHeaderParams() http.Header {
 }
 
 func (r *RPCRequest) SetQueryParam(key string, vals ...string) error {
-	if len(vals) > 1 {
+	if len(vals) > 1 || r.forceSlice(key) {
 		r.Params[key] = vals
 	} else {
 		r.Params[key] = vals[0]
 	}
-
 	return nil
 }
 
@@ -90,6 +91,15 @@ func (RPCRequest) GetBodyParam() interface{} {
 
 func (RPCRequest) GetFileParam() map[string][]runtime.NamedReadCloser {
 	return nil
+}
+
+func (RPCRequest) forceSlice(key string) bool {
+	for _, k := range forceSliceKeys {
+		if k == key {
+			return true
+		}
+	}
+	return false
 }
 
 // RPCResponse is what we receive from the remote
@@ -156,7 +166,7 @@ type RPCSubscription struct {
 // RPCNotification is a notification which we have subscribed to
 type RPCNotification struct {
 	JsonRpc string `json:"jsonrpc"`
-	Method  string `json:"action"`
+	Method  string `json:"method"`
 	Params  struct {
 		Data    json.RawMessage `json:"data"`
 		Channel string          `json:"channel"`

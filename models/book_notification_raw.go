@@ -19,11 +19,11 @@ type BookNotificationRaw struct {
 
 	// asks
 	// Required: true
-	Asks [][]string `json:"asks"`
+	Asks [][]float64 `json:"asks"`
 
 	// bids
 	// Required: true
-	Bids [][]string `json:"bids"`
+	Bids [][]float64 `json:"bids"`
 
 	// id of the notification
 	// Required: true

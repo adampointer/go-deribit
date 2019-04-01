@@ -18,7 +18,9 @@ generate-client:
 	@go get -u github.com/go-swagger/go-swagger/cmd/swagger
 	@swagger generate client -f schema/swagger.json
 
-generate-methods:
-	@sh scripts/generate-methods.sh
+generate-methods: build-gen
+	@$(PWD)/gen > rpc_subscriptions.go
+	goimports -w rpc_subscriptions.go
+	@gofmt -w rpc_subscriptions.go
 
-.PHONY: generate-models
+.PHONY: generate-models generate-client generate-methods

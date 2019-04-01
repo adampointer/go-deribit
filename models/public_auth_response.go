@@ -78,8 +78,9 @@ func (m *PublicAuthResponse) UnmarshalBinary(b []byte) error {
 // swagger:model PublicAuthResponseResult
 type PublicAuthResponseResult struct {
 
-	// acccess token
-	AccessToken string `json:"access_token,omitempty"`
+	// access token
+	// Required: true
+	AccessToken *string `json:"access_token"`
 
 	// Token lifetime in seconds
 	// Required: true
@@ -106,6 +107,10 @@ type PublicAuthResponseResult struct {
 func (m *PublicAuthResponseResult) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateAccessToken(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateExpiresIn(formats); err != nil {
 		res = append(res, err)
 	}
@@ -125,6 +130,15 @@ func (m *PublicAuthResponseResult) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *PublicAuthResponseResult) validateAccessToken(formats strfmt.Registry) error {
+
+	if err := validate.Required("result"+"."+"access_token", "body", m.AccessToken); err != nil {
+		return err
+	}
+
 	return nil
 }
 
