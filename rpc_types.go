@@ -3,12 +3,15 @@ package deribit
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/go-openapi/runtime"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"regexp"
 	"time"
+
+	"github.com/go-openapi/runtime"
 )
 
 const rpcVersion = "2.0"
@@ -130,8 +133,22 @@ func (RPCResponse) GetHeader(string) string {
 }
 
 func (r *RPCResponse) Body() io.ReadCloser {
-	b, _ := json.Marshal(r)
+	raw := []byte(fmt.Sprintf(`{"result": %s}`, r.Result))
+	// Here is where we handle Deribit's idiosyncratic response types
+	b := r.preFilter(raw)
 	return ioutil.NopCloser(bytes.NewReader(b))
+}
+
+func (RPCResponse) preFilter(src []byte) []byte {
+	re := regexp.MustCompile(`"market_price"`)
+	return re.ReplaceAllFunc(src, func(in []byte) []byte {
+		r := regexp.MustCompile(`"average_price":([0-9.]+)`)
+		matches := r.FindAllSubmatch(src, 1)
+		if len(matches) > 0 {
+			return matches[0][1]
+		}
+		return in
+	})
 }
 
 // RPCError error object
