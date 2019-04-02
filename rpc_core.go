@@ -19,9 +19,7 @@ type composite struct {
 func (e *Exchange) Submit(operation *runtime.ClientOperation) (interface{}, error) {
 	method := operation.PathPattern
 	// Strip leading slashes
-	if strings.HasPrefix(method, "/") {
-		method = method[1:]
-	}
+	method = strings.TrimPrefix(method, "/")
 	req := NewRPCRequest(method)
 	if err := operation.Params.WriteToRequest(req, strfmt.Default); err != nil {
 		return nil, err

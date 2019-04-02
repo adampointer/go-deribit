@@ -66,8 +66,9 @@ func (e *Exchange) Connect() error {
 
 // Close the websocket connection
 func (e *Exchange) Close() error {
-	// Ignore error as we will close the conn anyway
-	e.conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+	if err := e.conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, "")); err != nil {
+		return err
+	}
 	return e.conn.Close()
 }
 

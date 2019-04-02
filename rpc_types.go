@@ -182,7 +182,7 @@ type RPCSubscription struct {
 
 // RPCNotification is a notification which we have subscribed to
 type RPCNotification struct {
-	JsonRpc string `json:"jsonrpc"`
+	JsonRpc string
 	Method  string `json:"method"`
 	Params  struct {
 		Data    json.RawMessage `json:"data"`
