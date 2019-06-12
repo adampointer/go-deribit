@@ -13,7 +13,7 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	models "github.com/adampointer/go-deribit/models"
+	models "github.com/DubininaTaisiia/go-deribit/models"
 )
 
 // GetPrivateChangeSubaccountNameReader is a Reader for the GetPrivateChangeSubaccountName structure.

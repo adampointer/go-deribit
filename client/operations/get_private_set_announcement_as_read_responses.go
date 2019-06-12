@@ -13,7 +13,7 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	models "github.com/adampointer/go-deribit/models"
+	models "github.com/DubininaTaisiia/go-deribit/models"
 )
 
 // GetPrivateSetAnnouncementAsReadReader is a Reader for the GetPrivateSetAnnouncementAsRead structure.

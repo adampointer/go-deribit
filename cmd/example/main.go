@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/adampointer/go-deribit/client/operations"
+	"github.com/DubininaTaisiia/go-deribit/client/operations"
 	flag "github.com/spf13/pflag"
 
-	"github.com/adampointer/go-deribit"
+	"github.com/DubininaTaisiia/go-deribit"
 )
 
 func main() {
