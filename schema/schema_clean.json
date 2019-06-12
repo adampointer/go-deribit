@@ -8044,10 +8044,6 @@
               "continuation",
               "settlements"
             ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
             "properties": {
               "continuation": {
                 "$ref": "#/components/schemas/continuation"

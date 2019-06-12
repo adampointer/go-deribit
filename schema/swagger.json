@@ -7978,9 +7978,6 @@
     "settlement_response": {
       "properties": {
         "result": {
-          "items": {
-            "type": "string"
-          },
           "properties": {
             "continuation": {
               "$ref": "#/definitions/continuation"
@@ -7995,8 +7992,7 @@
           "required": [
             "continuation",
             "settlements"
-          ],
-          "type": "array"
+          ]
         }
       },
       "required": [
