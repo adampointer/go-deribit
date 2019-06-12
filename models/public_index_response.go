@@ -77,8 +77,7 @@ func (m *PublicIndexResponse) UnmarshalBinary(b []byte) error {
 type PublicIndexResponseResult struct {
 
 	// The current index price for BTC-USD (only for selected currency == BTC)
-	// Required: true
-	BTC *float64 `json:"BTC"`
+	BTC float64 `json:"BTC"`
 
 	// The current index price for ETH-USD (only for selected currency == ETH)
 	ETH float64 `json:"ETH,omitempty"`

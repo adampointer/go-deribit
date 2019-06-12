@@ -7727,7 +7727,6 @@
             }
           },
           "required": [
-            "BTC",
             "edp"
           ],
           "type": "object"

@@ -4616,7 +4616,6 @@
         "properties": {
           "result": {
             "required": [
-              "BTC",
               "edp"
             ],
             "type": "object",

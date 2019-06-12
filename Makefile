@@ -2,10 +2,10 @@
 
 default: build
 
-build: build-example build-gen
+build: build-examples build-gen
 
-build-example: cmd/example/main.go
-	@go build ./cmd/example
+build-examples: cmd/examples/portfolio/main.go
+	@go build ./cmd/examples/portfolio
 
 build-gen: cmd/gen/main.go
 	@go build ./cmd/gen
