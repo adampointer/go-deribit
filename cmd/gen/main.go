@@ -90,11 +90,28 @@ func (e *Exchange) {{.FuncName}}({{.Args}}{{if .Args}} string{{end}}) (chan *mod
 		for {
 			select {
 			case n := <-c:
-				var ret models.{{.Type}}
-				if err := json.Unmarshal(n.Params.Data, &ret); err != nil {
-					e.errors <- fmt.Errorf("error decoding notification: %s", err)
+				if len(n.Params.Data) < 1 {
+					e.errors <- fmt.Errorf("invalid json data: %s", string(n.Params.Data))
+					continue
 				}
-				out <- &ret
+				switch byte(n.Params.Data[0]) {
+				case '{': 
+					var ret models.{{.Type}}
+					if err := json.Unmarshal(n.Params.Data, &ret); err != nil {
+						e.errors <- fmt.Errorf("error decoding notification: %s", err)
+					}
+					out <- &ret
+				case '[': 
+					var rets []models.{{.Type}}
+					if err := json.Unmarshal(n.Params.Data, &rets); err != nil {
+						e.errors <- fmt.Errorf("error decoding notification: %s", err)
+					}
+					for _, ret := range rets {
+						out <- &ret
+					}
+				default:
+					e.errors <- fmt.Errorf("invalid json data: %s", string(n.Params.Data))
+				}
 			case <-e.stop:
 				break Loop
 			}
