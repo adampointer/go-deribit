@@ -10,28 +10,29 @@ import (
 )
 
 type data struct {
-	FuncName, Args, Format, Type, Channel string
+	FuncName, Args, Format, Type, AccessLevel, Channel string
 }
 
 var subscriptions = map[string]struct {
 	funcName, notificationType string
+	isPrivate                  bool
 }{
-	"book.{instrument_name}.{group}.{depth}.{interval}": {"BookGroup", "BookNotification"},
-	"book.{instrument_name}.{interval}":                 {"BookInterval", "BookNotificationRaw"},
-	"deribit_price_index.{index_name}":                  {"DeribitPriceIndex", "DeribitPriceIndexNotification"},
-	"deribit_price_ranking.{index_name}":                {"DeribitPriceRanking", "DeribitPriceRankingNotification"},
-	"estimated_expiration_price.{index_name}":           {"EstimatedExpirationPrice", "EstimatedExpirationPriceNotification"},
-	"markprice.options.{index_name}":                    {"MarkPriceOptions", "MarkpriceOptionsNotification"},
-	"perpetual.{instrument_name}.{interval}":            {"Perpetual", "PerpetualNotification"},
-	"quote.{instrument_name}":                           {"Quote", "QuoteNotification"},
-	"ticker.{instrument_name}.{interval}":               {"Ticker", "TickerNotification"},
-	"trades.{instrument_name}.{interval}":               {"Trades", "PublicTrade"},
-	"user.orders.{instrument_name}.{interval}":          {"UserOrdersInstrumentName", "Order"},
-	"user.orders.{kind}.{currency}.{interval}":          {"UserOrdersKind", "Order"},
-	"user.portfolio.{currency}":                         {"UserPortfolio", "UserPortfolioNotification"},
-	"user.trades.{instrument_name}.{interval}":          {"UserTradesInstrument", "UserTrade"},
-	"user.trades.{kind}.{currency}.{interval}":          {"UserTradesKind", "UserTrade"},
-	"announcements":                                     {"Announcements", "AnnouncementNotification"},
+	"book.{instrument_name}.{group}.{depth}.{interval}": {"BookGroup", "BookNotification", false},
+	"book.{instrument_name}.{interval}":                 {"BookInterval", "BookNotificationRaw", false},
+	"deribit_price_index.{index_name}":                  {"DeribitPriceIndex", "DeribitPriceIndexNotification", false},
+	"deribit_price_ranking.{index_name}":                {"DeribitPriceRanking", "DeribitPriceRankingNotification", false},
+	"estimated_expiration_price.{index_name}":           {"EstimatedExpirationPrice", "EstimatedExpirationPriceNotification", false},
+	"markprice.options.{index_name}":                    {"MarkPriceOptions", "MarkpriceOptionsNotification", false},
+	"perpetual.{instrument_name}.{interval}":            {"Perpetual", "PerpetualNotification", false},
+	"quote.{instrument_name}":                           {"Quote", "QuoteNotification", false},
+	"ticker.{instrument_name}.{interval}":               {"Ticker", "TickerNotification", false},
+	"trades.{instrument_name}.{interval}":               {"Trades", "PublicTrade", false},
+	"user.orders.{instrument_name}.{interval}":          {"UserOrdersInstrumentName", "Order", true},
+	"user.orders.{kind}.{currency}.{interval}":          {"UserOrdersKind", "Order", true},
+	"user.portfolio.{currency}":                         {"UserPortfolio", "UserPortfolioNotification", true},
+	"user.trades.{instrument_name}.{interval}":          {"UserTradesInstrument", "UserTrade", true},
+	"user.trades.{kind}.{currency}.{interval}":          {"UserTradesKind", "UserTrade", true},
+	"announcements":                                     {"Announcements", "AnnouncementNotification", true},
 }
 
 func main() {
@@ -44,6 +45,10 @@ func main() {
 		d.Channel = c
 		d.FuncName = "Subscribe" + params.funcName
 		d.Type = params.notificationType
+		d.AccessLevel = "Public"
+		if params.isPrivate {
+			d.AccessLevel = "Private"
+		}
 		re := regexp.MustCompile(`\{(.*?)\}`)
 		match := re.FindAllStringSubmatch(c, -1)
 		if len(match) > 0 {
@@ -75,7 +80,7 @@ func (e *Exchange) {{.FuncName}}({{.Args}}{{if .Args}} string{{end}}) (chan *mod
 	e.subscriptions[chans[0]] = sub
 
     client := e.Client()
-	if _, err := client.GetPublicSubscribe(&operations.GetPublicSubscribeParams{Channels: chans}); err != nil {
+	if _, err := client.Get{{.AccessLevel}}Subscribe(&operations.Get{{.AccessLevel}}SubscribeParams{Channels: chans}); err != nil {
 		delete(e.subscriptions, chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
@@ -85,11 +90,28 @@ func (e *Exchange) {{.FuncName}}({{.Args}}{{if .Args}} string{{end}}) (chan *mod
 		for {
 			select {
 			case n := <-c:
-				var ret models.{{.Type}}
-				if err := json.Unmarshal(n.Params.Data, &ret); err != nil {
-					e.errors <- fmt.Errorf("error decoding notification: %s", err)
+				if len(n.Params.Data) < 1 {
+					e.errors <- fmt.Errorf("invalid json data: %s", string(n.Params.Data))
+					continue
 				}
-				out <- &ret
+				switch byte(n.Params.Data[0]) {
+				case '{': 
+					var ret models.{{.Type}}
+					if err := json.Unmarshal(n.Params.Data, &ret); err != nil {
+						e.errors <- fmt.Errorf("error decoding notification: %s", err)
+					}
+					out <- &ret
+				case '[': 
+					var rets []models.{{.Type}}
+					if err := json.Unmarshal(n.Params.Data, &rets); err != nil {
+						e.errors <- fmt.Errorf("error decoding notification: %s", err)
+					}
+					for _, ret := range rets {
+						out <- &ret
+					}
+				default:
+					e.errors <- fmt.Errorf("invalid json data: %s", string(n.Params.Data))
+				}
 			case <-e.stop:
 				break Loop
 			}
