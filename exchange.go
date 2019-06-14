@@ -19,6 +19,8 @@ var ErrTimeout = errors.New("timed out waiting for a response")
 
 // Exchange is an API wrapper with the exchange
 type Exchange struct {
+	OnDisconnect func(*Exchange) // triggers on a failed read from connection
+
 	url           string
 	test          bool
 	conn          *websocket.Conn
