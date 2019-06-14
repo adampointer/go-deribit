@@ -8,6 +8,8 @@ import (
 	"github.com/adampointer/go-deribit/client/operations"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
+	"github.com/gorilla/websocket"
+	"github.com/pkg/errors"
 )
 
 type composite struct {
@@ -86,7 +88,17 @@ Loop:
 		default:
 			var raw composite
 			if err := e.conn.ReadJSON(&raw); err != nil {
-				e.errors <- fmt.Errorf("error reading message: %q", err)
+				if isTemporary(err) {
+					continue
+				}
+				// stop reading if a close message sent from server
+				if websocket.IsCloseError(err, websocket.CloseNormalClosure) {
+					break Loop
+				}
+				if f := e.OnDisconnect; f != nil { // reconnect
+					f(e)
+				}
+				break Loop
 			}
 
 			if raw.ID != 0 || raw.Error != nil {
@@ -140,4 +152,14 @@ Loop:
 		}
 		e.mutex.Unlock()
 	}
+}
+
+type temporary interface {
+	Temporary() bool
+}
+
+// returns true if network err is temporary.
+func isTemporary(err error) bool {
+	te, ok := errors.Cause(err).(temporary)
+	return ok && te.Temporary()
 }
