@@ -8,6 +8,7 @@ import (
 	"github.com/adampointer/go-deribit/client/operations"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
+	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
 )
 
@@ -90,7 +91,11 @@ Loop:
 				if isTemporary(err) {
 					continue
 				}
-				if f := e.OnDisconnect; f != nil {
+				// stop reading if a close message sent from server
+				if websocket.IsCloseError(err, websocket.CloseNormalClosure) {
+					break Loop
+				}
+				if f := e.OnDisconnect; f != nil { // reconnect
 					f(e)
 				}
 				break Loop
