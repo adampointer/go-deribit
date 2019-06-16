@@ -1,4 +1,6 @@
 .DEFAULT_GOAL := default
+.EXPORT_ALL_VARIABLES: 
+GO111MODULE=on
 
 default: build
 
