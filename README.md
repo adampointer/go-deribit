@@ -1,6 +1,14 @@
 # go-deribit
 
-## V2 API - Major Breaking Changes
+## V3 
+
+This project is now using Go Modules but should remain compatible with `dep`. Also, as there are some breaking changes introduced by the latest schema changes from the remote API, I have decided to carry on development in the new `v3` namespace with the project root containing the code tagged `v2.x`.
+
+`import "github.com/adampointer/go-deribit/v3"`
+
+We now have the latest API methods which were recently released such as `public/get_tradingview_chart_data`.
+
+## V2 
 
 Both the remote API and this implementation have changed a lot since v1. The deprecated, but still functioning v1 API has been tagged `v1.0.0`.
 
