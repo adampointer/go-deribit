@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cat ~/.ssh/config_gh >> ~/.ssh/config
+ssh-add ~/.ssh/id_rsa_personal
