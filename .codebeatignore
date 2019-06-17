@@ -1,2 +1,4 @@
 client/**
 models/*
+v3/client/**
+v3/models/*
