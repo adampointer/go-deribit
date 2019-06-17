@@ -13,7 +13,7 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	models "github.com/adampointer/go-deribit/models"
+	models "github.com/adampointer/go-deribit/v3/models"
 )
 
 // GetPrivateGetWithdrawalsReader is a Reader for the GetPrivateGetWithdrawals structure.

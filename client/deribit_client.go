@@ -11,8 +11,8 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/adampointer/go-deribit/client/internal"
-	"github.com/adampointer/go-deribit/client/operations"
+	"github.com/adampointer/go-deribit/v3/client/internal"
+	"github.com/adampointer/go-deribit/v3/client/operations"
 )
 
 // Default deribit HTTP client.
