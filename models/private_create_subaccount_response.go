@@ -18,15 +18,68 @@ import (
 // PrivateCreateSubaccountResponse private create subaccount response
 // swagger:model private_create_subaccount_response
 type PrivateCreateSubaccountResponse struct {
+	BaseMessage
 
 	// result
 	// Required: true
-	Result *PrivateCreateSubaccountResponseResult `json:"result"`
+	Result *PrivateCreateSubaccountResponseAO1Result `json:"result"`
+}
+
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (m *PrivateCreateSubaccountResponse) UnmarshalJSON(raw []byte) error {
+	// AO0
+	var aO0 BaseMessage
+	if err := swag.ReadJSON(raw, &aO0); err != nil {
+		return err
+	}
+	m.BaseMessage = aO0
+
+	// AO1
+	var dataAO1 struct {
+		Result *PrivateCreateSubaccountResponseAO1Result `json:"result"`
+	}
+	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+		return err
+	}
+
+	m.Result = dataAO1.Result
+
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (m PrivateCreateSubaccountResponse) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 2)
+
+	aO0, err := swag.WriteJSON(m.BaseMessage)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, aO0)
+
+	var dataAO1 struct {
+		Result *PrivateCreateSubaccountResponseAO1Result `json:"result"`
+	}
+
+	dataAO1.Result = m.Result
+
+	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
+	if errAO1 != nil {
+		return nil, errAO1
+	}
+	_parts = append(_parts, jsonDataAO1)
+
+	return swag.ConcatJSON(_parts...), nil
 }
 
 // Validate validates this private create subaccount response
 func (m *PrivateCreateSubaccountResponse) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	// validation for a type composition with BaseMessage
+	if err := m.BaseMessage.Validate(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateResult(formats); err != nil {
 		res = append(res, err)
@@ -74,9 +127,9 @@ func (m *PrivateCreateSubaccountResponse) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// PrivateCreateSubaccountResponseResult private create subaccount response result
-// swagger:model PrivateCreateSubaccountResponseResult
-type PrivateCreateSubaccountResponseResult struct {
+// PrivateCreateSubaccountResponseAO1Result private create subaccount response a o1 result
+// swagger:model PrivateCreateSubaccountResponseAO1Result
+type PrivateCreateSubaccountResponseAO1Result struct {
 
 	// User email
 	// Required: true
@@ -119,8 +172,8 @@ type PrivateCreateSubaccountResponseResult struct {
 	Username *string `json:"username"`
 }
 
-// Validate validates this private create subaccount response result
-func (m *PrivateCreateSubaccountResponseResult) Validate(formats strfmt.Registry) error {
+// Validate validates this private create subaccount response a o1 result
+func (m *PrivateCreateSubaccountResponseAO1Result) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateEmail(formats); err != nil {
@@ -169,7 +222,7 @@ func (m *PrivateCreateSubaccountResponseResult) Validate(formats strfmt.Registry
 	return nil
 }
 
-func (m *PrivateCreateSubaccountResponseResult) validateEmail(formats strfmt.Registry) error {
+func (m *PrivateCreateSubaccountResponseAO1Result) validateEmail(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"email", "body", m.Email); err != nil {
 		return err
@@ -178,7 +231,7 @@ func (m *PrivateCreateSubaccountResponseResult) validateEmail(formats strfmt.Reg
 	return nil
 }
 
-func (m *PrivateCreateSubaccountResponseResult) validateID(formats strfmt.Registry) error {
+func (m *PrivateCreateSubaccountResponseAO1Result) validateID(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"id", "body", m.ID); err != nil {
 		return err
@@ -187,7 +240,7 @@ func (m *PrivateCreateSubaccountResponseResult) validateID(formats strfmt.Regist
 	return nil
 }
 
-func (m *PrivateCreateSubaccountResponseResult) validateIsPassword(formats strfmt.Registry) error {
+func (m *PrivateCreateSubaccountResponseAO1Result) validateIsPassword(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"is_password", "body", m.IsPassword); err != nil {
 		return err
@@ -196,7 +249,7 @@ func (m *PrivateCreateSubaccountResponseResult) validateIsPassword(formats strfm
 	return nil
 }
 
-func (m *PrivateCreateSubaccountResponseResult) validateLoginEnabled(formats strfmt.Registry) error {
+func (m *PrivateCreateSubaccountResponseAO1Result) validateLoginEnabled(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"login_enabled", "body", m.LoginEnabled); err != nil {
 		return err
@@ -205,7 +258,7 @@ func (m *PrivateCreateSubaccountResponseResult) validateLoginEnabled(formats str
 	return nil
 }
 
-func (m *PrivateCreateSubaccountResponseResult) validatePortfolio(formats strfmt.Registry) error {
+func (m *PrivateCreateSubaccountResponseAO1Result) validatePortfolio(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.Portfolio) { // not required
 		return nil
@@ -223,7 +276,7 @@ func (m *PrivateCreateSubaccountResponseResult) validatePortfolio(formats strfmt
 	return nil
 }
 
-func (m *PrivateCreateSubaccountResponseResult) validateReceiveNotifications(formats strfmt.Registry) error {
+func (m *PrivateCreateSubaccountResponseAO1Result) validateReceiveNotifications(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"receive_notifications", "body", m.ReceiveNotifications); err != nil {
 		return err
@@ -232,7 +285,7 @@ func (m *PrivateCreateSubaccountResponseResult) validateReceiveNotifications(for
 	return nil
 }
 
-func (m *PrivateCreateSubaccountResponseResult) validateSystemName(formats strfmt.Registry) error {
+func (m *PrivateCreateSubaccountResponseAO1Result) validateSystemName(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"system_name", "body", m.SystemName); err != nil {
 		return err
@@ -241,7 +294,7 @@ func (m *PrivateCreateSubaccountResponseResult) validateSystemName(formats strfm
 	return nil
 }
 
-func (m *PrivateCreateSubaccountResponseResult) validateTfaEnabled(formats strfmt.Registry) error {
+func (m *PrivateCreateSubaccountResponseAO1Result) validateTfaEnabled(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"tfa_enabled", "body", m.TfaEnabled); err != nil {
 		return err
@@ -250,7 +303,7 @@ func (m *PrivateCreateSubaccountResponseResult) validateTfaEnabled(formats strfm
 	return nil
 }
 
-var privateCreateSubaccountResponseResultTypeTypePropEnum []interface{}
+var privateCreateSubaccountResponseAO1ResultTypeTypePropEnum []interface{}
 
 func init() {
 	var res []string
@@ -258,25 +311,25 @@ func init() {
 		panic(err)
 	}
 	for _, v := range res {
-		privateCreateSubaccountResponseResultTypeTypePropEnum = append(privateCreateSubaccountResponseResultTypeTypePropEnum, v)
+		privateCreateSubaccountResponseAO1ResultTypeTypePropEnum = append(privateCreateSubaccountResponseAO1ResultTypeTypePropEnum, v)
 	}
 }
 
 const (
 
-	// PrivateCreateSubaccountResponseResultTypeSubaccount captures enum value "subaccount"
-	PrivateCreateSubaccountResponseResultTypeSubaccount string = "subaccount"
+	// PrivateCreateSubaccountResponseAO1ResultTypeSubaccount captures enum value "subaccount"
+	PrivateCreateSubaccountResponseAO1ResultTypeSubaccount string = "subaccount"
 )
 
 // prop value enum
-func (m *PrivateCreateSubaccountResponseResult) validateTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, privateCreateSubaccountResponseResultTypeTypePropEnum); err != nil {
+func (m *PrivateCreateSubaccountResponseAO1Result) validateTypeEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, privateCreateSubaccountResponseAO1ResultTypeTypePropEnum); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (m *PrivateCreateSubaccountResponseResult) validateType(formats strfmt.Registry) error {
+func (m *PrivateCreateSubaccountResponseAO1Result) validateType(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"type", "body", m.Type); err != nil {
 		return err
@@ -290,7 +343,7 @@ func (m *PrivateCreateSubaccountResponseResult) validateType(formats strfmt.Regi
 	return nil
 }
 
-func (m *PrivateCreateSubaccountResponseResult) validateUsername(formats strfmt.Registry) error {
+func (m *PrivateCreateSubaccountResponseAO1Result) validateUsername(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"username", "body", m.Username); err != nil {
 		return err
@@ -300,7 +353,7 @@ func (m *PrivateCreateSubaccountResponseResult) validateUsername(formats strfmt.
 }
 
 // MarshalBinary interface implementation
-func (m *PrivateCreateSubaccountResponseResult) MarshalBinary() ([]byte, error) {
+func (m *PrivateCreateSubaccountResponseAO1Result) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -308,8 +361,8 @@ func (m *PrivateCreateSubaccountResponseResult) MarshalBinary() ([]byte, error) 
 }
 
 // UnmarshalBinary interface implementation
-func (m *PrivateCreateSubaccountResponseResult) UnmarshalBinary(b []byte) error {
-	var res PrivateCreateSubaccountResponseResult
+func (m *PrivateCreateSubaccountResponseAO1Result) UnmarshalBinary(b []byte) error {
+	var res PrivateCreateSubaccountResponseAO1Result
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

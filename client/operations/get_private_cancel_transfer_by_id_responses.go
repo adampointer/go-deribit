@@ -44,7 +44,7 @@ func NewGetPrivateCancelTransferByIDOK() *GetPrivateCancelTransferByIDOK {
 
 /*GetPrivateCancelTransferByIDOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPrivateCancelTransferByIDOK struct {
 	Payload *models.PrivateSubmitTransferResponse

@@ -72,11 +72,11 @@ type GetPublicGetLastTradesByCurrencyParams struct {
 
 	*/
 	Currency string
-	/*EndSeq
-	  The sequence number of the last trade to be returned
+	/*EndID
+	  The ID number of the last trade to be returned
 
 	*/
-	EndSeq *int64
+	EndID *string
 	/*IncludeOld
 	  Include trades older than 7 days, default - `false`
 
@@ -92,11 +92,11 @@ type GetPublicGetLastTradesByCurrencyParams struct {
 
 	*/
 	Sorting *string
-	/*StartSeq
-	  The sequence number of the first trade to be returned
+	/*StartID
+	  The ID number of the first trade to be returned
 
 	*/
-	StartSeq *int64
+	StartID *string
 
 	timeout    time.Duration
 	Context    context.Context
@@ -158,15 +158,15 @@ func (o *GetPublicGetLastTradesByCurrencyParams) SetCurrency(currency string) {
 	o.Currency = currency
 }
 
-// WithEndSeq adds the endSeq to the get public get last trades by currency params
-func (o *GetPublicGetLastTradesByCurrencyParams) WithEndSeq(endSeq *int64) *GetPublicGetLastTradesByCurrencyParams {
-	o.SetEndSeq(endSeq)
+// WithEndID adds the endID to the get public get last trades by currency params
+func (o *GetPublicGetLastTradesByCurrencyParams) WithEndID(endID *string) *GetPublicGetLastTradesByCurrencyParams {
+	o.SetEndID(endID)
 	return o
 }
 
-// SetEndSeq adds the endSeq to the get public get last trades by currency params
-func (o *GetPublicGetLastTradesByCurrencyParams) SetEndSeq(endSeq *int64) {
-	o.EndSeq = endSeq
+// SetEndID adds the endId to the get public get last trades by currency params
+func (o *GetPublicGetLastTradesByCurrencyParams) SetEndID(endID *string) {
+	o.EndID = endID
 }
 
 // WithIncludeOld adds the includeOld to the get public get last trades by currency params
@@ -202,15 +202,15 @@ func (o *GetPublicGetLastTradesByCurrencyParams) SetSorting(sorting *string) {
 	o.Sorting = sorting
 }
 
-// WithStartSeq adds the startSeq to the get public get last trades by currency params
-func (o *GetPublicGetLastTradesByCurrencyParams) WithStartSeq(startSeq *int64) *GetPublicGetLastTradesByCurrencyParams {
-	o.SetStartSeq(startSeq)
+// WithStartID adds the startID to the get public get last trades by currency params
+func (o *GetPublicGetLastTradesByCurrencyParams) WithStartID(startID *string) *GetPublicGetLastTradesByCurrencyParams {
+	o.SetStartID(startID)
 	return o
 }
 
-// SetStartSeq adds the startSeq to the get public get last trades by currency params
-func (o *GetPublicGetLastTradesByCurrencyParams) SetStartSeq(startSeq *int64) {
-	o.StartSeq = startSeq
+// SetStartID adds the startId to the get public get last trades by currency params
+func (o *GetPublicGetLastTradesByCurrencyParams) SetStartID(startID *string) {
+	o.StartID = startID
 }
 
 // WriteToRequest writes these params to a swagger request
@@ -246,16 +246,16 @@ func (o *GetPublicGetLastTradesByCurrencyParams) WriteToRequest(r runtime.Client
 		}
 	}
 
-	if o.EndSeq != nil {
+	if o.EndID != nil {
 
-		// query param end_seq
-		var qrEndSeq int64
-		if o.EndSeq != nil {
-			qrEndSeq = *o.EndSeq
+		// query param end_id
+		var qrEndID string
+		if o.EndID != nil {
+			qrEndID = *o.EndID
 		}
-		qEndSeq := swag.FormatInt64(qrEndSeq)
-		if qEndSeq != "" {
-			if err := r.SetQueryParam("end_seq", qEndSeq); err != nil {
+		qEndID := qrEndID
+		if qEndID != "" {
+			if err := r.SetQueryParam("end_id", qEndID); err != nil {
 				return err
 			}
 		}
@@ -310,16 +310,16 @@ func (o *GetPublicGetLastTradesByCurrencyParams) WriteToRequest(r runtime.Client
 
 	}
 
-	if o.StartSeq != nil {
+	if o.StartID != nil {
 
-		// query param start_seq
-		var qrStartSeq int64
-		if o.StartSeq != nil {
-			qrStartSeq = *o.StartSeq
+		// query param start_id
+		var qrStartID string
+		if o.StartID != nil {
+			qrStartID = *o.StartID
 		}
-		qStartSeq := swag.FormatInt64(qrStartSeq)
-		if qStartSeq != "" {
-			if err := r.SetQueryParam("start_seq", qStartSeq); err != nil {
+		qStartID := qrStartID
+		if qStartID != "" {
+			if err := r.SetQueryParam("start_id", qStartID); err != nil {
 				return err
 			}
 		}

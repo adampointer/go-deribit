@@ -44,7 +44,7 @@ func NewGetPublicGetInstrumentsOK() *GetPublicGetInstrumentsOK {
 
 /*GetPublicGetInstrumentsOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPublicGetInstrumentsOK struct {
 	Payload *models.PublicGetInstrumentsResponse

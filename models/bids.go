@@ -11,7 +11,7 @@ import (
 
 // Bids bids
 // swagger:model bids
-type Bids []string
+type Bids [][]float64
 
 // Validate validates this bids
 func (m Bids) Validate(formats strfmt.Registry) error {

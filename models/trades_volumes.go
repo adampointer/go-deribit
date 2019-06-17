@@ -6,8 +6,6 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"encoding/json"
-
 	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
@@ -23,10 +21,9 @@ type TradesVolumes struct {
 	// Required: true
 	CallsVolume *float64 `json:"calls_volume"`
 
-	// Currency pair: `"btc_usd"` or `"eth_usd"`
+	// currency pair
 	// Required: true
-	// Enum: [btc_usd eth_usd]
-	CurrencyPair *string `json:"currency_pair"`
+	CurrencyPair CurrencyPair `json:"currency_pair"`
 
 	// Total 24h trade volume for futures. This is expressed in the base currency, e.g. BTC for `btc_usd`
 	// Required: true
@@ -72,43 +69,12 @@ func (m *TradesVolumes) validateCallsVolume(formats strfmt.Registry) error {
 	return nil
 }
 
-var tradesVolumesTypeCurrencyPairPropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["btc_usd","eth_usd"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		tradesVolumesTypeCurrencyPairPropEnum = append(tradesVolumesTypeCurrencyPairPropEnum, v)
-	}
-}
-
-const (
-
-	// TradesVolumesCurrencyPairBtcUsd captures enum value "btc_usd"
-	TradesVolumesCurrencyPairBtcUsd string = "btc_usd"
-
-	// TradesVolumesCurrencyPairEthUsd captures enum value "eth_usd"
-	TradesVolumesCurrencyPairEthUsd string = "eth_usd"
-)
-
-// prop value enum
-func (m *TradesVolumes) validateCurrencyPairEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, tradesVolumesTypeCurrencyPairPropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (m *TradesVolumes) validateCurrencyPair(formats strfmt.Registry) error {
 
-	if err := validate.Required("currency_pair", "body", m.CurrencyPair); err != nil {
-		return err
-	}
-
-	// value enum
-	if err := m.validateCurrencyPairEnum("currency_pair", "body", *m.CurrencyPair); err != nil {
+	if err := m.CurrencyPair.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("currency_pair")
+		}
 		return err
 	}
 

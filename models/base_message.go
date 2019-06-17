@@ -23,25 +23,20 @@ type BaseMessage struct {
 	ID int64 `json:"id,omitempty"`
 
 	// The JSON-RPC version (2.0)
-	// Required: true
 	// Enum: [2.0]
-	Jsonrpc *string `json:"jsonrpc"`
+	Jsonrpc string `json:"jsonrpc,omitempty"`
 
 	// false for production server, true for test server
-	// Required: true
-	Testnet *bool `json:"testnet"`
+	Testnet bool `json:"testnet,omitempty"`
 
 	// Duration of the handling of the request, in microseconds
-	// Required: true
-	UsDiff *int64 `json:"usDiff"`
+	UsDiff int64 `json:"usDiff,omitempty"`
 
 	// The timestamp (in microseconds) of receipt of the request
-	// Required: true
-	UsIn *int64 `json:"usIn"`
+	UsIn int64 `json:"usIn,omitempty"`
 
 	// The timestamp (in microseconds) of sending of the response
-	// Required: true
-	UsOut *int64 `json:"usOut"`
+	UsOut int64 `json:"usOut,omitempty"`
 }
 
 // Validate validates this base message
@@ -49,22 +44,6 @@ func (m *BaseMessage) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateJsonrpc(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateTestnet(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateUsDiff(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateUsIn(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateUsOut(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -102,48 +81,12 @@ func (m *BaseMessage) validateJsonrpcEnum(path, location string, value string) e
 
 func (m *BaseMessage) validateJsonrpc(formats strfmt.Registry) error {
 
-	if err := validate.Required("jsonrpc", "body", m.Jsonrpc); err != nil {
-		return err
+	if swag.IsZero(m.Jsonrpc) { // not required
+		return nil
 	}
 
 	// value enum
-	if err := m.validateJsonrpcEnum("jsonrpc", "body", *m.Jsonrpc); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *BaseMessage) validateTestnet(formats strfmt.Registry) error {
-
-	if err := validate.Required("testnet", "body", m.Testnet); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *BaseMessage) validateUsDiff(formats strfmt.Registry) error {
-
-	if err := validate.Required("usDiff", "body", m.UsDiff); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *BaseMessage) validateUsIn(formats strfmt.Registry) error {
-
-	if err := validate.Required("usIn", "body", m.UsIn); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *BaseMessage) validateUsOut(formats strfmt.Registry) error {
-
-	if err := validate.Required("usOut", "body", m.UsOut); err != nil {
+	if err := m.validateJsonrpcEnum("jsonrpc", "body", m.Jsonrpc); err != nil {
 		return err
 	}
 

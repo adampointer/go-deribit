@@ -44,7 +44,7 @@ func NewGetPrivateEditOK() *GetPrivateEditOK {
 
 /*GetPrivateEditOK handles this case with default header values.
 
-foo
+GetPrivateEditOK get private edit o k
 */
 type GetPrivateEditOK struct {
 	Payload *models.PrivateEditResponse

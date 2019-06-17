@@ -18,15 +18,68 @@ import (
 // PrivateBuyAndSellResponse private buy and sell response
 // swagger:model private_buy_and_sell_response
 type PrivateBuyAndSellResponse struct {
+	BaseMessage
 
 	// result
 	// Required: true
-	Result *PrivateBuyAndSellResponseResult `json:"result"`
+	Result *PrivateBuyAndSellResponseAO1Result `json:"result"`
+}
+
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (m *PrivateBuyAndSellResponse) UnmarshalJSON(raw []byte) error {
+	// AO0
+	var aO0 BaseMessage
+	if err := swag.ReadJSON(raw, &aO0); err != nil {
+		return err
+	}
+	m.BaseMessage = aO0
+
+	// AO1
+	var dataAO1 struct {
+		Result *PrivateBuyAndSellResponseAO1Result `json:"result"`
+	}
+	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+		return err
+	}
+
+	m.Result = dataAO1.Result
+
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (m PrivateBuyAndSellResponse) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 2)
+
+	aO0, err := swag.WriteJSON(m.BaseMessage)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, aO0)
+
+	var dataAO1 struct {
+		Result *PrivateBuyAndSellResponseAO1Result `json:"result"`
+	}
+
+	dataAO1.Result = m.Result
+
+	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
+	if errAO1 != nil {
+		return nil, errAO1
+	}
+	_parts = append(_parts, jsonDataAO1)
+
+	return swag.ConcatJSON(_parts...), nil
 }
 
 // Validate validates this private buy and sell response
 func (m *PrivateBuyAndSellResponse) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	// validation for a type composition with BaseMessage
+	if err := m.BaseMessage.Validate(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateResult(formats); err != nil {
 		res = append(res, err)
@@ -74,9 +127,9 @@ func (m *PrivateBuyAndSellResponse) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// PrivateBuyAndSellResponseResult private buy and sell response result
-// swagger:model PrivateBuyAndSellResponseResult
-type PrivateBuyAndSellResponseResult struct {
+// PrivateBuyAndSellResponseAO1Result private buy and sell response a o1 result
+// swagger:model PrivateBuyAndSellResponseAO1Result
+type PrivateBuyAndSellResponseAO1Result struct {
 
 	// order
 	// Required: true
@@ -87,8 +140,8 @@ type PrivateBuyAndSellResponseResult struct {
 	Trades []*UserTrade `json:"trades"`
 }
 
-// Validate validates this private buy and sell response result
-func (m *PrivateBuyAndSellResponseResult) Validate(formats strfmt.Registry) error {
+// Validate validates this private buy and sell response a o1 result
+func (m *PrivateBuyAndSellResponseAO1Result) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateOrder(formats); err != nil {
@@ -105,7 +158,7 @@ func (m *PrivateBuyAndSellResponseResult) Validate(formats strfmt.Registry) erro
 	return nil
 }
 
-func (m *PrivateBuyAndSellResponseResult) validateOrder(formats strfmt.Registry) error {
+func (m *PrivateBuyAndSellResponseAO1Result) validateOrder(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"order", "body", m.Order); err != nil {
 		return err
@@ -123,7 +176,7 @@ func (m *PrivateBuyAndSellResponseResult) validateOrder(formats strfmt.Registry)
 	return nil
 }
 
-func (m *PrivateBuyAndSellResponseResult) validateTrades(formats strfmt.Registry) error {
+func (m *PrivateBuyAndSellResponseAO1Result) validateTrades(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"trades", "body", m.Trades); err != nil {
 		return err
@@ -149,7 +202,7 @@ func (m *PrivateBuyAndSellResponseResult) validateTrades(formats strfmt.Registry
 }
 
 // MarshalBinary interface implementation
-func (m *PrivateBuyAndSellResponseResult) MarshalBinary() ([]byte, error) {
+func (m *PrivateBuyAndSellResponseAO1Result) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -157,8 +210,8 @@ func (m *PrivateBuyAndSellResponseResult) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *PrivateBuyAndSellResponseResult) UnmarshalBinary(b []byte) error {
-	var res PrivateBuyAndSellResponseResult
+func (m *PrivateBuyAndSellResponseAO1Result) UnmarshalBinary(b []byte) error {
+	var res PrivateBuyAndSellResponseAO1Result
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -44,7 +44,7 @@ func NewGetPrivateGetSettlementHistoryByCurrencyOK() *GetPrivateGetSettlementHis
 
 /*GetPrivateGetSettlementHistoryByCurrencyOK handles this case with default header values.
 
-foo
+GetPrivateGetSettlementHistoryByCurrencyOK get private get settlement history by currency o k
 */
 type GetPrivateGetSettlementHistoryByCurrencyOK struct {
 	Payload *models.PrivateSettlementResponse

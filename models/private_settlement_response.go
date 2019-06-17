@@ -6,6 +6,8 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"strconv"
+
 	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
@@ -16,15 +18,68 @@ import (
 // PrivateSettlementResponse private settlement response
 // swagger:model private_settlement_response
 type PrivateSettlementResponse struct {
+	BaseMessage
 
 	// result
 	// Required: true
-	Result []string `json:"result"`
+	Result *PrivateSettlementResponseAO1Result `json:"result"`
+}
+
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (m *PrivateSettlementResponse) UnmarshalJSON(raw []byte) error {
+	// AO0
+	var aO0 BaseMessage
+	if err := swag.ReadJSON(raw, &aO0); err != nil {
+		return err
+	}
+	m.BaseMessage = aO0
+
+	// AO1
+	var dataAO1 struct {
+		Result *PrivateSettlementResponseAO1Result `json:"result"`
+	}
+	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+		return err
+	}
+
+	m.Result = dataAO1.Result
+
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (m PrivateSettlementResponse) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 2)
+
+	aO0, err := swag.WriteJSON(m.BaseMessage)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, aO0)
+
+	var dataAO1 struct {
+		Result *PrivateSettlementResponseAO1Result `json:"result"`
+	}
+
+	dataAO1.Result = m.Result
+
+	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
+	if errAO1 != nil {
+		return nil, errAO1
+	}
+	_parts = append(_parts, jsonDataAO1)
+
+	return swag.ConcatJSON(_parts...), nil
 }
 
 // Validate validates this private settlement response
 func (m *PrivateSettlementResponse) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	// validation for a type composition with BaseMessage
+	if err := m.BaseMessage.Validate(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateResult(formats); err != nil {
 		res = append(res, err)
@@ -42,6 +97,15 @@ func (m *PrivateSettlementResponse) validateResult(formats strfmt.Registry) erro
 		return err
 	}
 
+	if m.Result != nil {
+		if err := m.Result.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("result")
+			}
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -56,6 +120,92 @@ func (m *PrivateSettlementResponse) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (m *PrivateSettlementResponse) UnmarshalBinary(b []byte) error {
 	var res PrivateSettlementResponse
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*m = res
+	return nil
+}
+
+// PrivateSettlementResponseAO1Result private settlement response a o1 result
+// swagger:model PrivateSettlementResponseAO1Result
+type PrivateSettlementResponseAO1Result struct {
+
+	// continuation
+	// Required: true
+	Continuation Continuation `json:"continuation"`
+
+	// settlements
+	// Required: true
+	Settlements []*Settlement `json:"settlements"`
+}
+
+// Validate validates this private settlement response a o1 result
+func (m *PrivateSettlementResponseAO1Result) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateContinuation(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateSettlements(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *PrivateSettlementResponseAO1Result) validateContinuation(formats strfmt.Registry) error {
+
+	if err := m.Continuation.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("result" + "." + "continuation")
+		}
+		return err
+	}
+
+	return nil
+}
+
+func (m *PrivateSettlementResponseAO1Result) validateSettlements(formats strfmt.Registry) error {
+
+	if err := validate.Required("result"+"."+"settlements", "body", m.Settlements); err != nil {
+		return err
+	}
+
+	for i := 0; i < len(m.Settlements); i++ {
+		if swag.IsZero(m.Settlements[i]) { // not required
+			continue
+		}
+
+		if m.Settlements[i] != nil {
+			if err := m.Settlements[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("result" + "." + "settlements" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (m *PrivateSettlementResponseAO1Result) MarshalBinary() ([]byte, error) {
+	if m == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(m)
+}
+
+// UnmarshalBinary interface implementation
+func (m *PrivateSettlementResponseAO1Result) UnmarshalBinary(b []byte) error {
+	var res PrivateSettlementResponseAO1Result
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

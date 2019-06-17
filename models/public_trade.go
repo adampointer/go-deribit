@@ -6,6 +6,8 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
+
 	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
@@ -35,6 +37,10 @@ type PublicTrade struct {
 
 	// Option implied volatility for the price (Option only)
 	Iv float64 `json:"iv,omitempty"`
+
+	// Optional field (only for trades caused by liquidation): `"M"` when maker side of trade was under liquidation, `"T"` when taker side was under liquidation, `"MT"` when both sides of trade were under liquidation
+	// Enum: [M T MT]
+	Liquidation string `json:"liquidation,omitempty"`
 
 	// The price of the trade
 	// Required: true
@@ -74,6 +80,10 @@ func (m *PublicTrade) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateInstrumentName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateLiquidation(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -139,6 +149,52 @@ func (m *PublicTrade) validateInstrumentName(formats strfmt.Registry) error {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("instrument_name")
 		}
+		return err
+	}
+
+	return nil
+}
+
+var publicTradeTypeLiquidationPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["M","T","MT"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		publicTradeTypeLiquidationPropEnum = append(publicTradeTypeLiquidationPropEnum, v)
+	}
+}
+
+const (
+
+	// PublicTradeLiquidationM captures enum value "M"
+	PublicTradeLiquidationM string = "M"
+
+	// PublicTradeLiquidationT captures enum value "T"
+	PublicTradeLiquidationT string = "T"
+
+	// PublicTradeLiquidationMT captures enum value "MT"
+	PublicTradeLiquidationMT string = "MT"
+)
+
+// prop value enum
+func (m *PublicTrade) validateLiquidationEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, publicTradeTypeLiquidationPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *PublicTrade) validateLiquidation(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Liquidation) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateLiquidationEnum("liquidation", "body", m.Liquidation); err != nil {
 		return err
 	}
 

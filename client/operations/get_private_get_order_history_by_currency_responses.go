@@ -44,7 +44,7 @@ func NewGetPrivateGetOrderHistoryByCurrencyOK() *GetPrivateGetOrderHistoryByCurr
 
 /*GetPrivateGetOrderHistoryByCurrencyOK handles this case with default header values.
 
-foo
+GetPrivateGetOrderHistoryByCurrencyOK get private get order history by currency o k
 */
 type GetPrivateGetOrderHistoryByCurrencyOK struct {
 	Payload *models.PrivateGetOrderHistoryResponse

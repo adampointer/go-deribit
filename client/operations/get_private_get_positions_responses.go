@@ -51,7 +51,7 @@ func NewGetPrivateGetPositionsOK() *GetPrivateGetPositionsOK {
 
 /*GetPrivateGetPositionsOK handles this case with default header values.
 
-foo
+When successful returns array of positions
 */
 type GetPrivateGetPositionsOK struct {
 	Payload *models.PrivateGetPositionsResponse

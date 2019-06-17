@@ -44,7 +44,7 @@ func NewGetPrivateSetEmailForSubaccountOK() *GetPrivateSetEmailForSubaccountOK {
 
 /*GetPrivateSetEmailForSubaccountOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPrivateSetEmailForSubaccountOK struct {
 	Payload *models.OkResponse

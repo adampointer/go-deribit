@@ -44,7 +44,7 @@ func NewGetPrivateGetDepositsOK() *GetPrivateGetDepositsOK {
 
 /*GetPrivateGetDepositsOK handles this case with default header values.
 
-foo
+GetPrivateGetDepositsOK get private get deposits o k
 */
 type GetPrivateGetDepositsOK struct {
 	Payload *models.PrivateGetDepositsResponse

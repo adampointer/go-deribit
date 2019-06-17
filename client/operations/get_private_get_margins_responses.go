@@ -44,7 +44,7 @@ func NewGetPrivateGetMarginsOK() *GetPrivateGetMarginsOK {
 
 /*GetPrivateGetMarginsOK handles this case with default header values.
 
-foo
+GetPrivateGetMarginsOK get private get margins o k
 */
 type GetPrivateGetMarginsOK struct {
 	Payload *models.PrivateGetMarginsResponse

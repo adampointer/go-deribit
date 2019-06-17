@@ -44,7 +44,7 @@ func NewGetPrivateGetWithdrawalsOK() *GetPrivateGetWithdrawalsOK {
 
 /*GetPrivateGetWithdrawalsOK handles this case with default header values.
 
-foo
+GetPrivateGetWithdrawalsOK get private get withdrawals o k
 */
 type GetPrivateGetWithdrawalsOK struct {
 	Payload *models.PrivateGetWithdrawalsResponse

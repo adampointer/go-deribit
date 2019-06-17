@@ -44,10 +44,10 @@ func NewGetPublicGetLastSettlementsByInstrumentOK() *GetPublicGetLastSettlements
 
 /*GetPublicGetLastSettlementsByInstrumentOK handles this case with default header values.
 
-foo
+GetPublicGetLastSettlementsByInstrumentOK get public get last settlements by instrument o k
 */
 type GetPublicGetLastSettlementsByInstrumentOK struct {
-	Payload *models.SettlementResponse
+	Payload *models.PublicSettlementResponse
 }
 
 func (o *GetPublicGetLastSettlementsByInstrumentOK) Error() string {
@@ -56,7 +56,7 @@ func (o *GetPublicGetLastSettlementsByInstrumentOK) Error() string {
 
 func (o *GetPublicGetLastSettlementsByInstrumentOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.SettlementResponse)
+	o.Payload = new(models.PublicSettlementResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

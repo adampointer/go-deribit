@@ -44,7 +44,7 @@ func NewGetPublicGetFundingChartDataOK() *GetPublicGetFundingChartDataOK {
 
 /*GetPublicGetFundingChartDataOK handles this case with default header values.
 
-foo
+GetPublicGetFundingChartDataOK get public get funding chart data o k
 */
 type GetPublicGetFundingChartDataOK struct {
 	Payload *models.PublicGetFundingChartDataResponse

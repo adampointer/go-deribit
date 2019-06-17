@@ -30,7 +30,7 @@ type Exchange struct {
 	counter       uint64
 	errors        chan error
 	stop          chan bool
-	auth          *models.PublicAuthResponseResult
+	auth          *models.PublicAuthResponse
 	client        *operations.Client
 }
 

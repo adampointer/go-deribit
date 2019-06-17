@@ -44,7 +44,7 @@ func NewGetPrivateSetAnnouncementAsReadOK() *GetPrivateSetAnnouncementAsReadOK {
 
 /*GetPrivateSetAnnouncementAsReadOK handles this case with default header values.
 
-foo
+GetPrivateSetAnnouncementAsReadOK get private set announcement as read o k
 */
 type GetPrivateSetAnnouncementAsReadOK struct {
 	Payload *models.OkResponse

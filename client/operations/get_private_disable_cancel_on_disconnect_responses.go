@@ -51,7 +51,7 @@ func NewGetPrivateDisableCancelOnDisconnectOK() *GetPrivateDisableCancelOnDiscon
 
 /*GetPrivateDisableCancelOnDisconnectOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPrivateDisableCancelOnDisconnectOK struct {
 	Payload *models.OkResponse

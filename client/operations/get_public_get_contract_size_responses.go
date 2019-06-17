@@ -44,7 +44,7 @@ func NewGetPublicGetContractSizeOK() *GetPublicGetContractSizeOK {
 
 /*GetPublicGetContractSizeOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPublicGetContractSizeOK struct {
 	Payload *models.PublicGetContractSizeResponse

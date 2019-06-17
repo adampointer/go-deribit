@@ -44,7 +44,7 @@ func NewGetPrivateGetAccountSummaryOK() *GetPrivateGetAccountSummaryOK {
 
 /*GetPrivateGetAccountSummaryOK handles this case with default header values.
 
-foo
+GetPrivateGetAccountSummaryOK get private get account summary o k
 */
 type GetPrivateGetAccountSummaryOK struct {
 	Payload *models.PrivateAccountResponse

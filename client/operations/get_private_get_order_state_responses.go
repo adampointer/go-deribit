@@ -51,7 +51,7 @@ func NewGetPrivateGetOrderStateOK() *GetPrivateGetOrderStateOK {
 
 /*GetPrivateGetOrderStateOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPrivateGetOrderStateOK struct {
 	Payload *models.PrivateGetOrderStateResponse

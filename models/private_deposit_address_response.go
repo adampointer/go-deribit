@@ -16,15 +16,68 @@ import (
 // PrivateDepositAddressResponse private deposit address response
 // swagger:model private_deposit_address_response
 type PrivateDepositAddressResponse struct {
+	BaseMessage
 
 	// result
 	// Required: true
-	Result *PrivateDepositAddressResponseResult `json:"result"`
+	Result *PrivateDepositAddressResponseAO1Result `json:"result"`
+}
+
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (m *PrivateDepositAddressResponse) UnmarshalJSON(raw []byte) error {
+	// AO0
+	var aO0 BaseMessage
+	if err := swag.ReadJSON(raw, &aO0); err != nil {
+		return err
+	}
+	m.BaseMessage = aO0
+
+	// AO1
+	var dataAO1 struct {
+		Result *PrivateDepositAddressResponseAO1Result `json:"result"`
+	}
+	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+		return err
+	}
+
+	m.Result = dataAO1.Result
+
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (m PrivateDepositAddressResponse) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 2)
+
+	aO0, err := swag.WriteJSON(m.BaseMessage)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, aO0)
+
+	var dataAO1 struct {
+		Result *PrivateDepositAddressResponseAO1Result `json:"result"`
+	}
+
+	dataAO1.Result = m.Result
+
+	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
+	if errAO1 != nil {
+		return nil, errAO1
+	}
+	_parts = append(_parts, jsonDataAO1)
+
+	return swag.ConcatJSON(_parts...), nil
 }
 
 // Validate validates this private deposit address response
 func (m *PrivateDepositAddressResponse) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	// validation for a type composition with BaseMessage
+	if err := m.BaseMessage.Validate(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateResult(formats); err != nil {
 		res = append(res, err)
@@ -72,9 +125,9 @@ func (m *PrivateDepositAddressResponse) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// PrivateDepositAddressResponseResult Object if address is created, null otherwise
-// swagger:model PrivateDepositAddressResponseResult
-type PrivateDepositAddressResponseResult struct {
+// PrivateDepositAddressResponseAO1Result Object if address is created, null otherwise
+// swagger:model PrivateDepositAddressResponseAO1Result
+type PrivateDepositAddressResponseAO1Result struct {
 
 	// address
 	// Required: true
@@ -93,8 +146,8 @@ type PrivateDepositAddressResponseResult struct {
 	Type WalletAddressType `json:"type"`
 }
 
-// Validate validates this private deposit address response result
-func (m *PrivateDepositAddressResponseResult) Validate(formats strfmt.Registry) error {
+// Validate validates this private deposit address response a o1 result
+func (m *PrivateDepositAddressResponseAO1Result) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAddress(formats); err != nil {
@@ -119,7 +172,7 @@ func (m *PrivateDepositAddressResponseResult) Validate(formats strfmt.Registry) 
 	return nil
 }
 
-func (m *PrivateDepositAddressResponseResult) validateAddress(formats strfmt.Registry) error {
+func (m *PrivateDepositAddressResponseAO1Result) validateAddress(formats strfmt.Registry) error {
 
 	if err := m.Address.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
@@ -131,7 +184,7 @@ func (m *PrivateDepositAddressResponseResult) validateAddress(formats strfmt.Reg
 	return nil
 }
 
-func (m *PrivateDepositAddressResponseResult) validateCreationTimestamp(formats strfmt.Registry) error {
+func (m *PrivateDepositAddressResponseAO1Result) validateCreationTimestamp(formats strfmt.Registry) error {
 
 	if err := m.CreationTimestamp.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
@@ -143,7 +196,7 @@ func (m *PrivateDepositAddressResponseResult) validateCreationTimestamp(formats 
 	return nil
 }
 
-func (m *PrivateDepositAddressResponseResult) validateCurrency(formats strfmt.Registry) error {
+func (m *PrivateDepositAddressResponseAO1Result) validateCurrency(formats strfmt.Registry) error {
 
 	if err := m.Currency.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
@@ -155,7 +208,7 @@ func (m *PrivateDepositAddressResponseResult) validateCurrency(formats strfmt.Re
 	return nil
 }
 
-func (m *PrivateDepositAddressResponseResult) validateType(formats strfmt.Registry) error {
+func (m *PrivateDepositAddressResponseAO1Result) validateType(formats strfmt.Registry) error {
 
 	if err := m.Type.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
@@ -168,7 +221,7 @@ func (m *PrivateDepositAddressResponseResult) validateType(formats strfmt.Regist
 }
 
 // MarshalBinary interface implementation
-func (m *PrivateDepositAddressResponseResult) MarshalBinary() ([]byte, error) {
+func (m *PrivateDepositAddressResponseAO1Result) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -176,8 +229,8 @@ func (m *PrivateDepositAddressResponseResult) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *PrivateDepositAddressResponseResult) UnmarshalBinary(b []byte) error {
-	var res PrivateDepositAddressResponseResult
+func (m *PrivateDepositAddressResponseAO1Result) UnmarshalBinary(b []byte) error {
+	var res PrivateDepositAddressResponseAO1Result
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

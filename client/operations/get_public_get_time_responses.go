@@ -44,10 +44,10 @@ func NewGetPublicGetTimeOK() *GetPublicGetTimeOK {
 
 /*GetPublicGetTimeOK handles this case with default header values.
 
-foo
+GetPublicGetTimeOK get public get time o k
 */
 type GetPublicGetTimeOK struct {
-	Payload *models.GetTimeResponse
+	Payload *models.PublicGetTimeResponse
 }
 
 func (o *GetPublicGetTimeOK) Error() string {
@@ -56,7 +56,7 @@ func (o *GetPublicGetTimeOK) Error() string {
 
 func (o *GetPublicGetTimeOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.GetTimeResponse)
+	o.Payload = new(models.PublicGetTimeResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

@@ -44,10 +44,10 @@ func NewGetPublicGetCurrenciesOK() *GetPublicGetCurrenciesOK {
 
 /*GetPublicGetCurrenciesOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPublicGetCurrenciesOK struct {
-	Payload *models.PublicCurrenciesResponse
+	Payload *models.PublicGetCurrenciesResponse
 }
 
 func (o *GetPublicGetCurrenciesOK) Error() string {
@@ -56,7 +56,7 @@ func (o *GetPublicGetCurrenciesOK) Error() string {
 
 func (o *GetPublicGetCurrenciesOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.PublicCurrenciesResponse)
+	o.Payload = new(models.PublicGetCurrenciesResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

@@ -11,7 +11,7 @@ import (
 
 // Asks asks
 // swagger:model asks
-type Asks []string
+type Asks [][]float64
 
 // Validate validates this asks
 func (m Asks) Validate(formats strfmt.Registry) error {
