@@ -44,7 +44,7 @@ func NewGetPrivateGetOrderMarginByIdsOK() *GetPrivateGetOrderMarginByIdsOK {
 
 /*GetPrivateGetOrderMarginByIdsOK handles this case with default header values.
 
-foo
+GetPrivateGetOrderMarginByIdsOK get private get order margin by ids o k
 */
 type GetPrivateGetOrderMarginByIdsOK struct {
 	Payload *models.PrivateGetOrderMarginByIdsResponse

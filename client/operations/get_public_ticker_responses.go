@@ -44,7 +44,7 @@ func NewGetPublicTickerOK() *GetPublicTickerOK {
 
 /*GetPublicTickerOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPublicTickerOK struct {
 	Payload *models.PublicTickerResponse

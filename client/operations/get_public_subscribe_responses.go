@@ -51,7 +51,7 @@ func NewGetPublicSubscribeOK() *GetPublicSubscribeOK {
 
 /*GetPublicSubscribeOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPublicSubscribeOK struct {
 	Payload *models.PrivateSubscribeResponse

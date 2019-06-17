@@ -44,7 +44,7 @@ func NewGetPrivateCancelOK() *GetPrivateCancelOK {
 
 /*GetPrivateCancelOK handles this case with default header values.
 
-foo
+GetPrivateCancelOK get private cancel o k
 */
 type GetPrivateCancelOK struct {
 	Payload *models.PrivateCancelResponse

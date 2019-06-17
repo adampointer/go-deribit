@@ -44,7 +44,7 @@ func NewGetPublicValidateFieldOK() *GetPublicValidateFieldOK {
 
 /*GetPublicValidateFieldOK handles this case with default header values.
 
-foo
+GetPublicValidateFieldOK get public validate field o k
 */
 type GetPublicValidateFieldOK struct {
 	Payload *models.OkResponse

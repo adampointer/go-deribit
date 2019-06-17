@@ -16,6 +16,7 @@ import (
 // ErrorMessage error message
 // swagger:model error_message
 type ErrorMessage struct {
+	BaseMessage
 
 	// error
 	// Required: true
@@ -26,9 +27,69 @@ type ErrorMessage struct {
 	Message *string `json:"message"`
 }
 
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (m *ErrorMessage) UnmarshalJSON(raw []byte) error {
+	// AO0
+	var aO0 BaseMessage
+	if err := swag.ReadJSON(raw, &aO0); err != nil {
+		return err
+	}
+	m.BaseMessage = aO0
+
+	// AO1
+	var dataAO1 struct {
+		Error *int64 `json:"error"`
+
+		Message *string `json:"message"`
+	}
+	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+		return err
+	}
+
+	m.Error = dataAO1.Error
+
+	m.Message = dataAO1.Message
+
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (m ErrorMessage) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 2)
+
+	aO0, err := swag.WriteJSON(m.BaseMessage)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, aO0)
+
+	var dataAO1 struct {
+		Error *int64 `json:"error"`
+
+		Message *string `json:"message"`
+	}
+
+	dataAO1.Error = m.Error
+
+	dataAO1.Message = m.Message
+
+	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
+	if errAO1 != nil {
+		return nil, errAO1
+	}
+	_parts = append(_parts, jsonDataAO1)
+
+	return swag.ConcatJSON(_parts...), nil
+}
+
 // Validate validates this error message
 func (m *ErrorMessage) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	// validation for a type composition with BaseMessage
+	if err := m.BaseMessage.Validate(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateError(formats); err != nil {
 		res = append(res, err)

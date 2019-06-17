@@ -44,7 +44,7 @@ func NewGetPrivateClosePositionOK() *GetPrivateClosePositionOK {
 
 /*GetPrivateClosePositionOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPrivateClosePositionOK struct {
 	Payload *models.PrivateBuyAndSellResponse

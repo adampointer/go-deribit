@@ -16,15 +16,68 @@ import (
 // PrivateGetMarginsResponse private get margins response
 // swagger:model private_get_margins_response
 type PrivateGetMarginsResponse struct {
+	BaseMessage
 
 	// result
 	// Required: true
-	Result *PrivateGetMarginsResponseResult `json:"result"`
+	Result *PrivateGetMarginsResponseAO1Result `json:"result"`
+}
+
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (m *PrivateGetMarginsResponse) UnmarshalJSON(raw []byte) error {
+	// AO0
+	var aO0 BaseMessage
+	if err := swag.ReadJSON(raw, &aO0); err != nil {
+		return err
+	}
+	m.BaseMessage = aO0
+
+	// AO1
+	var dataAO1 struct {
+		Result *PrivateGetMarginsResponseAO1Result `json:"result"`
+	}
+	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+		return err
+	}
+
+	m.Result = dataAO1.Result
+
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (m PrivateGetMarginsResponse) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 2)
+
+	aO0, err := swag.WriteJSON(m.BaseMessage)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, aO0)
+
+	var dataAO1 struct {
+		Result *PrivateGetMarginsResponseAO1Result `json:"result"`
+	}
+
+	dataAO1.Result = m.Result
+
+	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
+	if errAO1 != nil {
+		return nil, errAO1
+	}
+	_parts = append(_parts, jsonDataAO1)
+
+	return swag.ConcatJSON(_parts...), nil
 }
 
 // Validate validates this private get margins response
 func (m *PrivateGetMarginsResponse) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	// validation for a type composition with BaseMessage
+	if err := m.BaseMessage.Validate(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateResult(formats); err != nil {
 		res = append(res, err)
@@ -72,9 +125,9 @@ func (m *PrivateGetMarginsResponse) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// PrivateGetMarginsResponseResult private get margins response result
-// swagger:model PrivateGetMarginsResponseResult
-type PrivateGetMarginsResponseResult struct {
+// PrivateGetMarginsResponseAO1Result private get margins response a o1 result
+// swagger:model PrivateGetMarginsResponseAO1Result
+type PrivateGetMarginsResponseAO1Result struct {
 
 	// Margin when buying
 	// Required: true
@@ -93,8 +146,8 @@ type PrivateGetMarginsResponseResult struct {
 	Sell *float64 `json:"sell"`
 }
 
-// Validate validates this private get margins response result
-func (m *PrivateGetMarginsResponseResult) Validate(formats strfmt.Registry) error {
+// Validate validates this private get margins response a o1 result
+func (m *PrivateGetMarginsResponseAO1Result) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateBuy(formats); err != nil {
@@ -119,7 +172,7 @@ func (m *PrivateGetMarginsResponseResult) Validate(formats strfmt.Registry) erro
 	return nil
 }
 
-func (m *PrivateGetMarginsResponseResult) validateBuy(formats strfmt.Registry) error {
+func (m *PrivateGetMarginsResponseAO1Result) validateBuy(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"buy", "body", m.Buy); err != nil {
 		return err
@@ -128,7 +181,7 @@ func (m *PrivateGetMarginsResponseResult) validateBuy(formats strfmt.Registry) e
 	return nil
 }
 
-func (m *PrivateGetMarginsResponseResult) validateMaxPrice(formats strfmt.Registry) error {
+func (m *PrivateGetMarginsResponseAO1Result) validateMaxPrice(formats strfmt.Registry) error {
 
 	if err := m.MaxPrice.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
@@ -140,7 +193,7 @@ func (m *PrivateGetMarginsResponseResult) validateMaxPrice(formats strfmt.Regist
 	return nil
 }
 
-func (m *PrivateGetMarginsResponseResult) validateMinPrice(formats strfmt.Registry) error {
+func (m *PrivateGetMarginsResponseAO1Result) validateMinPrice(formats strfmt.Registry) error {
 
 	if err := m.MinPrice.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
@@ -152,7 +205,7 @@ func (m *PrivateGetMarginsResponseResult) validateMinPrice(formats strfmt.Regist
 	return nil
 }
 
-func (m *PrivateGetMarginsResponseResult) validateSell(formats strfmt.Registry) error {
+func (m *PrivateGetMarginsResponseAO1Result) validateSell(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"sell", "body", m.Sell); err != nil {
 		return err
@@ -162,7 +215,7 @@ func (m *PrivateGetMarginsResponseResult) validateSell(formats strfmt.Registry) 
 }
 
 // MarshalBinary interface implementation
-func (m *PrivateGetMarginsResponseResult) MarshalBinary() ([]byte, error) {
+func (m *PrivateGetMarginsResponseAO1Result) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -170,8 +223,8 @@ func (m *PrivateGetMarginsResponseResult) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *PrivateGetMarginsResponseResult) UnmarshalBinary(b []byte) error {
-	var res PrivateGetMarginsResponseResult
+func (m *PrivateGetMarginsResponseAO1Result) UnmarshalBinary(b []byte) error {
+	var res PrivateGetMarginsResponseAO1Result
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -51,7 +51,7 @@ func NewGetPrivateLogoutOK() *GetPrivateLogoutOK {
 
 /*GetPrivateLogoutOK handles this case with default header values.
 
-foo
+closes WS connection
 */
 type GetPrivateLogoutOK struct {
 }

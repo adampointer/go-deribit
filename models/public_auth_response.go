@@ -18,15 +18,68 @@ import (
 // PublicAuthResponse public auth response
 // swagger:model public_auth_response
 type PublicAuthResponse struct {
+	BaseMessage
 
 	// result
 	// Required: true
-	Result *PublicAuthResponseResult `json:"result"`
+	Result *PublicAuthResponseAO1Result `json:"result"`
+}
+
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (m *PublicAuthResponse) UnmarshalJSON(raw []byte) error {
+	// AO0
+	var aO0 BaseMessage
+	if err := swag.ReadJSON(raw, &aO0); err != nil {
+		return err
+	}
+	m.BaseMessage = aO0
+
+	// AO1
+	var dataAO1 struct {
+		Result *PublicAuthResponseAO1Result `json:"result"`
+	}
+	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+		return err
+	}
+
+	m.Result = dataAO1.Result
+
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (m PublicAuthResponse) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 2)
+
+	aO0, err := swag.WriteJSON(m.BaseMessage)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, aO0)
+
+	var dataAO1 struct {
+		Result *PublicAuthResponseAO1Result `json:"result"`
+	}
+
+	dataAO1.Result = m.Result
+
+	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
+	if errAO1 != nil {
+		return nil, errAO1
+	}
+	_parts = append(_parts, jsonDataAO1)
+
+	return swag.ConcatJSON(_parts...), nil
 }
 
 // Validate validates this public auth response
 func (m *PublicAuthResponse) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	// validation for a type composition with BaseMessage
+	if err := m.BaseMessage.Validate(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateResult(formats); err != nil {
 		res = append(res, err)
@@ -74,9 +127,9 @@ func (m *PublicAuthResponse) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// PublicAuthResponseResult public auth response result
-// swagger:model PublicAuthResponseResult
-type PublicAuthResponseResult struct {
+// PublicAuthResponseAO1Result public auth response a o1 result
+// swagger:model PublicAuthResponseAO1Result
+type PublicAuthResponseAO1Result struct {
 
 	// access token
 	// Required: true
@@ -103,8 +156,8 @@ type PublicAuthResponseResult struct {
 	TokenType *string `json:"token_type"`
 }
 
-// Validate validates this public auth response result
-func (m *PublicAuthResponseResult) Validate(formats strfmt.Registry) error {
+// Validate validates this public auth response a o1 result
+func (m *PublicAuthResponseAO1Result) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAccessToken(formats); err != nil {
@@ -133,7 +186,7 @@ func (m *PublicAuthResponseResult) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *PublicAuthResponseResult) validateAccessToken(formats strfmt.Registry) error {
+func (m *PublicAuthResponseAO1Result) validateAccessToken(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"access_token", "body", m.AccessToken); err != nil {
 		return err
@@ -142,7 +195,7 @@ func (m *PublicAuthResponseResult) validateAccessToken(formats strfmt.Registry) 
 	return nil
 }
 
-func (m *PublicAuthResponseResult) validateExpiresIn(formats strfmt.Registry) error {
+func (m *PublicAuthResponseAO1Result) validateExpiresIn(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"expires_in", "body", m.ExpiresIn); err != nil {
 		return err
@@ -151,7 +204,7 @@ func (m *PublicAuthResponseResult) validateExpiresIn(formats strfmt.Registry) er
 	return nil
 }
 
-func (m *PublicAuthResponseResult) validateRefreshToken(formats strfmt.Registry) error {
+func (m *PublicAuthResponseAO1Result) validateRefreshToken(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"refresh_token", "body", m.RefreshToken); err != nil {
 		return err
@@ -160,7 +213,7 @@ func (m *PublicAuthResponseResult) validateRefreshToken(formats strfmt.Registry)
 	return nil
 }
 
-func (m *PublicAuthResponseResult) validateScope(formats strfmt.Registry) error {
+func (m *PublicAuthResponseAO1Result) validateScope(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"scope", "body", m.Scope); err != nil {
 		return err
@@ -169,7 +222,7 @@ func (m *PublicAuthResponseResult) validateScope(formats strfmt.Registry) error 
 	return nil
 }
 
-var publicAuthResponseResultTypeTokenTypePropEnum []interface{}
+var publicAuthResponseAO1ResultTypeTokenTypePropEnum []interface{}
 
 func init() {
 	var res []string
@@ -177,25 +230,25 @@ func init() {
 		panic(err)
 	}
 	for _, v := range res {
-		publicAuthResponseResultTypeTokenTypePropEnum = append(publicAuthResponseResultTypeTokenTypePropEnum, v)
+		publicAuthResponseAO1ResultTypeTokenTypePropEnum = append(publicAuthResponseAO1ResultTypeTokenTypePropEnum, v)
 	}
 }
 
 const (
 
-	// PublicAuthResponseResultTokenTypeBearer captures enum value "bearer"
-	PublicAuthResponseResultTokenTypeBearer string = "bearer"
+	// PublicAuthResponseAO1ResultTokenTypeBearer captures enum value "bearer"
+	PublicAuthResponseAO1ResultTokenTypeBearer string = "bearer"
 )
 
 // prop value enum
-func (m *PublicAuthResponseResult) validateTokenTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, publicAuthResponseResultTypeTokenTypePropEnum); err != nil {
+func (m *PublicAuthResponseAO1Result) validateTokenTypeEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, publicAuthResponseAO1ResultTypeTokenTypePropEnum); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (m *PublicAuthResponseResult) validateTokenType(formats strfmt.Registry) error {
+func (m *PublicAuthResponseAO1Result) validateTokenType(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"token_type", "body", m.TokenType); err != nil {
 		return err
@@ -210,7 +263,7 @@ func (m *PublicAuthResponseResult) validateTokenType(formats strfmt.Registry) er
 }
 
 // MarshalBinary interface implementation
-func (m *PublicAuthResponseResult) MarshalBinary() ([]byte, error) {
+func (m *PublicAuthResponseAO1Result) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -218,8 +271,8 @@ func (m *PublicAuthResponseResult) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *PublicAuthResponseResult) UnmarshalBinary(b []byte) error {
-	var res PublicAuthResponseResult
+func (m *PublicAuthResponseAO1Result) UnmarshalBinary(b []byte) error {
+	var res PublicAuthResponseAO1Result
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

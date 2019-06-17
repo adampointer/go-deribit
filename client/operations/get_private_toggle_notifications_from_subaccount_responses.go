@@ -44,7 +44,7 @@ func NewGetPrivateToggleNotificationsFromSubaccountOK() *GetPrivateToggleNotific
 
 /*GetPrivateToggleNotificationsFromSubaccountOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPrivateToggleNotificationsFromSubaccountOK struct {
 	Payload *models.OkResponse

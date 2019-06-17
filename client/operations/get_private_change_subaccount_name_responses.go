@@ -44,7 +44,7 @@ func NewGetPrivateChangeSubaccountNameOK() *GetPrivateChangeSubaccountNameOK {
 
 /*GetPrivateChangeSubaccountNameOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPrivateChangeSubaccountNameOK struct {
 	Payload *models.OkResponse

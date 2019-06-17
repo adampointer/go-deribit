@@ -79,6 +79,9 @@ type Order struct {
 	// Required: true
 	OrderType OrderType `json:"order_type"`
 
+	// original order type
+	OriginalOrderType OriginalOrderType `json:"original_order_type,omitempty"`
+
 	// post only
 	// Required: true
 	PostOnly PostOnly `json:"post_only"`
@@ -179,6 +182,10 @@ func (m *Order) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateOrderType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateOriginalOrderType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -442,6 +449,22 @@ func (m *Order) validateOrderType(formats strfmt.Registry) error {
 	if err := m.OrderType.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("order_type")
+		}
+		return err
+	}
+
+	return nil
+}
+
+func (m *Order) validateOriginalOrderType(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.OriginalOrderType) { // not required
+		return nil
+	}
+
+	if err := m.OriginalOrderType.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("original_order_type")
 		}
 		return err
 	}

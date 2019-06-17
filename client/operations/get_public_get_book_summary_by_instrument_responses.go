@@ -44,7 +44,7 @@ func NewGetPublicGetBookSummaryByInstrumentOK() *GetPublicGetBookSummaryByInstru
 
 /*GetPublicGetBookSummaryByInstrumentOK handles this case with default header values.
 
-foo
+GetPublicGetBookSummaryByInstrumentOK get public get book summary by instrument o k
 */
 type GetPublicGetBookSummaryByInstrumentOK struct {
 	Payload *models.PublicGetBookSummaryResponse

@@ -44,7 +44,7 @@ func NewGetPrivateSubmitTransferToUserOK() *GetPrivateSubmitTransferToUserOK {
 
 /*GetPrivateSubmitTransferToUserOK handles this case with default header values.
 
-foo
+GetPrivateSubmitTransferToUserOK get private submit transfer to user o k
 */
 type GetPrivateSubmitTransferToUserOK struct {
 	Payload *models.PrivateSubmitTransferResponse

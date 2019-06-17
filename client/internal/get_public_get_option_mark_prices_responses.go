@@ -44,10 +44,10 @@ func NewGetPublicGetOptionMarkPricesOK() *GetPublicGetOptionMarkPricesOK {
 
 /*GetPublicGetOptionMarkPricesOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPublicGetOptionMarkPricesOK struct {
-	Payload *models.PublicGetOptionMarkPricesResponse
+	Payload models.PublicGetOptionMarkPricesResponse
 }
 
 func (o *GetPublicGetOptionMarkPricesOK) Error() string {
@@ -56,10 +56,8 @@ func (o *GetPublicGetOptionMarkPricesOK) Error() string {
 
 func (o *GetPublicGetOptionMarkPricesOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.PublicGetOptionMarkPricesResponse)
-
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 

@@ -44,10 +44,10 @@ func NewGetPublicGetHistoricalVolatilityOK() *GetPublicGetHistoricalVolatilityOK
 
 /*GetPublicGetHistoricalVolatilityOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPublicGetHistoricalVolatilityOK struct {
-	Payload *models.PublicHistoricalVolatilityResponse
+	Payload *models.PublicGetHistoricalVolatilityResponse
 }
 
 func (o *GetPublicGetHistoricalVolatilityOK) Error() string {
@@ -56,7 +56,7 @@ func (o *GetPublicGetHistoricalVolatilityOK) Error() string {
 
 func (o *GetPublicGetHistoricalVolatilityOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.PublicHistoricalVolatilityResponse)
+	o.Payload = new(models.PublicGetHistoricalVolatilityResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

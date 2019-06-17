@@ -44,7 +44,7 @@ func NewGetPrivateGetOpenOrdersByCurrencyOK() *GetPrivateGetOpenOrdersByCurrency
 
 /*GetPrivateGetOpenOrdersByCurrencyOK handles this case with default header values.
 
-foo
+GetPrivateGetOpenOrdersByCurrencyOK get private get open orders by currency o k
 */
 type GetPrivateGetOpenOrdersByCurrencyOK struct {
 	Payload *models.PrivateGetOpenOrdersResponse

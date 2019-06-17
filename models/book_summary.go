@@ -36,7 +36,7 @@ type BookSummary struct {
 	// Current funding (perpetual only)
 	CurrentFunding float64 `json:"current_funding,omitempty"`
 
-	// Estimated delivery price, in USD (futures only). For more details, see Documentation > General > Expiration Price
+	// Estimated delivery price, in USD. For more details, see Documentation > General > Expiration Price
 	EstimatedDeliveryPrice float64 `json:"estimated_delivery_price,omitempty"`
 
 	// Funding 8h (perpetual only)

@@ -18,15 +18,68 @@ import (
 // PrivateGetWithdrawalsResponse private get withdrawals response
 // swagger:model private_get_withdrawals_response
 type PrivateGetWithdrawalsResponse struct {
+	BaseMessage
 
 	// result
 	// Required: true
-	Result *PrivateGetWithdrawalsResponseResult `json:"result"`
+	Result *PrivateGetWithdrawalsResponseAO1Result `json:"result"`
+}
+
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (m *PrivateGetWithdrawalsResponse) UnmarshalJSON(raw []byte) error {
+	// AO0
+	var aO0 BaseMessage
+	if err := swag.ReadJSON(raw, &aO0); err != nil {
+		return err
+	}
+	m.BaseMessage = aO0
+
+	// AO1
+	var dataAO1 struct {
+		Result *PrivateGetWithdrawalsResponseAO1Result `json:"result"`
+	}
+	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+		return err
+	}
+
+	m.Result = dataAO1.Result
+
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (m PrivateGetWithdrawalsResponse) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 2)
+
+	aO0, err := swag.WriteJSON(m.BaseMessage)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, aO0)
+
+	var dataAO1 struct {
+		Result *PrivateGetWithdrawalsResponseAO1Result `json:"result"`
+	}
+
+	dataAO1.Result = m.Result
+
+	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
+	if errAO1 != nil {
+		return nil, errAO1
+	}
+	_parts = append(_parts, jsonDataAO1)
+
+	return swag.ConcatJSON(_parts...), nil
 }
 
 // Validate validates this private get withdrawals response
 func (m *PrivateGetWithdrawalsResponse) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	// validation for a type composition with BaseMessage
+	if err := m.BaseMessage.Validate(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateResult(formats); err != nil {
 		res = append(res, err)
@@ -74,9 +127,9 @@ func (m *PrivateGetWithdrawalsResponse) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// PrivateGetWithdrawalsResponseResult private get withdrawals response result
-// swagger:model PrivateGetWithdrawalsResponseResult
-type PrivateGetWithdrawalsResponseResult struct {
+// PrivateGetWithdrawalsResponseAO1Result private get withdrawals response a o1 result
+// swagger:model PrivateGetWithdrawalsResponseAO1Result
+type PrivateGetWithdrawalsResponseAO1Result struct {
 
 	// count
 	// Required: true
@@ -87,8 +140,8 @@ type PrivateGetWithdrawalsResponseResult struct {
 	Data []*Withdrawal `json:"data"`
 }
 
-// Validate validates this private get withdrawals response result
-func (m *PrivateGetWithdrawalsResponseResult) Validate(formats strfmt.Registry) error {
+// Validate validates this private get withdrawals response a o1 result
+func (m *PrivateGetWithdrawalsResponseAO1Result) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateCount(formats); err != nil {
@@ -105,7 +158,7 @@ func (m *PrivateGetWithdrawalsResponseResult) Validate(formats strfmt.Registry) 
 	return nil
 }
 
-func (m *PrivateGetWithdrawalsResponseResult) validateCount(formats strfmt.Registry) error {
+func (m *PrivateGetWithdrawalsResponseAO1Result) validateCount(formats strfmt.Registry) error {
 
 	if err := m.Count.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
@@ -117,7 +170,7 @@ func (m *PrivateGetWithdrawalsResponseResult) validateCount(formats strfmt.Regis
 	return nil
 }
 
-func (m *PrivateGetWithdrawalsResponseResult) validateData(formats strfmt.Registry) error {
+func (m *PrivateGetWithdrawalsResponseAO1Result) validateData(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"data", "body", m.Data); err != nil {
 		return err
@@ -143,7 +196,7 @@ func (m *PrivateGetWithdrawalsResponseResult) validateData(formats strfmt.Regist
 }
 
 // MarshalBinary interface implementation
-func (m *PrivateGetWithdrawalsResponseResult) MarshalBinary() ([]byte, error) {
+func (m *PrivateGetWithdrawalsResponseAO1Result) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -151,8 +204,8 @@ func (m *PrivateGetWithdrawalsResponseResult) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *PrivateGetWithdrawalsResponseResult) UnmarshalBinary(b []byte) error {
-	var res PrivateGetWithdrawalsResponseResult
+func (m *PrivateGetWithdrawalsResponseAO1Result) UnmarshalBinary(b []byte) error {
+	var res PrivateGetWithdrawalsResponseAO1Result
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

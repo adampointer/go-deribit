@@ -44,7 +44,7 @@ func NewGetPublicTestOK() *GetPublicTestOK {
 
 /*GetPublicTestOK handles this case with default header values.
 
-foo
+GetPublicTestOK get public test o k
 */
 type GetPublicTestOK struct {
 	Payload *models.PublicTestResponse

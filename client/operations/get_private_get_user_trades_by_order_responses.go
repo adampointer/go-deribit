@@ -44,10 +44,10 @@ func NewGetPrivateGetUserTradesByOrderOK() *GetPrivateGetUserTradesByOrderOK {
 
 /*GetPrivateGetUserTradesByOrderOK handles this case with default header values.
 
-foo
+GetPrivateGetUserTradesByOrderOK get private get user trades by order o k
 */
 type GetPrivateGetUserTradesByOrderOK struct {
-	Payload models.UserTradesByOrderResponse
+	Payload *models.PrivateGetUserTradesByOrderResponse
 }
 
 func (o *GetPrivateGetUserTradesByOrderOK) Error() string {
@@ -56,8 +56,10 @@ func (o *GetPrivateGetUserTradesByOrderOK) Error() string {
 
 func (o *GetPrivateGetUserTradesByOrderOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	o.Payload = new(models.PrivateGetUserTradesByOrderResponse)
+
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 

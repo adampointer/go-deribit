@@ -44,7 +44,7 @@ func NewGetPublicGetTradeVolumesOK() *GetPublicGetTradeVolumesOK {
 
 /*GetPublicGetTradeVolumesOK handles this case with default header values.
 
-foo
+GetPublicGetTradeVolumesOK get public get trade volumes o k
 */
 type GetPublicGetTradeVolumesOK struct {
 	Payload *models.PublicGetTradesVolumesResponse

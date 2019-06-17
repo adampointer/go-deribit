@@ -361,34 +361,6 @@ func (a *Client) GetPrivateCreateSubaccount(params *GetPrivateCreateSubaccountPa
 }
 
 /*
-GetPrivateDatatable this is a private API endpoint intended for the user interface this API is subject to change and should not be used outside the deribit interface
-*/
-func (a *Client) GetPrivateDatatable(params *GetPrivateDatatableParams) (*GetPrivateDatatableOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewGetPrivateDatatableParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "GetPrivateDatatable",
-		Method:             "GET",
-		PathPattern:        "/private/datatable",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{""},
-		Schemes:            []string{"http"},
-		Params:             params,
-		Reader:             &GetPrivateDatatableReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*GetPrivateDatatableOK), nil
-
-}
-
-/*
 GetPrivateDisableCancelOnDisconnect disables cancel on disconnect for the connection this does not change the default account setting
 */
 func (a *Client) GetPrivateDisableCancelOnDisconnect(params *GetPrivateDisableCancelOnDisconnectParams) (*GetPrivateDisableCancelOnDisconnectOK, error) {
@@ -445,6 +417,34 @@ func (a *Client) GetPrivateDisableTfaForSubaccount(params *GetPrivateDisableTfaF
 }
 
 /*
+GetPrivateDisableTfaWithRecoveryCode disables t f a with one time recovery code
+*/
+func (a *Client) GetPrivateDisableTfaWithRecoveryCode(params *GetPrivateDisableTfaWithRecoveryCodeParams) (*GetPrivateDisableTfaWithRecoveryCodeOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetPrivateDisableTfaWithRecoveryCodeParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "GetPrivateDisableTfaWithRecoveryCode",
+		Method:             "GET",
+		PathPattern:        "/private/disable_tfa_with_recovery_code",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{""},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetPrivateDisableTfaWithRecoveryCodeReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*GetPrivateDisableTfaWithRecoveryCodeOK), nil
+
+}
+
+/*
 GetPrivateEdit changes price amount and or other properties of an order
 */
 func (a *Client) GetPrivateEdit(params *GetPrivateEditParams) (*GetPrivateEditOK, error) {
@@ -473,7 +473,7 @@ func (a *Client) GetPrivateEdit(params *GetPrivateEditParams) (*GetPrivateEditOK
 }
 
 /*
-GetPrivateEnableCancelOnDisconnect enables cancel on disconnect for the connection this does not change the default account setting
+GetPrivateEnableCancelOnDisconnect enables cancel on disconnect for the connection this does not change the default account setting after enabling cancel on disconnect all orders created by the connection will be removed when connection is closed br br n o t i c e it does not affect orders created by other connections they will remain active bang
 */
 func (a *Client) GetPrivateEnableCancelOnDisconnect(params *GetPrivateEnableCancelOnDisconnectParams) (*GetPrivateEnableCancelOnDisconnectOK, error) {
 	// TODO: Validate the params before sending
@@ -977,6 +977,34 @@ func (a *Client) GetPrivateGetSettlementHistoryByInstrument(params *GetPrivateGe
 }
 
 /*
+GetPrivateGetStopOrderHistory retrieves detailed log of the user s stop orders
+*/
+func (a *Client) GetPrivateGetStopOrderHistory(params *GetPrivateGetStopOrderHistoryParams) (*GetPrivateGetStopOrderHistoryOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetPrivateGetStopOrderHistoryParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "GetPrivateGetStopOrderHistory",
+		Method:             "GET",
+		PathPattern:        "/private/get_stop_order_history",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{""},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetPrivateGetStopOrderHistoryReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*GetPrivateGetStopOrderHistoryOK), nil
+
+}
+
+/*
 GetPrivateGetSubaccounts gets information about subaccounts
 */
 func (a *Client) GetPrivateGetSubaccounts(params *GetPrivateGetSubaccountsParams) (*GetPrivateGetSubaccountsOK, error) {
@@ -1201,34 +1229,6 @@ func (a *Client) GetPrivateGetWithdrawals(params *GetPrivateGetWithdrawalsParams
 }
 
 /*
-GetPrivateGetopenorders retrieves open orders this API endpoint requires your request to be signed
-*/
-func (a *Client) GetPrivateGetopenorders(params *GetPrivateGetopenordersParams) (*GetPrivateGetopenordersOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewGetPrivateGetopenordersParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "GetPrivateGetopenorders",
-		Method:             "GET",
-		PathPattern:        "/private/getopenorders",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{""},
-		Schemes:            []string{"http"},
-		Params:             params,
-		Reader:             &GetPrivateGetopenordersReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*GetPrivateGetopenordersOK), nil
-
-}
-
-/*
 GetPrivateLogout gracefullies close websocket connection when c o d cancel on disconnect is enabled orders are not cancelled
 */
 func (a *Client) GetPrivateLogout(params *GetPrivateLogoutParams) (*GetPrivateLogoutOK, error) {
@@ -1253,90 +1253,6 @@ func (a *Client) GetPrivateLogout(params *GetPrivateLogoutParams) (*GetPrivateLo
 		return nil, err
 	}
 	return result.(*GetPrivateLogoutOK), nil
-
-}
-
-/*
-GetPrivateOrderhistory retrieves history of orders that have been partially or fully filled this API endpoint requires your request to be signed
-*/
-func (a *Client) GetPrivateOrderhistory(params *GetPrivateOrderhistoryParams) (*GetPrivateOrderhistoryOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewGetPrivateOrderhistoryParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "GetPrivateOrderhistory",
-		Method:             "GET",
-		PathPattern:        "/private/orderhistory",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{""},
-		Schemes:            []string{"http"},
-		Params:             params,
-		Reader:             &GetPrivateOrderhistoryReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*GetPrivateOrderhistoryOK), nil
-
-}
-
-/*
-GetPrivateOrderstate retrieves order details state by order id this API endpoint requires your request to be signed
-*/
-func (a *Client) GetPrivateOrderstate(params *GetPrivateOrderstateParams) (*GetPrivateOrderstateOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewGetPrivateOrderstateParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "GetPrivateOrderstate",
-		Method:             "GET",
-		PathPattern:        "/private/orderstate",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{""},
-		Schemes:            []string{"http"},
-		Params:             params,
-		Reader:             &GetPrivateOrderstateReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*GetPrivateOrderstateOK), nil
-
-}
-
-/*
-GetPrivatePositions retrieves current positions this API endpoint requires your request to be signed
-*/
-func (a *Client) GetPrivatePositions(params *GetPrivatePositionsParams) (*GetPrivatePositionsOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewGetPrivatePositionsParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "GetPrivatePositions",
-		Method:             "GET",
-		PathPattern:        "/private/positions",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{""},
-		Schemes:            []string{"http"},
-		Params:             params,
-		Reader:             &GetPrivatePositionsReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*GetPrivatePositionsOK), nil
 
 }
 
@@ -1679,34 +1595,6 @@ func (a *Client) GetPrivateToggleSubaccountLogin(params *GetPrivateToggleSubacco
 		return nil, err
 	}
 	return result.(*GetPrivateToggleSubaccountLoginOK), nil
-
-}
-
-/*
-GetPrivateTradehistory retrieves the trade history of the account this API endpoint requires your request to be signed
-*/
-func (a *Client) GetPrivateTradehistory(params *GetPrivateTradehistoryParams) (*GetPrivateTradehistoryOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewGetPrivateTradehistoryParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "GetPrivateTradehistory",
-		Method:             "GET",
-		PathPattern:        "/private/tradehistory",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{""},
-		Schemes:            []string{"http"},
-		Params:             params,
-		Reader:             &GetPrivateTradehistoryReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*GetPrivateTradehistoryOK), nil
 
 }
 
@@ -2340,58 +2228,30 @@ func (a *Client) GetPublicGetTradeVolumes(params *GetPublicGetTradeVolumesParams
 }
 
 /*
-GetPublicGetlasttrades retrieves the latest trades that have occurred for a specific instrument trades are identified in two ways the trade is trade Id which is unique between all instruments but is not guaranteed to be strictly sequential the trade sequence trade seq which starts at 1 for each instruments and is strictly sequential under rare circumstances it is possible for the trade sequence to skip a few numbers
+GetPublicGetTradingviewChartData publiclies available market data used to generate a trading view candle chart
 */
-func (a *Client) GetPublicGetlasttrades(params *GetPublicGetlasttradesParams) (*GetPublicGetlasttradesOK, error) {
+func (a *Client) GetPublicGetTradingviewChartData(params *GetPublicGetTradingviewChartDataParams) (*GetPublicGetTradingviewChartDataOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetPublicGetlasttradesParams()
+		params = NewGetPublicGetTradingviewChartDataParams()
 	}
 
 	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "GetPublicGetlasttrades",
+		ID:                 "GetPublicGetTradingviewChartData",
 		Method:             "GET",
-		PathPattern:        "/public/getlasttrades",
+		PathPattern:        "/public/get_tradingview_chart_data",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{""},
 		Schemes:            []string{"http"},
 		Params:             params,
-		Reader:             &GetPublicGetlasttradesReader{formats: a.formats},
+		Reader:             &GetPublicGetTradingviewChartDataReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetPublicGetlasttradesOK), nil
-
-}
-
-/*
-GetPublicGetorderbook retrieves the order book along with other market values for a given instrument
-*/
-func (a *Client) GetPublicGetorderbook(params *GetPublicGetorderbookParams) (*GetPublicGetorderbookOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewGetPublicGetorderbookParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "GetPublicGetorderbook",
-		Method:             "GET",
-		PathPattern:        "/public/getorderbook",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{""},
-		Schemes:            []string{"http"},
-		Params:             params,
-		Reader:             &GetPublicGetorderbookReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*GetPublicGetorderbookOK), nil
+	return result.(*GetPublicGetTradingviewChartDataOK), nil
 
 }
 
@@ -2420,34 +2280,6 @@ func (a *Client) GetPublicHello(params *GetPublicHelloParams) (*GetPublicHelloOK
 		return nil, err
 	}
 	return result.(*GetPublicHelloOK), nil
-
-}
-
-/*
-GetPublicPing this API endpoint always responds with pong this method is primarily intended to be used as a keep alive message over websocket when used over HTTP this API endpoint could also be used to measure network delays between your software and the API server
-*/
-func (a *Client) GetPublicPing(params *GetPublicPingParams) (*GetPublicPingOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewGetPublicPingParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "GetPublicPing",
-		Method:             "GET",
-		PathPattern:        "/public/ping",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{""},
-		Schemes:            []string{"http"},
-		Params:             params,
-		Reader:             &GetPublicPingReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*GetPublicPingOK), nil
 
 }
 

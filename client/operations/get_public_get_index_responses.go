@@ -44,7 +44,7 @@ func NewGetPublicGetIndexOK() *GetPublicGetIndexOK {
 
 /*GetPublicGetIndexOK handles this case with default header values.
 
-foo
+GetPublicGetIndexOK get public get index o k
 */
 type GetPublicGetIndexOK struct {
 	Payload *models.PublicIndexResponse

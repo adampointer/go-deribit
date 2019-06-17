@@ -51,7 +51,7 @@ func NewGetPublicAuthOK() *GetPublicAuthOK {
 
 /*GetPublicAuthOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPublicAuthOK struct {
 	Payload *models.PublicAuthResponse

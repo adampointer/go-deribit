@@ -6,6 +6,8 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
+
 	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
@@ -19,13 +21,13 @@ type BookNotificationRaw struct {
 
 	// asks
 	// Required: true
-	Asks [][]float64 `json:"asks"`
+	Asks []float64 `json:"asks"`
 
 	// bids
 	// Required: true
-	Bids [][]float64 `json:"bids"`
+	Bids []float64 `json:"bids"`
 
-	// id of the notification
+	// Identifier of the notification
 	// Required: true
 	ChangeID *int64 `json:"change_id"`
 
@@ -33,11 +35,15 @@ type BookNotificationRaw struct {
 	// Required: true
 	InstrumentName InstrumentName `json:"instrument_name"`
 
-	// id of the previous notification
+	// Identifier of the previous notification (it's **not** included for the first notification)
 	PrevChangeID int64 `json:"prev_change_id,omitempty"`
 
 	// timestamp
 	Timestamp TimestampForBookNotifications `json:"timestamp,omitempty"`
+
+	// Type of notification: `snapshot` for initial, `change` for others. The field is only included in aggregated response (when input parameter `interval` != `raw`)
+	// Enum: [snapshot change]
+	Type string `json:"type,omitempty"`
 }
 
 // Validate validates this book notification raw
@@ -61,6 +67,10 @@ func (m *BookNotificationRaw) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateTimestamp(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -119,6 +129,49 @@ func (m *BookNotificationRaw) validateTimestamp(formats strfmt.Registry) error {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("timestamp")
 		}
+		return err
+	}
+
+	return nil
+}
+
+var bookNotificationRawTypeTypePropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["snapshot","change"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		bookNotificationRawTypeTypePropEnum = append(bookNotificationRawTypeTypePropEnum, v)
+	}
+}
+
+const (
+
+	// BookNotificationRawTypeSnapshot captures enum value "snapshot"
+	BookNotificationRawTypeSnapshot string = "snapshot"
+
+	// BookNotificationRawTypeChange captures enum value "change"
+	BookNotificationRawTypeChange string = "change"
+)
+
+// prop value enum
+func (m *BookNotificationRaw) validateTypeEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, bookNotificationRawTypeTypePropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *BookNotificationRaw) validateType(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateTypeEnum("type", "body", m.Type); err != nil {
 		return err
 	}
 

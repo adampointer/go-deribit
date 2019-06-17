@@ -10,7 +10,6 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // DeribitPriceIndexNotification deribit price index notification
@@ -19,11 +18,11 @@ type DeribitPriceIndexNotification struct {
 
 	// index name
 	// Required: true
-	IndexName *string `json:"index_name"`
+	IndexName IndexName `json:"index_name"`
 
-	// Current value of Deribit Index
+	// price
 	// Required: true
-	Price *float64 `json:"price"`
+	Price IndexPrice `json:"price"`
 
 	// timestamp
 	// Required: true
@@ -54,7 +53,10 @@ func (m *DeribitPriceIndexNotification) Validate(formats strfmt.Registry) error 
 
 func (m *DeribitPriceIndexNotification) validateIndexName(formats strfmt.Registry) error {
 
-	if err := validate.Required("index_name", "body", m.IndexName); err != nil {
+	if err := m.IndexName.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("index_name")
+		}
 		return err
 	}
 
@@ -63,7 +65,10 @@ func (m *DeribitPriceIndexNotification) validateIndexName(formats strfmt.Registr
 
 func (m *DeribitPriceIndexNotification) validatePrice(formats strfmt.Registry) error {
 
-	if err := validate.Required("price", "body", m.Price); err != nil {
+	if err := m.Price.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("price")
+		}
 		return err
 	}
 

@@ -13,3 +13,6 @@
 
 example
 gen
+
+.idea/**
+ghssh

@@ -44,7 +44,7 @@ func NewGetPublicGetBookSummaryByCurrencyOK() *GetPublicGetBookSummaryByCurrency
 
 /*GetPublicGetBookSummaryByCurrencyOK handles this case with default header values.
 
-foo
+GetPublicGetBookSummaryByCurrencyOK get public get book summary by currency o k
 */
 type GetPublicGetBookSummaryByCurrencyOK struct {
 	Payload *models.PublicGetBookSummaryResponse

@@ -44,7 +44,7 @@ func NewGetPublicGetLastTradesByInstrumentOK() *GetPublicGetLastTradesByInstrume
 
 /*GetPublicGetLastTradesByInstrumentOK handles this case with default header values.
 
-foo
+GetPublicGetLastTradesByInstrumentOK get public get last trades by instrument o k
 */
 type GetPublicGetLastTradesByInstrumentOK struct {
 	Payload *models.PublicTradesHistoryResponse

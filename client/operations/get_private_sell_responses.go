@@ -44,7 +44,7 @@ func NewGetPrivateSellOK() *GetPrivateSellOK {
 
 /*GetPrivateSellOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPrivateSellOK struct {
 	Payload *models.PrivateBuyAndSellResponse

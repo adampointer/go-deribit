@@ -19,11 +19,11 @@ type BookNotification struct {
 
 	// asks
 	// Required: true
-	Asks [][]float64 `json:"asks"`
+	Asks Asks `json:"asks"`
 
 	// bids
 	// Required: true
-	Bids [][]float64 `json:"bids"`
+	Bids Bids `json:"bids"`
 
 	// id of the notification
 	// Required: true
@@ -73,12 +73,26 @@ func (m *BookNotification) validateAsks(formats strfmt.Registry) error {
 		return err
 	}
 
+	if err := m.Asks.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("asks")
+		}
+		return err
+	}
+
 	return nil
 }
 
 func (m *BookNotification) validateBids(formats strfmt.Registry) error {
 
 	if err := validate.Required("bids", "body", m.Bids); err != nil {
+		return err
+	}
+
+	if err := m.Bids.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("bids")
+		}
 		return err
 	}
 

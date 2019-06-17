@@ -49,6 +49,10 @@ type UserTrade struct {
 	// User defined label (presented only when previously set for order by user)
 	Label string `json:"label,omitempty"`
 
+	// Optional field (only for trades caused by liquidation): `"M"` when maker side of trade was under liquidation, `"T"` when taker side was under liquidation, `"MT"` when both sides of trade were under liquidation
+	// Enum: [M T MT]
+	Liquidation string `json:"liquidation,omitempty"`
+
 	// Describes what was role of users order: `"M"` when it was maker order, `"T"` when it was taker order
 	// Enum: [M T]
 	Liquidity string `json:"liquidity,omitempty"`
@@ -119,6 +123,10 @@ func (m *UserTrade) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateInstrumentName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateLiquidation(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -229,6 +237,52 @@ func (m *UserTrade) validateInstrumentName(formats strfmt.Registry) error {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("instrument_name")
 		}
+		return err
+	}
+
+	return nil
+}
+
+var userTradeTypeLiquidationPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["M","T","MT"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		userTradeTypeLiquidationPropEnum = append(userTradeTypeLiquidationPropEnum, v)
+	}
+}
+
+const (
+
+	// UserTradeLiquidationM captures enum value "M"
+	UserTradeLiquidationM string = "M"
+
+	// UserTradeLiquidationT captures enum value "T"
+	UserTradeLiquidationT string = "T"
+
+	// UserTradeLiquidationMT captures enum value "MT"
+	UserTradeLiquidationMT string = "MT"
+)
+
+// prop value enum
+func (m *UserTrade) validateLiquidationEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, userTradeTypeLiquidationPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *UserTrade) validateLiquidation(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Liquidation) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateLiquidationEnum("liquidation", "body", m.Liquidation); err != nil {
 		return err
 	}
 

@@ -18,15 +18,68 @@ import (
 // PublicTradesHistoryResponse public trades history response
 // swagger:model public_trades_history_response
 type PublicTradesHistoryResponse struct {
+	BaseMessage
 
 	// result
 	// Required: true
-	Result *PublicTradesHistoryResponseResult `json:"result"`
+	Result *PublicTradesHistoryResponseAO1Result `json:"result"`
+}
+
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (m *PublicTradesHistoryResponse) UnmarshalJSON(raw []byte) error {
+	// AO0
+	var aO0 BaseMessage
+	if err := swag.ReadJSON(raw, &aO0); err != nil {
+		return err
+	}
+	m.BaseMessage = aO0
+
+	// AO1
+	var dataAO1 struct {
+		Result *PublicTradesHistoryResponseAO1Result `json:"result"`
+	}
+	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+		return err
+	}
+
+	m.Result = dataAO1.Result
+
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (m PublicTradesHistoryResponse) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 2)
+
+	aO0, err := swag.WriteJSON(m.BaseMessage)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, aO0)
+
+	var dataAO1 struct {
+		Result *PublicTradesHistoryResponseAO1Result `json:"result"`
+	}
+
+	dataAO1.Result = m.Result
+
+	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
+	if errAO1 != nil {
+		return nil, errAO1
+	}
+	_parts = append(_parts, jsonDataAO1)
+
+	return swag.ConcatJSON(_parts...), nil
 }
 
 // Validate validates this public trades history response
 func (m *PublicTradesHistoryResponse) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	// validation for a type composition with BaseMessage
+	if err := m.BaseMessage.Validate(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateResult(formats); err != nil {
 		res = append(res, err)
@@ -74,9 +127,9 @@ func (m *PublicTradesHistoryResponse) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// PublicTradesHistoryResponseResult public trades history response result
-// swagger:model PublicTradesHistoryResponseResult
-type PublicTradesHistoryResponseResult struct {
+// PublicTradesHistoryResponseAO1Result public trades history response a o1 result
+// swagger:model PublicTradesHistoryResponseAO1Result
+type PublicTradesHistoryResponseAO1Result struct {
 
 	// has more
 	// Required: true
@@ -87,8 +140,8 @@ type PublicTradesHistoryResponseResult struct {
 	Trades []*PublicTrade `json:"trades"`
 }
 
-// Validate validates this public trades history response result
-func (m *PublicTradesHistoryResponseResult) Validate(formats strfmt.Registry) error {
+// Validate validates this public trades history response a o1 result
+func (m *PublicTradesHistoryResponseAO1Result) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateHasMore(formats); err != nil {
@@ -105,7 +158,7 @@ func (m *PublicTradesHistoryResponseResult) Validate(formats strfmt.Registry) er
 	return nil
 }
 
-func (m *PublicTradesHistoryResponseResult) validateHasMore(formats strfmt.Registry) error {
+func (m *PublicTradesHistoryResponseAO1Result) validateHasMore(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"has_more", "body", m.HasMore); err != nil {
 		return err
@@ -114,7 +167,7 @@ func (m *PublicTradesHistoryResponseResult) validateHasMore(formats strfmt.Regis
 	return nil
 }
 
-func (m *PublicTradesHistoryResponseResult) validateTrades(formats strfmt.Registry) error {
+func (m *PublicTradesHistoryResponseAO1Result) validateTrades(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"trades", "body", m.Trades); err != nil {
 		return err
@@ -140,7 +193,7 @@ func (m *PublicTradesHistoryResponseResult) validateTrades(formats strfmt.Regist
 }
 
 // MarshalBinary interface implementation
-func (m *PublicTradesHistoryResponseResult) MarshalBinary() ([]byte, error) {
+func (m *PublicTradesHistoryResponseAO1Result) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -148,8 +201,8 @@ func (m *PublicTradesHistoryResponseResult) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *PublicTradesHistoryResponseResult) UnmarshalBinary(b []byte) error {
-	var res PublicTradesHistoryResponseResult
+func (m *PublicTradesHistoryResponseAO1Result) UnmarshalBinary(b []byte) error {
+	var res PublicTradesHistoryResponseAO1Result
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

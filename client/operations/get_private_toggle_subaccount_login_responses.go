@@ -44,7 +44,7 @@ func NewGetPrivateToggleSubaccountLoginOK() *GetPrivateToggleSubaccountLoginOK {
 
 /*GetPrivateToggleSubaccountLoginOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPrivateToggleSubaccountLoginOK struct {
 	Payload *models.OkResponse

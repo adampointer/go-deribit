@@ -44,10 +44,10 @@ func NewGetPublicGetAnnouncementsOK() *GetPublicGetAnnouncementsOK {
 
 /*GetPublicGetAnnouncementsOK handles this case with default header values.
 
-foo
+GetPublicGetAnnouncementsOK get public get announcements o k
 */
 type GetPublicGetAnnouncementsOK struct {
-	Payload *models.GetAnnouncementsResponse
+	Payload *models.PublicGetAnnouncementsResponse
 }
 
 func (o *GetPublicGetAnnouncementsOK) Error() string {
@@ -56,7 +56,7 @@ func (o *GetPublicGetAnnouncementsOK) Error() string {
 
 func (o *GetPublicGetAnnouncementsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.GetAnnouncementsResponse)
+	o.Payload = new(models.PublicGetAnnouncementsResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

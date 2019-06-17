@@ -44,7 +44,7 @@ func NewGetPrivateDisableTfaForSubaccountOK() *GetPrivateDisableTfaForSubaccount
 
 /*GetPrivateDisableTfaForSubaccountOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPrivateDisableTfaForSubaccountOK struct {
 	Payload *models.OkResponse

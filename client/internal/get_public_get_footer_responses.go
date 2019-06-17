@@ -44,7 +44,7 @@ func NewGetPublicGetFooterOK() *GetPublicGetFooterOK {
 
 /*GetPublicGetFooterOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPublicGetFooterOK struct {
 	Payload *models.PublicGetFooterResponse

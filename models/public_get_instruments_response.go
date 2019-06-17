@@ -18,15 +18,68 @@ import (
 // PublicGetInstrumentsResponse public get instruments response
 // swagger:model public_get_instruments_response
 type PublicGetInstrumentsResponse struct {
+	BaseMessage
 
 	// result
 	// Required: true
 	Result []*Instrument `json:"result"`
 }
 
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (m *PublicGetInstrumentsResponse) UnmarshalJSON(raw []byte) error {
+	// AO0
+	var aO0 BaseMessage
+	if err := swag.ReadJSON(raw, &aO0); err != nil {
+		return err
+	}
+	m.BaseMessage = aO0
+
+	// AO1
+	var dataAO1 struct {
+		Result []*Instrument `json:"result"`
+	}
+	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+		return err
+	}
+
+	m.Result = dataAO1.Result
+
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (m PublicGetInstrumentsResponse) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 2)
+
+	aO0, err := swag.WriteJSON(m.BaseMessage)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, aO0)
+
+	var dataAO1 struct {
+		Result []*Instrument `json:"result"`
+	}
+
+	dataAO1.Result = m.Result
+
+	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
+	if errAO1 != nil {
+		return nil, errAO1
+	}
+	_parts = append(_parts, jsonDataAO1)
+
+	return swag.ConcatJSON(_parts...), nil
+}
+
 // Validate validates this public get instruments response
 func (m *PublicGetInstrumentsResponse) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	// validation for a type composition with BaseMessage
+	if err := m.BaseMessage.Validate(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateResult(formats); err != nil {
 		res = append(res, err)

@@ -44,7 +44,7 @@ func NewGetPrivateGetSettlementHistoryByInstrumentOK() *GetPrivateGetSettlementH
 
 /*GetPrivateGetSettlementHistoryByInstrumentOK handles this case with default header values.
 
-foo
+GetPrivateGetSettlementHistoryByInstrumentOK get private get settlement history by instrument o k
 */
 type GetPrivateGetSettlementHistoryByInstrumentOK struct {
 	Payload *models.PrivateSettlementResponse

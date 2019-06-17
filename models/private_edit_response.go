@@ -18,15 +18,68 @@ import (
 // PrivateEditResponse private edit response
 // swagger:model private_edit_response
 type PrivateEditResponse struct {
+	BaseMessage
 
 	// result
 	// Required: true
-	Result *PrivateEditResponseResult `json:"result"`
+	Result *PrivateEditResponseAO1Result `json:"result"`
+}
+
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (m *PrivateEditResponse) UnmarshalJSON(raw []byte) error {
+	// AO0
+	var aO0 BaseMessage
+	if err := swag.ReadJSON(raw, &aO0); err != nil {
+		return err
+	}
+	m.BaseMessage = aO0
+
+	// AO1
+	var dataAO1 struct {
+		Result *PrivateEditResponseAO1Result `json:"result"`
+	}
+	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+		return err
+	}
+
+	m.Result = dataAO1.Result
+
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (m PrivateEditResponse) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 2)
+
+	aO0, err := swag.WriteJSON(m.BaseMessage)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, aO0)
+
+	var dataAO1 struct {
+		Result *PrivateEditResponseAO1Result `json:"result"`
+	}
+
+	dataAO1.Result = m.Result
+
+	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
+	if errAO1 != nil {
+		return nil, errAO1
+	}
+	_parts = append(_parts, jsonDataAO1)
+
+	return swag.ConcatJSON(_parts...), nil
 }
 
 // Validate validates this private edit response
 func (m *PrivateEditResponse) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	// validation for a type composition with BaseMessage
+	if err := m.BaseMessage.Validate(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateResult(formats); err != nil {
 		res = append(res, err)
@@ -74,9 +127,9 @@ func (m *PrivateEditResponse) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// PrivateEditResponseResult private edit response result
-// swagger:model PrivateEditResponseResult
-type PrivateEditResponseResult struct {
+// PrivateEditResponseAO1Result private edit response a o1 result
+// swagger:model PrivateEditResponseAO1Result
+type PrivateEditResponseAO1Result struct {
 
 	// order
 	// Required: true
@@ -87,8 +140,8 @@ type PrivateEditResponseResult struct {
 	Trades []*UserTrade `json:"trades"`
 }
 
-// Validate validates this private edit response result
-func (m *PrivateEditResponseResult) Validate(formats strfmt.Registry) error {
+// Validate validates this private edit response a o1 result
+func (m *PrivateEditResponseAO1Result) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateOrder(formats); err != nil {
@@ -105,7 +158,7 @@ func (m *PrivateEditResponseResult) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *PrivateEditResponseResult) validateOrder(formats strfmt.Registry) error {
+func (m *PrivateEditResponseAO1Result) validateOrder(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"order", "body", m.Order); err != nil {
 		return err
@@ -123,7 +176,7 @@ func (m *PrivateEditResponseResult) validateOrder(formats strfmt.Registry) error
 	return nil
 }
 
-func (m *PrivateEditResponseResult) validateTrades(formats strfmt.Registry) error {
+func (m *PrivateEditResponseAO1Result) validateTrades(formats strfmt.Registry) error {
 
 	if err := validate.Required("result"+"."+"trades", "body", m.Trades); err != nil {
 		return err
@@ -149,7 +202,7 @@ func (m *PrivateEditResponseResult) validateTrades(formats strfmt.Registry) erro
 }
 
 // MarshalBinary interface implementation
-func (m *PrivateEditResponseResult) MarshalBinary() ([]byte, error) {
+func (m *PrivateEditResponseAO1Result) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -157,8 +210,8 @@ func (m *PrivateEditResponseResult) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *PrivateEditResponseResult) UnmarshalBinary(b []byte) error {
-	var res PrivateEditResponseResult
+func (m *PrivateEditResponseAO1Result) UnmarshalBinary(b []byte) error {
+	var res PrivateEditResponseAO1Result
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

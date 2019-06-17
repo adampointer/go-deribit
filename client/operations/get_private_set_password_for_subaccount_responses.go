@@ -44,7 +44,7 @@ func NewGetPrivateSetPasswordForSubaccountOK() *GetPrivateSetPasswordForSubaccou
 
 /*GetPrivateSetPasswordForSubaccountOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPrivateSetPasswordForSubaccountOK struct {
 	Payload *models.OkResponse

@@ -44,7 +44,7 @@ func NewGetPrivateRemoveFromAddressBookOK() *GetPrivateRemoveFromAddressBookOK {
 
 /*GetPrivateRemoveFromAddressBookOK handles this case with default header values.
 
-foo
+GetPrivateRemoveFromAddressBookOK get private remove from address book o k
 */
 type GetPrivateRemoveFromAddressBookOK struct {
 	Payload *models.PrivateRemoveFromAddressBookResponse

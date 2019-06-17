@@ -44,7 +44,7 @@ func NewGetPrivateCancelWithdrawalOK() *GetPrivateCancelWithdrawalOK {
 
 /*GetPrivateCancelWithdrawalOK handles this case with default header values.
 
-foo
+GetPrivateCancelWithdrawalOK get private cancel withdrawal o k
 */
 type GetPrivateCancelWithdrawalOK struct {
 	Payload *models.PrivateWithdrawResponse

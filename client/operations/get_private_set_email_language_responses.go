@@ -44,7 +44,7 @@ func NewGetPrivateSetEmailLanguageOK() *GetPrivateSetEmailLanguageOK {
 
 /*GetPrivateSetEmailLanguageOK handles this case with default header values.
 
-foo
+GetPrivateSetEmailLanguageOK get private set email language o k
 */
 type GetPrivateSetEmailLanguageOK struct {
 	Payload *models.OkResponse

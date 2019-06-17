@@ -44,7 +44,7 @@ func NewGetPrivateGetOpenOrdersByInstrumentOK() *GetPrivateGetOpenOrdersByInstru
 
 /*GetPrivateGetOpenOrdersByInstrumentOK handles this case with default header values.
 
-foo
+GetPrivateGetOpenOrdersByInstrumentOK get private get open orders by instrument o k
 */
 type GetPrivateGetOpenOrdersByInstrumentOK struct {
 	Payload *models.PrivateGetOpenOrdersResponse

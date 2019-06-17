@@ -44,7 +44,7 @@ func NewGetPublicGetOrderBookOK() *GetPublicGetOrderBookOK {
 
 /*GetPublicGetOrderBookOK handles this case with default header values.
 
-foo
+GetPublicGetOrderBookOK get public get order book o k
 */
 type GetPublicGetOrderBookOK struct {
 	Payload *models.PublicGetOrderBookResponse

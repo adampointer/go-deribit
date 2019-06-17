@@ -44,7 +44,7 @@ func NewGetPrivateToggleDepositAddressCreationOK() *GetPrivateToggleDepositAddre
 
 /*GetPrivateToggleDepositAddressCreationOK handles this case with default header values.
 
-foo
+GetPrivateToggleDepositAddressCreationOK get private toggle deposit address creation o k
 */
 type GetPrivateToggleDepositAddressCreationOK struct {
 	Payload *models.OkResponse

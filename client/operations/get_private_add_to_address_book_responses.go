@@ -44,7 +44,7 @@ func NewGetPrivateAddToAddressBookOK() *GetPrivateAddToAddressBookOK {
 
 /*GetPrivateAddToAddressBookOK handles this case with default header values.
 
-foo
+GetPrivateAddToAddressBookOK get private add to address book o k
 */
 type GetPrivateAddToAddressBookOK struct {
 	Payload *models.PrivateAddToAddressBookResponse

@@ -44,10 +44,10 @@ func NewGetPublicGetLastSettlementsByCurrencyOK() *GetPublicGetLastSettlementsBy
 
 /*GetPublicGetLastSettlementsByCurrencyOK handles this case with default header values.
 
-foo
+GetPublicGetLastSettlementsByCurrencyOK get public get last settlements by currency o k
 */
 type GetPublicGetLastSettlementsByCurrencyOK struct {
-	Payload *models.SettlementResponse
+	Payload *models.PublicSettlementResponse
 }
 
 func (o *GetPublicGetLastSettlementsByCurrencyOK) Error() string {
@@ -56,7 +56,7 @@ func (o *GetPublicGetLastSettlementsByCurrencyOK) Error() string {
 
 func (o *GetPublicGetLastSettlementsByCurrencyOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.SettlementResponse)
+	o.Payload = new(models.PublicSettlementResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

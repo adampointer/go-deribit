@@ -44,7 +44,7 @@ func NewGetPrivateGetTransfersOK() *GetPrivateGetTransfersOK {
 
 /*GetPrivateGetTransfersOK handles this case with default header values.
 
-foo
+GetPrivateGetTransfersOK get private get transfers o k
 */
 type GetPrivateGetTransfersOK struct {
 	Payload *models.PrivateGetTransfersResponse

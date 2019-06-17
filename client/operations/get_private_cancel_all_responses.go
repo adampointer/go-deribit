@@ -44,10 +44,10 @@ func NewGetPrivateCancelAllOK() *GetPrivateCancelAllOK {
 
 /*GetPrivateCancelAllOK handles this case with default header values.
 
-foo
+GetPrivateCancelAllOK get private cancel all o k
 */
 type GetPrivateCancelAllOK struct {
-	Payload *models.OkResponse
+	Payload *models.PrivateCancelAllResponse
 }
 
 func (o *GetPrivateCancelAllOK) Error() string {
@@ -56,7 +56,7 @@ func (o *GetPrivateCancelAllOK) Error() string {
 
 func (o *GetPrivateCancelAllOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.OkResponse)
+	o.Payload = new(models.PrivateCancelAllResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

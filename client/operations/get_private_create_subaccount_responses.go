@@ -44,7 +44,7 @@ func NewGetPrivateCreateSubaccountOK() *GetPrivateCreateSubaccountOK {
 
 /*GetPrivateCreateSubaccountOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPrivateCreateSubaccountOK struct {
 	Payload *models.PrivateCreateSubaccountResponse

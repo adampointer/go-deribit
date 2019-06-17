@@ -10,7 +10,6 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // Withdrawal withdrawal
@@ -26,8 +25,7 @@ type Withdrawal struct {
 	Amount CurrencyAmount `json:"amount"`
 
 	// The timestamp (seconds since the Unix epoch, with millisecond precision) of withdrawal confirmation, `null` when not confirmed
-	// Required: true
-	ConfirmedTimestamp *int64 `json:"confirmed_timestamp"`
+	ConfirmedTimestamp int64 `json:"confirmed_timestamp,omitempty"`
 
 	// created timestamp
 	CreatedTimestamp Timestamp `json:"created_timestamp,omitempty"`
@@ -67,10 +65,6 @@ func (m *Withdrawal) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateAmount(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateConfirmedTimestamp(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -122,15 +116,6 @@ func (m *Withdrawal) validateAmount(formats strfmt.Registry) error {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("amount")
 		}
-		return err
-	}
-
-	return nil
-}
-
-func (m *Withdrawal) validateConfirmedTimestamp(formats strfmt.Registry) error {
-
-	if err := validate.Required("confirmed_timestamp", "body", m.ConfirmedTimestamp); err != nil {
 		return err
 	}
 

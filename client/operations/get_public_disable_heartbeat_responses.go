@@ -51,7 +51,7 @@ func NewGetPublicDisableHeartbeatOK() *GetPublicDisableHeartbeatOK {
 
 /*GetPublicDisableHeartbeatOK handles this case with default header values.
 
-foo
+ok response
 */
 type GetPublicDisableHeartbeatOK struct {
 	Payload *models.OkResponse

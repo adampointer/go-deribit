@@ -92,7 +92,7 @@ type GetPublicAuthParams struct {
 	*/
 	RefreshToken string
 	/*Scope
-	  Describes type of the access for assigned token, possible values: `connection`, `session`, `session:name`, `trade:[read, read_write, none]`, `wallet:[read, read_write, none]`, `account:[read, read_write, none]`
+	  Describes type of the access for assigned token, possible values: `connection`, `session:name`, `trade:[read, read_write, none]`, `wallet:[read, read_write, none]`, `account:[read, read_write, none]`, `expires:NUMBER`, `ip:ADDR`.</BR></BR> **NOTICE:** Depending on choosing an authentication method (```grant type```) some scopes could be narrowed by the server. e.g. when ```grant_type = client_credentials``` and ```scope = wallet:read_write``` it's modified by the server as ```scope = wallet:read```</BR></BR> Please check details described in [Access scope](#access-scope)
 
 	*/
 	Scope *string

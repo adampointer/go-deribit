@@ -28,7 +28,7 @@ func (e *Exchange) Submit(operation *runtime.ClientOperation) (interface{}, erro
 	}
 	// Add auth
 	if strings.HasPrefix(method, "private/") && e.auth != nil {
-		req.Params["access_token"] = e.auth.AccessToken
+		req.Params["access_token"] = e.auth.Result.AccessToken
 	}
 	res, err := e.rpcRequest(req)
 	if err != nil {
