@@ -108,6 +108,9 @@ Loop:
 					Result:  raw.Result,
 					Error:   raw.Error,
 				}
+				if len(res.Result) <= 2 && res.Error == nil {
+					res.Error = &RPCError{Code: 10001, Message: "empty result"}
+				}
 				e.mutex.Lock()
 				call := e.pending[res.ID]
 				e.mutex.Unlock()
