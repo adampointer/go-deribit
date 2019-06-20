@@ -11,7 +11,7 @@ import (
 
 // ContractSize Contract size, for futures in USD, for options in BTC.
 // swagger:model contract_size
-type ContractSize int64
+type ContractSize float64
 
 // Validate validates this contract size
 func (m ContractSize) Validate(formats strfmt.Registry) error {
