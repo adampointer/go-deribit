@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/adampointer/go-deribit.svg?branch=master)](https://travis-ci.com/adampointer/go-deribit)
+
 # go-deribit
 
 ## V3 
