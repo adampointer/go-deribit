@@ -65,7 +65,7 @@ func (e *Exchange) rpcRequest(req *RPCRequest) (*RPCResponse, error) {
 	// Wait for response or timeout
 	select {
 	case <-call.Done:
-	case <-time.After(10 * time.Second):
+	case <-time.After(3 * time.Second):
 		call.Error = fmt.Errorf("request %d timed out", id)
 	}
 	if call.Error != nil {
@@ -117,7 +117,8 @@ Loop:
 
 				if res.Error != nil && res.Error.Code != 0 {
 					resErr = fmt.Errorf("request failed with code (%d): %s", res.Error.Code, res.Error.Message)
-					break Loop
+					call.Error = resErr
+					call.Done <- true
 				} else {
 					if call == nil {
 						resErr = fmt.Errorf("no pending request found for response ID %d", res.ID)
