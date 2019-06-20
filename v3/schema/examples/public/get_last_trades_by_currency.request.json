@@ -1,0 +1,9 @@
+{
+    "jsonrpc": "2.0",
+    "id": 9290,
+    "method": "public/get_last_trades_by_currency",
+    "params": {
+        "currency": "BTC",
+        "count": 1
+    }
+}

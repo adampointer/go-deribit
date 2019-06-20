@@ -1,0 +1,20 @@
+{
+  "jsonrpc": "2.0",
+  "id": 2192,
+  "result": [
+    {
+      "trigger": "index",
+      "timestamp": 1555918941451,
+      "stop_price": 5285,
+      "stop_id": "SLIS-103",
+      "order_state": "new",
+      "request": "trigger:order",
+      "price": 5179.28,
+      "order_id": "671473",
+      "offset": 277,
+      "instrument_name": "BTC-PERPETUAL",
+      "amount": 10,
+      "direction": "buy"
+    }
+  ]
+}

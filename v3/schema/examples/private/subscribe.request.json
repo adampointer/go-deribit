@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": 4235,
+  "method": "private/subscribe",
+  "params": {
+    "channels": [
+      "deribit_price_index.btc_usd"
+    ]
+  }
+}

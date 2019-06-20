@@ -1,0 +1,9 @@
+{
+  "jsonrpc": "2.0",
+  "id": 7173,
+  "method": "private/disable_tfa_with_recovery_code",
+  "params": {
+    "password": "11111111",
+    "code": "B15m-3EFB-QfTq-CX38"
+  }
+}

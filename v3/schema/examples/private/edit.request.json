@@ -1,0 +1,11 @@
+{
+  "jsonrpc": "2.0",
+  "id": 3725,
+  "method": "private/edit",
+  "params": {
+    "order_id": "438994",
+    "amount": 4,
+    "price": 222,
+    "advanced": "implv"
+  }
+}

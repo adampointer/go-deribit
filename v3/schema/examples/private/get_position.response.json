@@ -1,0 +1,23 @@
+{
+  "jsonrpc": "2.0",
+  "id": 404,
+  "result": {
+      "average_price": 0,
+      "delta": 0,
+      "direction": "buy",
+      "estimated_liquidation_price": 0,
+      "floating_profit_loss": 0,
+      "index_price": 3555.86,
+      "initial_margin": 0,
+      "instrument_name": "BTC-PERPETUAL",
+      "kind": "future",
+      "maintenance_margin": 0,
+      "mark_price": 3556.62,
+      "open_orders_margin": 0.000165889,
+      "realized_profit_loss": 0,
+      "settlement_price": 3555.44,
+      "size": 0,
+      "size_currency": 0,
+      "total_profit_loss": 0
+  }
+}

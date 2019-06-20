@@ -1,0 +1,76 @@
+{
+  "jsonrpc": "2.0",
+  "method": "subscription",
+  "params": {
+    "channel": "user.changes.BTC-PERPETUAL.raw",
+    "data": {
+      "instrument_name": "BTC-PERPETUAL",
+       "trades": [
+        {
+          "trade_seq": 15277,
+          "trade_id": "91221",
+          "timestamp": 1558519703158,
+          "tick_direction": 1,
+          "state": "closed",
+          "self_trade": false,
+          "price": 7885.5,
+          "order_type": "limit",
+          "order_id": "486378",
+          "matching_id": null,
+          "liquidity": "T",
+          "instrument_name": "BTC-PERPETUAL",
+          "index_price": 7874.64,
+          "fee_currency": "BTC",
+          "fee": 0.00000127,
+          "direction": "sell",
+          "amount": 20
+        }
+      ],
+      "positions": [
+        {
+          "total_profit_loss": -0.00310939,
+          "size_currency": -0.088770528,
+          "size": -700,
+          "settlement_price": 7879.55,
+          "realized_profit_loss": -0.000173825,
+          "open_orders_margin": 0,
+          "mark_price": 7885.5,
+          "maintenance_margin": 0.00190896,
+          "kind": "future",
+          "instrument_name": "BTC-PERPETUAL",
+          "initial_margin": 0.002619125,
+          "index_price": 7874.64,
+          "floating_profit_loss": -0.000059372,
+          "estimated_liquidation_price": 99999.99,
+          "direction": "sell",
+          "delta": -0.088770528,
+          "average_price": 7618.64
+        }
+      ],
+      "orders": [
+        {
+          "time_in_force": "good_til_cancelled",
+          "reduce_only": false,
+          "profit_loss": 0,
+          "price": 7885,
+          "post_only": false,
+          "order_type": "limit",
+          "order_state": "filled",
+          "order_id": "486378",
+          "max_show": 20,
+          "last_update_timestamp": 1558519703158,
+          "label": "",
+          "is_liquidation": false,
+          "instrument_name": "BTC-PERPETUAL",
+          "filled_amount": 20,
+          "direction": "sell",
+          "creation_timestamp": 1558519703158,
+          "commission": 0.00000127,
+          "average_price": 7885.5,
+          "api": false,
+          "amount": 20
+        }
+      ]
+    }
+  }
+}

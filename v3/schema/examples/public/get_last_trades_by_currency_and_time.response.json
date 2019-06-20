@@ -1,0 +1,21 @@
+{
+    "jsonrpc": "2.0",
+    "id": 1469,
+    "result": {
+        "trades": [
+            {
+                "trade_seq": 794,
+                "trade_id": "42399",
+                "timestamp": 1550049108751,
+                "tick_direction": 2,
+                "price": 0.1347,
+                "iv": 397.1,
+                "instrument_name": "BTC-15FEB19-3500-C",
+                "index_price": 3582.95,
+                "direction": "buy",
+                "amount": 4
+            }
+        ],
+        "has_more": true
+    }
+}

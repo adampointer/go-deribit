@@ -1,0 +1,11 @@
+{
+  "jsonrpc": "2.0",
+  "id": 833,
+  "method": "public/get_tradingview_chart_data",
+  "params": {
+    "instrument_name": "BTC-5APR19",
+    "start_timestamp": 1554373800000,
+    "end_timestamp": 1554376800000,
+    "resolution": "30"
+  }
+}

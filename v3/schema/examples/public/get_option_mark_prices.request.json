@@ -1,0 +1,8 @@
+{
+  "jsonrpc": "2.0",
+  "id": 2921,
+  "method": "public/get_option_mark_prices",
+  "params": {
+    "currency": "ETH"
+  }
+}

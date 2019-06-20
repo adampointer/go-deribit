@@ -1,0 +1,9 @@
+{
+  "jsonrpc": "2.0",
+  "id": 2552,
+  "method": "private/get_stop_order_history",
+  "params": {
+    "currency": "ETH",
+    "count": 10
+  }
+}

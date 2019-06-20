@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": 5482,
+  "method": "public/get_last_settlements_by_instrument",
+  "params": {
+    "instrument_name": "BTC-PERPETUAL",
+    "type": "settlement",
+    "count": 1
+  }
+}

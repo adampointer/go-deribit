@@ -1,0 +1,9 @@
+{
+  "jsonrpc": "2.0",
+  "id": 8772,
+  "method": "public/get_order_book",
+  "params": {
+      "instrument_name": "BTC-PERPETUAL",
+      "depth": 5
+  }
+}

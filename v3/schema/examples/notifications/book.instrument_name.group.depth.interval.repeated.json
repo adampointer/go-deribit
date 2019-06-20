@@ -1,0 +1,24 @@
+{
+  "jsonrpc": "2.0",
+  "method": "subscription",
+  "params": {
+    "channel": "book.ETH-PERPETUAL.100.1.100ms",
+    "data": {
+      "timestamp": 1554375447971,
+      "instrument_name": "ETH-PERPETUAL",
+      "change_id": 109615,
+      "bids": [
+        [
+          160,
+          40
+        ]
+      ],
+      "asks": [
+        [
+          161,
+          20
+        ]
+      ]
+    }
+  }
+}

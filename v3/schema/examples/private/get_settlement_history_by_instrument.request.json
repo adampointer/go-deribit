@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": 2192,
+  "method": "private/get_settlement_history_by_instrument",
+  "params": {
+    "instrument_name": "ETH-22FEB19",
+    "type": "settlement",
+    "count": 1
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "jsonrpc": "2.0",
+  "id": 7420,
+  "method": "private/cancel_withdrawal",
+  "params": {
+      "currency": "BTC",
+      "id": 1
+  }
+}

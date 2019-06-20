@@ -26,7 +26,7 @@ type Instrument struct {
 
 	// Contract size for instrument
 	// Required: true
-	ContractSize *int64 `json:"contract_size"`
+	ContractSize *float64 `json:"contract_size"`
 
 	// The time when the instrument was first created (milliseconds)
 	// Required: true

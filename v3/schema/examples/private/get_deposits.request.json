@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": 5611,
+  "method": "private/get_deposits",
+  "params": {
+      "currency": "BTC",
+      "count": 10,
+      "offset": 0
+  }
+}

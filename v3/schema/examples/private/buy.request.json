@@ -1,0 +1,11 @@
+{
+  "jsonrpc": "2.0",
+  "id": 5275,
+  "method": "private/buy",
+  "params": {
+    "instrument_name": "ETH-PERPETUAL",
+    "amount": 40,
+    "type": "market",
+    "label": "market0000234"
+  }
+}

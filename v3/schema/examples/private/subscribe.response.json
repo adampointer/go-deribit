@@ -1,0 +1,7 @@
+{
+  "jsonrpc": "2.0",
+  "id": 4235,
+  "result": [
+    "deribit_price_index.btc_usd"
+  ]
+}

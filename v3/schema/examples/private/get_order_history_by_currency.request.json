@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": 9305,
+  "method": "private/get_order_history_by_currency",
+  "params": {
+    "currency": "BTC",
+    "kind": "future",
+    "count": 1
+  }
+}

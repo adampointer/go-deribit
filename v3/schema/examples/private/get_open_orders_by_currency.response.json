@@ -1,0 +1,28 @@
+{
+    "jsonrpc": "2.0",
+    "id": 1953,
+    "result": [
+        {
+            "time_in_force": "good_til_cancelled",
+            "reduce_only": false,
+            "profit_loss": 0,
+            "price": 0.0028,
+            "post_only": false,
+            "order_type": "limit",
+            "order_state": "open",
+            "order_id": "146062",
+            "max_show": 10,
+            "last_update_timestamp": 1550050597036,
+            "label": "",
+            "is_liquidation": false,
+            "instrument_name": "BTC-15FEB19-3250-P",
+            "filled_amount": 0,
+            "direction": "buy",
+            "creation_timestamp": 1550050597036,
+            "commission": 0,
+            "average_price": 0,
+            "api": true,
+            "amount": 10
+        }
+    ]
+}

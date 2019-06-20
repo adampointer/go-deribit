@@ -1,0 +1,9 @@
+{
+  "jsonrpc": "2.0",
+  "id": 7606,
+  "method": "private/get_transfers",
+  "params": {
+      "currency": "BTC",
+      "count": 10
+  }
+}

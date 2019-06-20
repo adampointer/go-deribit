@@ -1,0 +1,9 @@
+{
+    "jsonrpc": "2.0",
+    "id": 9267,
+    "method": "public/get_last_trades_by_instrument",
+    "params": {
+        "instrument_name": "BTC-PERPETUAL",
+        "count": 1
+    }
+}

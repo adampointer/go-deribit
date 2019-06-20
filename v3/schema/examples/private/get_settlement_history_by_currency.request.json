@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": 8304,
+  "method": "private/get_settlement_history_by_currency",
+  "params": {
+    "currency": "BTC",
+    "type": "delivery",
+    "count": 1
+  }
+}

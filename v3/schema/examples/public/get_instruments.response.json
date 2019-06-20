@@ -1,0 +1,32 @@
+{
+  "jsonrpc": "2.0",
+  "id": 7617,
+  "result": [
+    {
+      "tick_size": 0.01,
+      "settlement_period": "week",
+      "quote_currency": "USD",
+      "min_trade_amount": 1,
+      "kind": "future",
+      "is_active": true,
+      "instrument_name": "BTC-15FEB19",
+      "expiration_timestamp": 1550228400000,
+      "creation_timestamp": 1549537259000,
+      "contract_size": 10,
+      "base_currency": "BTC"
+    },
+    {
+      "tick_size": 0.25,
+      "settlement_period": "perpetual",
+      "quote_currency": "USD",
+      "min_trade_amount": 1,
+      "kind": "future",
+      "is_active": true,
+      "instrument_name": "BTC-PERPETUAL",
+      "expiration_timestamp": 32503728600000,
+      "creation_timestamp": 1548148886000,
+      "contract_size": 10,
+      "base_currency": "BTC"
+    }
+  ]
+}

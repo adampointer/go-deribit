@@ -1,0 +1,14 @@
+{
+  "params": {
+    "type": "heartbeat"
+  },
+  "method": "heartbeat",
+  "jsonrpc": "2.0"
+}
+{
+  "params": {
+    "type": "test_request"
+  },
+  "method": "heartbeat",
+  "jsonrpc": "2.0"
+}

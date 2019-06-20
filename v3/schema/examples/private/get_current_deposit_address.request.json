@@ -1,0 +1,8 @@
+{
+  "jsonrpc": "2.0",
+  "id": 3461,
+  "method": "private/get_current_deposit_address",
+  "params": {
+      "currency": "BTC"
+  }
+}

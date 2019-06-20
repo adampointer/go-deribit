@@ -4342,7 +4342,7 @@
         "contract_size": {
           "description": "Contract size for instrument",
           "example": 1,
-          "type": "integer"
+          "type": "number"
         },
         "creation_timestamp": {
           "description": "The time when the instrument was first created (milliseconds)",
