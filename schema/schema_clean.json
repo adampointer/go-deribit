@@ -4541,7 +4541,7 @@
             "description": "specifies minimal price change and, as follows, the number of decimal places for instrument prices"
           },
           "contract_size": {
-            "type": "integer",
+            "type": "number",
             "description": "Contract size for instrument",
             "example": 1
           },
@@ -7787,7 +7787,7 @@
         "description": "Whether the stop order has been triggered (Only for stop orders)"
       },
       "contract_size": {
-        "type": "integer",
+        "type": "number",
         "description": "Contract size, for futures in USD, for options in BTC.",
         "example": 10
       },
