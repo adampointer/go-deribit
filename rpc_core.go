@@ -91,8 +91,15 @@ Loop:
 				if isTemporary(err) {
 					continue
 				}
-				// stop reading if a close message sent from server
-				if websocket.IsCloseError(err, websocket.CloseNormalClosure) {
+				e.mutex.Lock()
+				isClosed := e.isClosed
+				e.mutex.Unlock()
+
+				if isClosed { // fix for `use of closed network connection`
+					break Loop
+				}
+				// stop reading if the client initiated a closure
+				if isClosed && websocket.IsCloseError(err, websocket.CloseNormalClosure) {
 					break Loop
 				}
 				if f := e.OnDisconnect; f != nil { // reconnect
