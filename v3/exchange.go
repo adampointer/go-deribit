@@ -32,6 +32,7 @@ type Exchange struct {
 	stop          chan bool
 	auth          *models.PublicAuthResponse
 	client        *operations.Client
+	isClosed      bool
 }
 
 // NewExchange creates a new API wrapper
@@ -68,6 +69,10 @@ func (e *Exchange) Connect() error {
 
 // Close the websocket connection
 func (e *Exchange) Close() error {
+	e.mutex.Lock()
+	e.isClosed = true
+	e.mutex.Unlock()
+
 	if err := e.conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, "")); err != nil {
 		return err
 	}
