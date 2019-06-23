@@ -135,11 +135,11 @@ func (RPCResponse) GetHeader(string) string {
 func (r *RPCResponse) Body() io.ReadCloser {
 	raw := []byte(fmt.Sprintf(`{"result": %s}`, r.Result))
 	// Here is where we handle Deribit's idiosyncratic response types
-	b := r.preFilter(raw)
+	b := preFilter(raw)
 	return ioutil.NopCloser(bytes.NewReader(b))
 }
 
-func (RPCResponse) preFilter(src []byte) []byte {
+func preFilter(src []byte) []byte {
 	// Price field should always be a float64, but sometimes they send a string :)
 	re := regexp.MustCompile(`"market_price"`)
 	return re.ReplaceAllFunc(src, func(in []byte) []byte {
