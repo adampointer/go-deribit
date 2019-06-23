@@ -140,14 +140,17 @@ func (r *RPCResponse) Body() io.ReadCloser {
 }
 
 func (RPCResponse) preFilter(src []byte) []byte {
+	// Price field should always be a float64, but sometimes they send a string :)
 	re := regexp.MustCompile(`"market_price"`)
 	return re.ReplaceAllFunc(src, func(in []byte) []byte {
+		// For market orders, replace 'market_price' with the average_price value
 		r := regexp.MustCompile(`"average_price":([0-9.]+)`)
 		matches := r.FindAllSubmatch(src, 1)
 		if len(matches) > 0 {
 			return matches[0][1]
 		}
-		return in
+		// If there is no average_price the just send a valid float64
+		return []byte("0.0")
 	})
 }
 
