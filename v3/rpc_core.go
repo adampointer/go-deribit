@@ -115,12 +115,16 @@ Loop:
 					Result:  raw.Result,
 					Error:   raw.Error,
 				}
-				if len(res.Result) <= 2 && res.Error == nil {
-					res.Error = &RPCError{Code: 10001, Message: "empty result"}
-				}
+
 				e.mutex.Lock()
 				call := e.pending[res.ID]
 				e.mutex.Unlock()
+
+				if strings.Contains(call.Req.Method, "subscribe") {
+					if len(res.Result) <= 2 && res.Error == nil {
+						res.Error = &RPCError{Code: 10001, Message: "empty result"}
+					}
+				}
 
 				if res.Error != nil && res.Error.Code != 0 {
 					resErr = fmt.Errorf("request failed with code (%d): %s", res.Error.Code, res.Error.Message)
