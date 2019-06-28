@@ -3,6 +3,7 @@ package deribit
 import (
 	"errors"
 	"sync"
+	"time"
 
 	"github.com/adampointer/go-deribit/v3/client/operations"
 	"github.com/adampointer/go-deribit/v3/models"
@@ -63,7 +64,7 @@ func (e *Exchange) Connect() error {
 	e.conn = c
 	// Start listening for responses
 	go e.read()
-	//go e.heartbeat()
+	go e.heartbeat()
 	return nil
 }
 
@@ -79,13 +80,13 @@ func (e *Exchange) Close() error {
 	return e.conn.Close()
 }
 
-/*func (e *Exchange) heartbeat() {
+func (e *Exchange) heartbeat() {
 	ticker := time.NewTicker(10 * time.Second)
 	go func() {
 		for {
 			select {
 			case <-ticker.C:
-				if _, err := e.Ping(); err != nil {
+				if _, err := e.Client().GetPublicTest(&operations.GetPublicTestParams{}); err != nil {
 					e.stop <- true
 				}
 			case <-e.stop:
@@ -94,4 +95,4 @@ func (e *Exchange) Close() error {
 			}
 		}
 	}()
-}*/
+}
