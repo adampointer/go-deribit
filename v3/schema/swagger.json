@@ -7438,14 +7438,16 @@
         "asks": {
           "items": {
             "description": "The first notification will contain the amounts for all price levels (a list of [\"new\", price, amount] tuples). All following notifications will contain a list of tuples with action, price level and new amount ([action, price, amount]). Action can be `new`, `change` or `delete`.",
-            "type": "number"
+            "type": "array",
+            "items":{}
           },
           "type": "array"
         },
         "bids": {
           "items": {
             "description": "(See 'asks' above.)",
-            "type": "number"
+            "type": "array",
+            "items":{}
           },
           "type": "array"
         },
