@@ -2,6 +2,7 @@ package deribit
 
 import (
 	"errors"
+	"log"
 	"sync"
 	"time"
 
@@ -87,7 +88,33 @@ func (e *Exchange) heartbeat() {
 			select {
 			case <-ticker.C:
 				if _, err := e.Client().GetPublicTest(&operations.GetPublicTestParams{}); err != nil {
-					e.stop <- true
+
+					// We lost the connection so we attempt to re-connect
+					c, _, err := websocket.DefaultDialer.Dial(e.url, nil)
+					if err != nil {
+						log.Printf("Error in the default dialer %v", err)
+					} else {
+						// This seems to have worked
+						log.Printf("Reconnected to the API...")
+						e.conn = c
+						go e.read()
+
+						// We re-authenticated
+						if err := e.Authenticate(); err != nil {
+							log.Fatalf("Error re-authenticating: %s", err)
+						}
+
+						// We re-wire the subscriptions
+						for chan0 := range e.subscriptions {
+							log.Printf("attempt at reconnecting sockets.... %v", chan0)
+							if _, err := e.Client().GetPrivateSubscribe(&operations.GetPrivateSubscribeParams{Channels: []string{chan0}}); err != nil {
+								log.Printf("Reconnection failed: %v", err)
+								delete(e.subscriptions, chan0)
+							} else {
+								log.Printf("Subscriptions %v re-wired...", chan0)
+							}
+						}
+					}
 				}
 			case <-e.stop:
 				ticker.Stop()
