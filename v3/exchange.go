@@ -33,11 +33,14 @@ type Exchange struct {
 func NewExchange(test bool, errs chan error, stop chan bool) (*Exchange, error) {
 	exc := &Exchange{
 		RPCCore: RPCCore{
-			pending:       make(map[uint64]*RPCCall, 1),
-			subscriptions: make(map[string]*RPCSubscription),
-			counter:       1,
-			errors:        errs,
-			stop:          stop,
+			calls: &callManager{
+				pending:       make(map[uint64]*RPCCall, 1),
+				subscriptions: make(map[string]*RPCSubscription),
+				counter:       1,
+			},
+			connMgr: &connManager{},
+			errors:  errs,
+			stop:    stop,
 		},
 	}
 	exc.onDisconnect = exc.Reconnect
@@ -107,11 +110,11 @@ func (e *Exchange) Reconnect(core *RPCCore) {
 		}
 
 		// We re-wire the subscriptions
-		for chan0 := range e.subscriptions {
+		for chan0 := range e.calls.getSubscriptions() {
 			log.Printf("Attempt at reconnecting subscription: %v", chan0)
 			if _, err := e.Client().GetPrivateSubscribe(&operations.GetPrivateSubscribeParams{Channels: []string{chan0}}); err != nil {
 				log.Printf("Reconnection failed: %v", err)
-				delete(e.subscriptions, chan0)
+				e.calls.deleteSubscription(chan0)
 			} else {
 				log.Printf("Subscription %v successfully re-wired", chan0)
 			}

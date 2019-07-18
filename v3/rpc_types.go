@@ -9,7 +9,10 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"strings"
 	"time"
+
+	"github.com/adampointer/go-deribit/v3/models"
 
 	"github.com/go-openapi/runtime"
 )
@@ -32,6 +35,12 @@ func NewRPCRequest(method string) *RPCRequest {
 		JsonRpc: rpcVersion,
 		Method:  method,
 		Params:  make(map[string]interface{}),
+	}
+}
+
+func (r *RPCRequest) AddAuth(auth *models.PublicAuthResponse) {
+	if strings.HasPrefix(r.Method, "private/") && auth != nil {
+		r.Params["access_token"] = auth.Result.AccessToken
 	}
 }
 
@@ -175,6 +184,15 @@ func NewRPCCall(req *RPCRequest) *RPCCall {
 		Req:  req,
 		Done: done,
 	}
+}
+
+func (r *RPCCall) CloseOK() {
+	r.Done <- true
+}
+
+func (r *RPCCall) CloseError(err error) {
+	r.Error = err
+	r.Done <- true
 }
 
 // RPCSubscription is a subscription to an event type to receive notifications about
