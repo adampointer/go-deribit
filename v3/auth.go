@@ -16,10 +16,15 @@ var (
 	clientSecret string
 )
 
+// Authenticate : 1st param: API Key, 2nd param: API Secret
 func (e *Exchange) Authenticate(keys ...string) error {
 	if len(keys) == 2 {
 		clientID = keys[0]
 		clientSecret = keys[1]
+	} else {
+		if clientID == "" || clientSecret == "" {
+			return fmt.Errorf("API Key and Secret must be provided")
+		}
 	}
 	client := e.Client()
 	auth, err := client.GetPublicAuth(&operations.GetPublicAuthParams{ClientID: clientID, ClientSecret: clientSecret, GrantType: "client_credentials"})
