@@ -39,17 +39,18 @@ example --access-key XXX --secret-key YYYYYY
 
 There is a heartbeat which triggers every 10 seconds to keep the websocket connection alive. In the event of a connection error, the library will automatically attempt to reconnect, re-authenticate and reestablish subscriptions.
 
-This behaviour is overrideable with the `OnDisconnect` property.
+This behaviour is overrideable with the `SetDisconnectHandler` method.
 
 ```
 // Example reconnect code
-exchange.OnDisconnect = func (exg *deribit.Exchange) {
+exchange.SetDisconnectHandler(func (core *deribit.RPCCore) {
+    exg := &deribit.NewExchangeFromCore(true, core)
 	log.Warn("Disconnected from exchange. Attempting reconnection...")
 	if err := exg.Connect(); err != nil {
 		log.Fatalf("Error re-connecting to exchange: %s", err)
 	}
 	log.Info("Reconnected")
-}
+})
 ```
 
 ## Development

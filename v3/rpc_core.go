@@ -3,21 +3,33 @@ package deribit
 import (
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
-	"github.com/adampointer/go-deribit/v3/client/operations"
+	"github.com/adampointer/go-deribit/v3/models"
+
+	"github.com/gorilla/websocket"
+
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-	"github.com/gorilla/websocket"
 )
 
-type composite struct {
-	RPCNotification
-	RPCResponse
+type RPCCore struct {
+	conn          *websocket.Conn
+	reqMutex      sync.Mutex
+	pending       map[uint64]*RPCCall
+	subscriptions map[string]*RPCSubscription
+	counter       uint64
+	closedMutex   sync.Mutex
+	isClosed      bool
+	onDisconnect  func(*RPCCore)
+	errors        chan error
+	stop          chan bool
+	auth          *models.PublicAuthResponse
 }
 
 // Submit satisfies the runtime.ClientTransport interface
-func (e *Exchange) Submit(operation *runtime.ClientOperation) (interface{}, error) {
+func (r *RPCCore) Submit(operation *runtime.ClientOperation) (interface{}, error) {
 	method := operation.PathPattern
 	// Strip leading slashes
 	method = strings.TrimPrefix(method, "/")
@@ -26,40 +38,43 @@ func (e *Exchange) Submit(operation *runtime.ClientOperation) (interface{}, erro
 		return nil, err
 	}
 	// Add auth
-	if strings.HasPrefix(method, "private/") && e.auth != nil {
-		req.Params["access_token"] = e.auth.Result.AccessToken
+	if strings.HasPrefix(method, "private/") && r.auth != nil {
+		req.Params["access_token"] = r.auth.Result.AccessToken
 	}
-	res, err := e.rpcRequest(req)
+	res, err := r.rpcRequest(req)
 	if err != nil {
 		return nil, err
 	}
 	return operation.Reader.ReadResponse(res, runtime.JSONConsumer())
 }
 
-// Client returns an initialised API client
-func (e *Exchange) Client() *operations.Client {
-	if e.client == nil {
-		e.client = operations.New(e, strfmt.Default)
+func (r *RPCCore) close() error {
+	r.closedMutex.Lock()
+	r.isClosed = true
+	r.closedMutex.Unlock()
+
+	if err := r.conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, "")); err != nil {
+		return err
 	}
-	return e.client
+	return r.conn.Close()
 }
 
-func (e *Exchange) rpcRequest(req *RPCRequest) (*RPCResponse, error) {
+func (r *RPCCore) rpcRequest(req *RPCRequest) (*RPCResponse, error) {
 	call := NewRPCCall(req)
 	// Create a new request ID
-	e.reqMutex.Lock()
-	id := e.counter
-	e.counter++
+	r.reqMutex.Lock()
+	id := r.counter
+	r.counter++
 	req.ID = id
-	e.pending[id] = call
+	r.pending[id] = call
 
 	// Send
-	if err := e.conn.WriteJSON(&req); err != nil {
-		delete(e.pending, id)
-		e.reqMutex.Unlock()
+	if err := r.conn.WriteJSON(&req); err != nil {
+		delete(r.pending, id)
+		r.reqMutex.Unlock()
 		return nil, err
 	}
-	e.reqMutex.Unlock()
+	r.reqMutex.Unlock()
 
 	// Wait for response or timeout
 	select {
@@ -77,64 +92,49 @@ func (e *Exchange) rpcRequest(req *RPCRequest) (*RPCResponse, error) {
 }
 
 // read takes messages off the websocket and deals with them accordingly
-func (e *Exchange) read() {
+func (r *RPCCore) read() {
 	var resErr error
 Loop:
 	for {
 		select {
-		case <-e.stop:
+		case <-r.stop:
 			break Loop
 		default:
 			var raw composite
-			if err := e.conn.ReadJSON(&raw); err != nil {
-				e.closedMutex.Lock()
-				isClosed := e.isClosed
-				e.closedMutex.Unlock()
+			if err := r.conn.ReadJSON(&raw); err != nil {
+				r.closedMutex.Lock()
+				isClosed := r.isClosed
+				r.closedMutex.Unlock()
 
-				if isClosed { // fix for `use of closed network connection`
+				// fix for `use of closed network connection`
+				if isClosed {
 					break Loop
 				}
-				// stop reading if the client initiated a closure
-				if isClosed && websocket.IsCloseError(err, websocket.CloseNormalClosure) {
-					break Loop
-				}
-				if f := e.OnDisconnect; f != nil {
-					f(e)
-				} else {
-					// Use default reconnect method
-					e.Reconnect()
-				}
+				r.onDisconnect(r)
 				break Loop
 			}
 
 			if raw.ID != 0 || raw.Error != nil {
-				resErr = e.handleResponses(&raw)
+				resErr = r.handleResponses(raw.toResponse())
 			} else if raw.Method == "subscription" {
-				e.handleSubscriptions(&raw)
+				r.handleSubscriptions(raw.toNotification())
 			}
 		}
 	}
 	if resErr != nil {
-		e.reqMutex.Lock()
-		for _, call := range e.pending {
+		r.reqMutex.Lock()
+		for _, call := range r.pending {
 			call.Error = resErr
 			call.Done <- true
 		}
-		e.reqMutex.Unlock()
+		r.reqMutex.Unlock()
 	}
 }
 
-func (e *Exchange) handleResponses(raw *composite) error {
-	res := &RPCResponse{
-		JsonRpc: rpcVersion,
-		ID:      raw.ID,
-		Result:  raw.Result,
-		Error:   raw.Error,
-	}
-
-	e.reqMutex.Lock()
-	call := e.pending[res.ID]
-	e.reqMutex.Unlock()
+func (r *RPCCore) handleResponses(res *RPCResponse) error {
+	r.reqMutex.Lock()
+	call := r.pending[res.ID]
+	r.reqMutex.Unlock()
 
 	if strings.Contains(call.Req.Method, "subscribe") {
 		if len(res.Result) <= 2 && res.Error == nil {
@@ -152,25 +152,20 @@ func (e *Exchange) handleResponses(raw *composite) error {
 		}
 		call.Res = res
 		call.Done <- true
-		e.reqMutex.Lock()
-		delete(e.pending, res.ID)
-		e.reqMutex.Unlock()
+		r.reqMutex.Lock()
+		delete(r.pending, res.ID)
+		r.reqMutex.Unlock()
 	}
 	return nil
 }
 
-func (e *Exchange) handleSubscriptions(raw *composite) {
-	res := &RPCNotification{
-		JsonRpc: rpcVersion,
-		Method:  raw.Method,
-		Params:  raw.Params,
-	}
-	e.reqMutex.Lock()
-	sub := e.subscriptions[res.Params.Channel]
-	e.reqMutex.Unlock()
+func (r *RPCCore) handleSubscriptions(res *RPCNotification) {
+	r.reqMutex.Lock()
+	sub := r.subscriptions[res.Params.Channel]
+	r.reqMutex.Unlock()
 	if sub == nil {
 		// Send error to main error channel
-		e.errors <- fmt.Errorf("no subscription found for %s", res.Params.Channel)
+		r.errors <- fmt.Errorf("no subscription found for %s", res.Params.Channel)
 		return
 	}
 	// Send the notification to the right channel

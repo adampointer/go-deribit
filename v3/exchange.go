@@ -4,11 +4,11 @@ import (
 	"errors"
 	"io"
 	"log"
-	"sync"
 	"time"
 
+	"github.com/go-openapi/strfmt"
+
 	"github.com/adampointer/go-deribit/v3/client/operations"
-	"github.com/adampointer/go-deribit/v3/models"
 	"github.com/gorilla/websocket"
 )
 
@@ -22,40 +22,43 @@ var ErrTimeout = errors.New("timed out waiting for a response")
 
 // Exchange is an API wrapper with the exchange
 type Exchange struct {
-	OnDisconnect func(*Exchange) // triggers on a failed read from connection
-
-	url           string
-	test          bool
-	conn          *websocket.Conn
-	reqMutex      sync.Mutex
-	pending       map[uint64]*RPCCall
-	subscriptions map[string]*RPCSubscription
-	counter       uint64
-	errors        chan error
-	stop          chan bool
-	auth          *models.PublicAuthResponse
-	client        *operations.Client
-	closedMutex   sync.Mutex
-	isClosed      bool
+	url    string
+	test   bool
+	client *operations.Client
+	RPCCore
 }
 
 // NewExchange creates a new API wrapper
 // key and secret can be ignored if you are only calling public endpoints
 func NewExchange(test bool, errs chan error, stop chan bool) (*Exchange, error) {
 	exc := &Exchange{
-		pending:       make(map[uint64]*RPCCall, 1),
-		subscriptions: make(map[string]*RPCSubscription),
-		counter:       1,
-		errors:        errs,
-		stop:          stop,
+		RPCCore: RPCCore{
+			pending:       make(map[uint64]*RPCCall, 1),
+			subscriptions: make(map[string]*RPCSubscription),
+			counter:       1,
+			errors:        errs,
+			stop:          stop,
+		},
 	}
-
+	exc.onDisconnect = exc.Reconnect
 	exc.url = liveURL
 	if test {
 		exc.test = true
 		exc.url = testURL
 	}
 	return exc, nil
+}
+
+// NewExchangeFromCore creates a new exchange from an existing RPCCore
+func NewExchangeFromCore(test bool, core RPCCore) *Exchange {
+	exc := &Exchange{RPCCore: core}
+	exc.onDisconnect = exc.Reconnect
+	exc.url = liveURL
+	if test {
+		exc.test = true
+		exc.url = testURL
+	}
+	return exc
 }
 
 // Connect to the websocket API
@@ -73,14 +76,7 @@ func (e *Exchange) Connect() error {
 
 // Close the websocket connection
 func (e *Exchange) Close() error {
-	e.closedMutex.Lock()
-	e.isClosed = true
-	e.closedMutex.Unlock()
-
-	if err := e.conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, "")); err != nil {
-		return err
-	}
-	return e.conn.Close()
+	return e.close()
 }
 
 // SetLogOutput set log output
@@ -88,8 +84,13 @@ func (e *Exchange) SetLogOutput(w io.Writer) {
 	log.SetOutput(w)
 }
 
+// Override the default disconnect handler
+func (e *Exchange) SetDisconnectHandler(f func(*RPCCore)) {
+	e.onDisconnect = f
+}
+
 // Reconnect reconnect is already built-in on OnDisconnect. Use this method only within OnDisconnect to override it
-func (e *Exchange) Reconnect() {
+func (e *Exchange) Reconnect(core *RPCCore) {
 	// Rebuild the connection and the subscriptions
 	c, _, err := websocket.DefaultDialer.Dial(e.url, nil)
 	if err != nil {
@@ -118,6 +119,14 @@ func (e *Exchange) Reconnect() {
 	}
 }
 
+// Client returns an initialised API client
+func (e *Exchange) Client() *operations.Client {
+	if e.client == nil {
+		e.client = operations.New(e, strfmt.Default)
+	}
+	return e.client
+}
+
 func (e *Exchange) heartbeat() {
 	ticker := time.NewTicker(10 * time.Second)
 	go func() {
@@ -135,10 +144,6 @@ func (e *Exchange) heartbeat() {
 func (e *Exchange) testConnection() {
 	if _, err := e.Client().GetPublicTest(&operations.GetPublicTestParams{}); err != nil {
 		// We've got an error, so we reconnect
-		if f := e.OnDisconnect; f != nil {
-			f(e)
-		} else {
-			e.Reconnect()
-		}
+		e.onDisconnect(&e.RPCCore)
 	}
 }

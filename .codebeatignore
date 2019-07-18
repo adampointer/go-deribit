@@ -3,5 +3,5 @@ models/*
 vendor/**
 v3/client/**
 v3/models/*
-rpc_*.go
+*.go
 v3/rpc_subscriptions.go

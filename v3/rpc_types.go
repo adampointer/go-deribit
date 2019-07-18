@@ -192,3 +192,25 @@ type RPCNotification struct {
 		Channel string          `json:"channel"`
 	} `json:"params,omitempty"`
 }
+
+type composite struct {
+	RPCNotification
+	RPCResponse
+}
+
+func (c *composite) toResponse() *RPCResponse {
+	return &RPCResponse{
+		JsonRpc: rpcVersion,
+		ID:      c.RPCResponse.ID,
+		Result:  c.RPCResponse.Result,
+		Error:   c.RPCResponse.Error,
+	}
+}
+
+func (c *composite) toNotification() *RPCNotification {
+	return &RPCNotification{
+		JsonRpc: rpcVersion,
+		Method:  c.RPCNotification.Method,
+		Params:  c.RPCNotification.Params,
+	}
+}
