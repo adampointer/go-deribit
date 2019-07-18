@@ -2,6 +2,8 @@ package deribit
 
 import (
 	"errors"
+	"io"
+	"log"
 	"sync"
 	"time"
 
@@ -80,6 +82,41 @@ func (e *Exchange) Close() error {
 	return e.conn.Close()
 }
 
+// SetLogOutput set log output
+func (e *Exchange) SetLogOutput(w io.Writer) {
+	log.SetOutput(w)
+}
+
+// Reconnect reconnect is already built-in on OnDisconnect. Use this method only within OnDisconnect to override it
+func (e *Exchange) Reconnect() {
+	// Rebuild the connection and the subscriptions
+	c, _, err := websocket.DefaultDialer.Dial(e.url, nil)
+	if err != nil {
+		log.Printf("Error in the default dialer %v", err)
+	} else {
+		// This seems to have worked
+		log.Printf("Reconnected to the API...")
+		e.conn = c
+		go e.read()
+
+		// We re-authenticated
+		if err := e.Authenticate(); err != nil {
+			log.Fatalf("Error re-authenticating: %s", err)
+		}
+
+		// We re-wire the subscriptions
+		for chan0 := range e.subscriptions {
+			log.Printf("Attempt at reconnecting subscription: %v", chan0)
+			if _, err := e.Client().GetPrivateSubscribe(&operations.GetPrivateSubscribeParams{Channels: []string{chan0}}); err != nil {
+				log.Printf("Reconnection failed: %v", err)
+				delete(e.subscriptions, chan0)
+			} else {
+				log.Printf("Subscription %v successfully re-wired", chan0)
+			}
+		}
+	}
+}
+
 func (e *Exchange) heartbeat() {
 	ticker := time.NewTicker(10 * time.Second)
 	go func() {
@@ -87,7 +124,12 @@ func (e *Exchange) heartbeat() {
 			select {
 			case <-ticker.C:
 				if _, err := e.Client().GetPublicTest(&operations.GetPublicTestParams{}); err != nil {
-					e.stop <- true
+					// We've got an error, so we reconnect
+					if f := e.OnDisconnect; f != nil {
+						f(e)
+					} else {
+						e.Reconnect()
+					}
 				}
 			case <-e.stop:
 				ticker.Stop()

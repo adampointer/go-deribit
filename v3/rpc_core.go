@@ -9,7 +9,6 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 	"github.com/gorilla/websocket"
-	"github.com/pkg/errors"
 )
 
 type composite struct {
@@ -88,9 +87,6 @@ Loop:
 		default:
 			var raw composite
 			if err := e.conn.ReadJSON(&raw); err != nil {
-				if isTemporary(err) {
-					continue
-				}
 				e.mutex.Lock()
 				isClosed := e.isClosed
 				e.mutex.Unlock()
@@ -104,6 +100,8 @@ Loop:
 				}
 				if f := e.OnDisconnect; f != nil { // reconnect
 					f(e)
+				} else {
+					e.Reconnect()
 				}
 				break Loop
 			}
@@ -167,14 +165,4 @@ Loop:
 		}
 		e.mutex.Unlock()
 	}
-}
-
-type temporary interface {
-	Temporary() bool
-}
-
-// returns true if network err is temporary.
-func isTemporary(err error) bool {
-	te, ok := errors.Cause(err).(temporary)
-	return ok && te.Temporary()
 }
