@@ -47,7 +47,7 @@ func (e *Exchange) Client() *operations.Client {
 func (e *Exchange) rpcRequest(req *RPCRequest) (*RPCResponse, error) {
 	call := NewRPCCall(req)
 	// Create a new request ID
-	e.mutex.Lock()
+	e.reqMutex.Lock()
 	id := e.counter
 	e.counter++
 	req.ID = id
@@ -56,10 +56,10 @@ func (e *Exchange) rpcRequest(req *RPCRequest) (*RPCResponse, error) {
 	// Send
 	if err := e.conn.WriteJSON(&req); err != nil {
 		delete(e.pending, id)
-		e.mutex.Unlock()
+		e.reqMutex.Unlock()
 		return nil, err
 	}
-	e.mutex.Unlock()
+	e.reqMutex.Unlock()
 
 	// Wait for response or timeout
 	select {
@@ -87,9 +87,9 @@ Loop:
 		default:
 			var raw composite
 			if err := e.conn.ReadJSON(&raw); err != nil {
-				e.mutex.Lock()
+				e.closedMutex.Lock()
 				isClosed := e.isClosed
-				e.mutex.Unlock()
+				e.closedMutex.Unlock()
 
 				if isClosed { // fix for `use of closed network connection`
 					break Loop
@@ -98,71 +98,81 @@ Loop:
 				if isClosed && websocket.IsCloseError(err, websocket.CloseNormalClosure) {
 					break Loop
 				}
-				if f := e.OnDisconnect; f != nil { // reconnect
+				if f := e.OnDisconnect; f != nil {
 					f(e)
 				} else {
+					// Use default reconnect method
 					e.Reconnect()
 				}
 				break Loop
 			}
 
 			if raw.ID != 0 || raw.Error != nil {
-				res := &RPCResponse{
-					JsonRpc: rpcVersion,
-					ID:      raw.ID,
-					Result:  raw.Result,
-					Error:   raw.Error,
-				}
-
-				e.mutex.Lock()
-				call := e.pending[res.ID]
-				e.mutex.Unlock()
-
-				if strings.Contains(call.Req.Method, "subscribe") {
-					if len(res.Result) <= 2 && res.Error == nil {
-						res.Error = &RPCError{Code: 10001, Message: "empty result"}
-					}
-				}
-
-				if res.Error != nil && res.Error.Code != 0 {
-					resErr = fmt.Errorf("request failed with code (%d): %s", res.Error.Code, res.Error.Message)
-					call.Error = resErr
-					call.Done <- true
-				} else {
-					if call == nil {
-						resErr = fmt.Errorf("no pending request found for response ID %d", res.ID)
-						break Loop
-					}
-					call.Res = res
-					call.Done <- true
-					e.mutex.Lock()
-					delete(e.pending, res.ID)
-					e.mutex.Unlock()
-				}
+				resErr = e.handleResponses(&raw)
 			} else if raw.Method == "subscription" {
-				res := &RPCNotification{
-					JsonRpc: rpcVersion,
-					Method:  raw.Method,
-					Params:  raw.Params,
-				}
-				e.mutex.Lock()
-				sub := e.subscriptions[res.Params.Channel]
-				e.mutex.Unlock()
-				if sub == nil {
-					// Send error to main error channel
-					e.errors <- fmt.Errorf("no subscription found for %s", res.Params.Channel)
-				}
-				// Send the notification to the right channel
-				sub.Data <- res
+				e.handleSubscriptions(&raw)
 			}
 		}
 	}
 	if resErr != nil {
-		e.mutex.Lock()
+		e.reqMutex.Lock()
 		for _, call := range e.pending {
 			call.Error = resErr
 			call.Done <- true
 		}
-		e.mutex.Unlock()
+		e.reqMutex.Unlock()
 	}
+}
+
+func (e *Exchange) handleResponses(raw *composite) error {
+	res := &RPCResponse{
+		JsonRpc: rpcVersion,
+		ID:      raw.ID,
+		Result:  raw.Result,
+		Error:   raw.Error,
+	}
+
+	e.reqMutex.Lock()
+	call := e.pending[res.ID]
+	e.reqMutex.Unlock()
+
+	if strings.Contains(call.Req.Method, "subscribe") {
+		if len(res.Result) <= 2 && res.Error == nil {
+			res.Error = &RPCError{Code: 10001, Message: "empty result"}
+		}
+	}
+
+	if res.Error != nil && res.Error.Code != 0 {
+		resErr := fmt.Errorf("request failed with code (%d): %s", res.Error.Code, res.Error.Message)
+		call.Error = resErr
+		call.Done <- true
+	} else {
+		if call == nil {
+			return fmt.Errorf("no pending request found for response ID %d", res.ID)
+		}
+		call.Res = res
+		call.Done <- true
+		e.reqMutex.Lock()
+		delete(e.pending, res.ID)
+		e.reqMutex.Unlock()
+	}
+	return nil
+}
+
+func (e *Exchange) handleSubscriptions(raw *composite) {
+	res := &RPCNotification{
+		JsonRpc: rpcVersion,
+		Method:  raw.Method,
+		Params:  raw.Params,
+	}
+	e.reqMutex.Lock()
+	sub := e.subscriptions[res.Params.Channel]
+	e.reqMutex.Unlock()
+	if sub == nil {
+		// Send error to main error channel
+		e.errors <- fmt.Errorf("no subscription found for %s", res.Params.Channel)
+		return
+	}
+	// Send the notification to the right channel
+	sub.Data <- res
 }

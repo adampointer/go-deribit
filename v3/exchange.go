@@ -27,7 +27,7 @@ type Exchange struct {
 	url           string
 	test          bool
 	conn          *websocket.Conn
-	mutex         sync.Mutex
+	reqMutex      sync.Mutex
 	pending       map[uint64]*RPCCall
 	subscriptions map[string]*RPCSubscription
 	counter       uint64
@@ -35,6 +35,7 @@ type Exchange struct {
 	stop          chan bool
 	auth          *models.PublicAuthResponse
 	client        *operations.Client
+	closedMutex   sync.Mutex
 	isClosed      bool
 }
 
@@ -72,9 +73,9 @@ func (e *Exchange) Connect() error {
 
 // Close the websocket connection
 func (e *Exchange) Close() error {
-	e.mutex.Lock()
+	e.closedMutex.Lock()
 	e.isClosed = true
-	e.mutex.Unlock()
+	e.closedMutex.Unlock()
 
 	if err := e.conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, "")); err != nil {
 		return err
@@ -123,18 +124,21 @@ func (e *Exchange) heartbeat() {
 		for {
 			select {
 			case <-ticker.C:
-				if _, err := e.Client().GetPublicTest(&operations.GetPublicTestParams{}); err != nil {
-					// We've got an error, so we reconnect
-					if f := e.OnDisconnect; f != nil {
-						f(e)
-					} else {
-						e.Reconnect()
-					}
-				}
+				e.testConnection()
 			case <-e.stop:
 				ticker.Stop()
-				return
 			}
 		}
 	}()
+}
+
+func (e *Exchange) testConnection() {
+	if _, err := e.Client().GetPublicTest(&operations.GetPublicTestParams{}); err != nil {
+		// We've got an error, so we reconnect
+		if f := e.OnDisconnect; f != nil {
+			f(e)
+		} else {
+			e.Reconnect()
+		}
+	}
 }
