@@ -77,11 +77,11 @@ func (e *Exchange) {{.FuncName}}({{.Args}}{{if .Args}} string{{end}}) (chan *mod
 	c := make(chan *RPCNotification)
 	out := make(chan *models.{{.Type}})
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.subscriptions[chans[0]] = sub
+	e.calls.addSubscription(sub)
 
     client := e.Client()
 	if _, err := client.Get{{.AccessLevel}}Subscribe(&operations.Get{{.AccessLevel}}SubscribeParams{Channels: chans}); err != nil {
-		delete(e.subscriptions, chans[0])
+		e.calls.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 
