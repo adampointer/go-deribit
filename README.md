@@ -35,6 +35,23 @@ make build
 example --access-key XXX --secret-key YYYYYY
 ```
 
+## Reconnect Behaviour
+
+There is a heartbeat which triggers every 10 seconds to keep the websocket connection alive. In the event of a connection error, the library will automatically attempt to reconnect, re-authenticate and reestablish subscriptions.
+
+This behaviour is overrideable with the `OnDisconnect` property.
+
+```
+// Example reconnect code
+exchange.OnDisconnect = func (exg *deribit.Exchange) {
+	log.Warn("Disconnected from exchange. Attempting reconnection...")
+	if err := exg.Connect(); err != nil {
+		log.Fatalf("Error re-connecting to exchange: %s", err)
+	}
+	log.Info("Reconnected")
+}
+```
+
 ## Development
 
 The `models` and `client` directories are where all the requests and responses are stored. The contents is automatically generated from the `schema` directory by `go-swagger`.
