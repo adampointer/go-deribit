@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/adampointer/go-deribit.svg?branch=master)](https://travis-ci.com/adampointer/go-deribit)
+[![Build Status](https://travis-ci.com/adampointer/go-deribit.svg?branch=master)](https://travis-ci.com/adampointer/go-deribit)  [![Go Report Card](https://goreportcard.com/badge/github.com/adampointer/go-deribit)](https://goreportcard.com/report/github.com/adampointer/go-deribit)  [![codebeat badge](https://codebeat.co/badges/5bf32114-b7e1-4e70-91bf-fae2449fe2cb)](https://codebeat.co/projects/github-com-adampointer-go-deribit-master)
 
 # go-deribit
 
@@ -10,12 +10,6 @@ This project is now using Go Modules but should remain compatible with `dep`. Al
 
 We now have the latest API methods which were recently released such as `public/get_tradingview_chart_data`.
 
-## V2 
-
-Both the remote API and this implementation have changed a lot since v1. The deprecated, but still functioning v1 API has been tagged `v1.0.0`.
-
-[V2 API Documentation](http://docs.deribit.com/v2/?javascript#deribit-api-v2-0-0)
-
 ## Overview
 
 Go library for using the [Deribit's](https://www.deribit.com/reg-3027.8327) **v2** Websocket API. 
@@ -25,6 +19,8 @@ Deribit is a modern, fast BitCoin derivatives exchange. If you are using BitMex 
 This library is a port of the [official wrapper libraries](https://github.com/deribit) to Go.
 
 If you wish to try it out, be kind and use my affiliate link [https://www.deribit.com/reg-3027.8327](https://www.deribit.com/reg-3027.8327)
+
+[V2 API Documentation](http://docs.deribit.com/v2/?javascript#deribit-api-v2-0-0)
 
 ## Example Usage
 
@@ -51,6 +47,15 @@ exchange.SetDisconnectHandler(func (core *deribit.RPCCore) {
 	}
 	log.Info("Reconnected")
 })
+```
+
+## Logging
+
+The standard logger has been used within the library. You can plug this into your own application's logger by overriding the output io.Writer.
+
+```
+logger := logrus.New()
+exchange.SetLogOutput(logger.Writer())
 ```
 
 ## Development
