@@ -34,9 +34,11 @@ func NewExchange(test bool, errs chan error, stop chan bool) (*Exchange, error) 
 	exc := &Exchange{
 		RPCCore: RPCCore{
 			calls: &callManager{
-				pending:       make(map[uint64]*RPCCall, 1),
+				pending: make(map[uint64]*RPCCall, 1),
+				counter: 1,
+			},
+			subs: &subManager{
 				subscriptions: make(map[string]*RPCSubscription),
-				counter:       1,
 			},
 			connMgr: &connManager{},
 			errors:  errs,
@@ -70,7 +72,7 @@ func (e *Exchange) Connect() error {
 	if err != nil {
 		return err
 	}
-	e.conn = c
+	e.connMgr.conn = c
 	// Start listening for responses
 	go e.read()
 	go e.heartbeat()
@@ -101,7 +103,7 @@ func (e *Exchange) Reconnect(core *RPCCore) {
 	} else {
 		// This seems to have worked
 		log.Printf("Reconnected to the API...")
-		e.conn = c
+		e.connMgr.conn = c
 		go e.read()
 
 		// We re-authenticated
@@ -110,15 +112,7 @@ func (e *Exchange) Reconnect(core *RPCCore) {
 		}
 
 		// We re-wire the subscriptions
-		for chan0 := range e.calls.getSubscriptions() {
-			log.Printf("Attempt at reconnecting subscription: %v", chan0)
-			if _, err := e.Client().GetPrivateSubscribe(&operations.GetPrivateSubscribeParams{Channels: []string{chan0}}); err != nil {
-				log.Printf("Reconnection failed: %v", err)
-				e.calls.deleteSubscription(chan0)
-			} else {
-				log.Printf("Subscription %v successfully re-wired", chan0)
-			}
-		}
+		e.rewireSubscriptions()
 	}
 }
 
@@ -128,6 +122,18 @@ func (e *Exchange) Client() *operations.Client {
 		e.client = operations.New(e, strfmt.Default)
 	}
 	return e.client
+}
+
+func (e *Exchange) rewireSubscriptions() {
+	for chan0 := range e.subs.getSubscriptions() {
+		log.Printf("Attempt at reconnecting subscription: %v", chan0)
+		if _, err := e.Client().GetPrivateSubscribe(&operations.GetPrivateSubscribeParams{Channels: []string{chan0}}); err != nil {
+			log.Printf("Reconnection failed: %v", err)
+			e.subs.deleteSubscription(chan0)
+		} else {
+			log.Printf("Subscription %v successfully re-wired", chan0)
+		}
+	}
 }
 
 func (e *Exchange) heartbeat() {

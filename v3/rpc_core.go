@@ -3,7 +3,6 @@ package deribit
 import (
 	"fmt"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/adampointer/go-deribit/v3/models"
@@ -14,97 +13,10 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-type callManager struct {
-	reqMutex      sync.Mutex
-	pending       map[uint64]*RPCCall
-	subMutex      sync.Mutex
-	subscriptions map[string]*RPCSubscription
-	countMutex    sync.Mutex
-	counter       uint64
-}
-
-func (c *callManager) nextID() uint64 {
-	c.countMutex.Lock()
-	defer c.countMutex.Unlock()
-	id := c.counter
-	c.counter++
-	return id
-}
-
-func (c *callManager) addCall(call *RPCCall) {
-	// Create a new request ID
-	c.reqMutex.Lock()
-	call.Req.ID = c.nextID()
-	c.pending[call.Req.ID] = call
-	c.reqMutex.Unlock()
-}
-
-func (c *callManager) deleteCall(call *RPCCall) {
-	c.reqMutex.Lock()
-	delete(c.pending, call.Req.ID)
-	c.reqMutex.Unlock()
-}
-
-func (c *callManager) getCall(id uint64) *RPCCall {
-	c.reqMutex.Lock()
-	defer c.reqMutex.Unlock()
-	return c.pending[id]
-}
-
-func (c *callManager) closeAllWithError(err error) {
-	c.reqMutex.Lock()
-	for _, call := range c.pending {
-		call.Error = err
-		call.Done <- true
-	}
-	c.reqMutex.Unlock()
-}
-
-func (c *callManager) addSubscription(sub *RPCSubscription) {
-	c.subMutex.Lock()
-	c.subscriptions[sub.Channel] = sub
-	c.subMutex.Unlock()
-}
-
-func (c *callManager) deleteSubscription(channel string) {
-	c.subMutex.Lock()
-	delete(c.subscriptions, channel)
-	c.subMutex.Unlock()
-}
-
-func (c *callManager) getSubscription(channel string) *RPCSubscription {
-	c.subMutex.Lock()
-	defer c.subMutex.Unlock()
-	return c.subscriptions[channel]
-}
-
-func (c *callManager) getSubscriptions() map[string]*RPCSubscription {
-	c.subMutex.Lock()
-	defer c.subMutex.Unlock()
-	return c.subscriptions
-}
-
-type connManager struct {
-	closedMutex sync.Mutex
-	isClosed    bool
-}
-
-func (c *connManager) closed() bool {
-	c.closedMutex.Lock()
-	defer c.closedMutex.Unlock()
-	return c.isClosed
-}
-
-func (c *connManager) close() {
-	c.closedMutex.Lock()
-	c.isClosed = true
-	c.closedMutex.Unlock()
-}
-
 // RPCCore actually sends and receives messages
 type RPCCore struct {
 	calls        *callManager
-	conn         *websocket.Conn
+	subs         *subManager
 	connMgr      *connManager
 	onDisconnect func(*RPCCore)
 	errors       chan error
@@ -130,17 +42,17 @@ func (r *RPCCore) Submit(operation *runtime.ClientOperation) (interface{}, error
 
 func (r *RPCCore) close() error {
 	r.connMgr.close()
-	if err := r.conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, "")); err != nil {
+	if err := r.connMgr.conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, "")); err != nil {
 		return err
 	}
-	return r.conn.Close()
+	return r.connMgr.conn.Close()
 }
 
 func (r *RPCCore) rpcRequest(req *RPCRequest) (*RPCResponse, error) {
 	call := NewRPCCall(req)
 	r.calls.addCall(call)
 	// Send
-	if err := r.conn.WriteJSON(&req); err != nil {
+	if err := r.connMgr.conn.WriteJSON(&req); err != nil {
 		r.calls.deleteCall(call)
 		return nil, err
 	}
@@ -170,7 +82,7 @@ Loop:
 			break Loop
 		default:
 			var raw composite
-			if err := r.conn.ReadJSON(&raw); err != nil {
+			if err := r.connMgr.conn.ReadJSON(&raw); err != nil {
 				// fix for `use of closed network connection`
 				if r.connMgr.closed() {
 					break Loop
@@ -215,7 +127,7 @@ func (r *RPCCore) handleResponses(res *RPCResponse) error {
 }
 
 func (r *RPCCore) handleSubscriptions(res *RPCNotification) {
-	sub := r.calls.getSubscription(res.Params.Channel)
+	sub := r.subs.getSubscription(res.Params.Channel)
 	if sub == nil {
 		// Send error to main error channel
 		r.errors <- fmt.Errorf("no subscription found for %s", res.Params.Channel)

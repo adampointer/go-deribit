@@ -17,11 +17,11 @@ func (e *Exchange) SubscribeBookInterval(instrument_name, interval string) (chan
 	c := make(chan *RPCNotification)
 	out := make(chan *models.BookNotificationRaw)
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.calls.addSubscription(sub)
+	e.subs.addSubscription(sub)
 
 	client := e.Client()
 	if _, err := client.GetPublicSubscribe(&operations.GetPublicSubscribeParams{Channels: chans}); err != nil {
-		e.calls.deleteSubscription(chans[0])
+		e.subs.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 
@@ -68,11 +68,11 @@ func (e *Exchange) SubscribeEstimatedExpirationPrice(index_name string) (chan *m
 	c := make(chan *RPCNotification)
 	out := make(chan *models.EstimatedExpirationPriceNotification)
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.calls.addSubscription(sub)
+	e.subs.addSubscription(sub)
 
 	client := e.Client()
 	if _, err := client.GetPublicSubscribe(&operations.GetPublicSubscribeParams{Channels: chans}); err != nil {
-		e.calls.deleteSubscription(chans[0])
+		e.subs.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 
@@ -119,11 +119,11 @@ func (e *Exchange) SubscribePerpetual(instrument_name, interval string) (chan *m
 	c := make(chan *RPCNotification)
 	out := make(chan *models.PerpetualNotification)
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.calls.addSubscription(sub)
+	e.subs.addSubscription(sub)
 
 	client := e.Client()
 	if _, err := client.GetPublicSubscribe(&operations.GetPublicSubscribeParams{Channels: chans}); err != nil {
-		e.calls.deleteSubscription(chans[0])
+		e.subs.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 
@@ -170,11 +170,11 @@ func (e *Exchange) SubscribeUserOrdersInstrumentName(instrument_name, interval s
 	c := make(chan *RPCNotification)
 	out := make(chan *models.Order)
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.calls.addSubscription(sub)
+	e.subs.addSubscription(sub)
 
 	client := e.Client()
 	if _, err := client.GetPrivateSubscribe(&operations.GetPrivateSubscribeParams{Channels: chans}); err != nil {
-		e.calls.deleteSubscription(chans[0])
+		e.subs.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 
@@ -221,11 +221,11 @@ func (e *Exchange) SubscribeUserTradesInstrument(instrument_name, interval strin
 	c := make(chan *RPCNotification)
 	out := make(chan *models.UserTrade)
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.calls.addSubscription(sub)
+	e.subs.addSubscription(sub)
 
 	client := e.Client()
 	if _, err := client.GetPrivateSubscribe(&operations.GetPrivateSubscribeParams{Channels: chans}); err != nil {
-		e.calls.deleteSubscription(chans[0])
+		e.subs.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 
@@ -272,11 +272,11 @@ func (e *Exchange) SubscribeDeribitPriceIndex(index_name string) (chan *models.D
 	c := make(chan *RPCNotification)
 	out := make(chan *models.DeribitPriceIndexNotification)
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.calls.addSubscription(sub)
+	e.subs.addSubscription(sub)
 
 	client := e.Client()
 	if _, err := client.GetPublicSubscribe(&operations.GetPublicSubscribeParams{Channels: chans}); err != nil {
-		e.calls.deleteSubscription(chans[0])
+		e.subs.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 
@@ -323,11 +323,11 @@ func (e *Exchange) SubscribeMarkPriceOptions(index_name string) (chan *models.Ma
 	c := make(chan *RPCNotification)
 	out := make(chan *models.MarkpriceOptionsNotification)
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.calls.addSubscription(sub)
+	e.subs.addSubscription(sub)
 
 	client := e.Client()
 	if _, err := client.GetPublicSubscribe(&operations.GetPublicSubscribeParams{Channels: chans}); err != nil {
-		e.calls.deleteSubscription(chans[0])
+		e.subs.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 
@@ -374,11 +374,11 @@ func (e *Exchange) SubscribeAnnouncements() (chan *models.AnnouncementNotificati
 	c := make(chan *RPCNotification)
 	out := make(chan *models.AnnouncementNotification)
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.calls.addSubscription(sub)
+	e.subs.addSubscription(sub)
 
 	client := e.Client()
 	if _, err := client.GetPrivateSubscribe(&operations.GetPrivateSubscribeParams{Channels: chans}); err != nil {
-		e.calls.deleteSubscription(chans[0])
+		e.subs.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 
@@ -425,11 +425,11 @@ func (e *Exchange) SubscribeDeribitPriceRanking(index_name string) (chan *models
 	c := make(chan *RPCNotification)
 	out := make(chan *models.DeribitPriceRankingNotification)
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.calls.addSubscription(sub)
+	e.subs.addSubscription(sub)
 
 	client := e.Client()
 	if _, err := client.GetPublicSubscribe(&operations.GetPublicSubscribeParams{Channels: chans}); err != nil {
-		e.calls.deleteSubscription(chans[0])
+		e.subs.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 
@@ -476,11 +476,11 @@ func (e *Exchange) SubscribeTicker(instrument_name, interval string) (chan *mode
 	c := make(chan *RPCNotification)
 	out := make(chan *models.TickerNotification)
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.calls.addSubscription(sub)
+	e.subs.addSubscription(sub)
 
 	client := e.Client()
 	if _, err := client.GetPublicSubscribe(&operations.GetPublicSubscribeParams{Channels: chans}); err != nil {
-		e.calls.deleteSubscription(chans[0])
+		e.subs.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 
@@ -527,11 +527,11 @@ func (e *Exchange) SubscribeTrades(instrument_name, interval string) (chan *mode
 	c := make(chan *RPCNotification)
 	out := make(chan *models.PublicTrade)
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.calls.addSubscription(sub)
+	e.subs.addSubscription(sub)
 
 	client := e.Client()
 	if _, err := client.GetPublicSubscribe(&operations.GetPublicSubscribeParams{Channels: chans}); err != nil {
-		e.calls.deleteSubscription(chans[0])
+		e.subs.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 
@@ -578,11 +578,11 @@ func (e *Exchange) SubscribeUserTradesKind(kind, currency, interval string) (cha
 	c := make(chan *RPCNotification)
 	out := make(chan *models.UserTrade)
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.calls.addSubscription(sub)
+	e.subs.addSubscription(sub)
 
 	client := e.Client()
 	if _, err := client.GetPrivateSubscribe(&operations.GetPrivateSubscribeParams{Channels: chans}); err != nil {
-		e.calls.deleteSubscription(chans[0])
+		e.subs.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 
@@ -629,11 +629,11 @@ func (e *Exchange) SubscribeBookGroup(instrument_name, group, depth, interval st
 	c := make(chan *RPCNotification)
 	out := make(chan *models.BookNotification)
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.calls.addSubscription(sub)
+	e.subs.addSubscription(sub)
 
 	client := e.Client()
 	if _, err := client.GetPublicSubscribe(&operations.GetPublicSubscribeParams{Channels: chans}); err != nil {
-		e.calls.deleteSubscription(chans[0])
+		e.subs.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 
@@ -680,11 +680,11 @@ func (e *Exchange) SubscribeQuote(instrument_name string) (chan *models.QuoteNot
 	c := make(chan *RPCNotification)
 	out := make(chan *models.QuoteNotification)
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.calls.addSubscription(sub)
+	e.subs.addSubscription(sub)
 
 	client := e.Client()
 	if _, err := client.GetPublicSubscribe(&operations.GetPublicSubscribeParams{Channels: chans}); err != nil {
-		e.calls.deleteSubscription(chans[0])
+		e.subs.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 
@@ -731,11 +731,11 @@ func (e *Exchange) SubscribeUserOrdersKind(kind, currency, interval string) (cha
 	c := make(chan *RPCNotification)
 	out := make(chan *models.Order)
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.calls.addSubscription(sub)
+	e.subs.addSubscription(sub)
 
 	client := e.Client()
 	if _, err := client.GetPrivateSubscribe(&operations.GetPrivateSubscribeParams{Channels: chans}); err != nil {
-		e.calls.deleteSubscription(chans[0])
+		e.subs.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 
@@ -782,11 +782,11 @@ func (e *Exchange) SubscribeUserPortfolio(currency string) (chan *models.UserPor
 	c := make(chan *RPCNotification)
 	out := make(chan *models.UserPortfolioNotification)
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.calls.addSubscription(sub)
+	e.subs.addSubscription(sub)
 
 	client := e.Client()
 	if _, err := client.GetPrivateSubscribe(&operations.GetPrivateSubscribeParams{Channels: chans}); err != nil {
-		e.calls.deleteSubscription(chans[0])
+		e.subs.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 
