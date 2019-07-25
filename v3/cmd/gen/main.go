@@ -72,11 +72,11 @@ func main() {
 
 var subscriptionTemplate = `
 // {{.FuncName}} subscribes to the {{.Channel}} channel
-func (e *Exchange) {{.FuncName}}({{.Args}}{{if .Args}} string{{end}}) (chan *models.{{.Type}}, error) {
+func (e *Exchange) {{.FuncName}}({{.Args}}{{if .Args}} string{{end}}) (chan models.{{.Type}}, error) {
 	chans := []string{ {{if .Args}}fmt.Sprintf("{{.Format}}", {{.Args}} ) {{else}}"{{.Format}}"{{end}} }
 	
 	c := make(chan *RPCNotification)
-	out := make(chan *models.{{.Type}})
+	out := make(chan models.{{.Type}})
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
 	e.subscriptions[chans[0]] = sub
 
@@ -102,14 +102,14 @@ func (e *Exchange) {{.FuncName}}({{.Args}}{{if .Args}} string{{end}}) (chan *mod
 					if err := json.Unmarshal(data, &ret); err != nil {
 						e.errors <- fmt.Errorf("error decoding notification: %s", err)
 					}
-					out <- &ret
+					out <- ret
 				case '[': 
 					var rets []models.{{.Type}}
 					if err := json.Unmarshal(data, &rets); err != nil {
 						e.errors <- fmt.Errorf("error decoding notification: %s", err)
 					}
 					for _, ret := range rets {
-						out <- &ret
+						out <- ret
 					}
 				default:
 					e.errors <- fmt.Errorf("invalid json data: %s", string(data))

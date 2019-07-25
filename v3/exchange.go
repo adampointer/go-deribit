@@ -22,9 +22,10 @@ var ErrTimeout = errors.New("timed out waiting for a response")
 
 // Exchange is an API wrapper with the exchange
 type Exchange struct {
-	url    string
-	test   bool
-	client *operations.Client
+	url           string
+	test          bool
+	client        *operations.Client
+	subscriptions map[string]*RPCSubscription
 	RPCCore
 }
 
