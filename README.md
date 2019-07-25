@@ -10,6 +10,10 @@ This project is now using Go Modules but should remain compatible with `dep`. Al
 
 We now have the latest API methods which were recently released such as `public/get_tradingview_chart_data`.
 
+I recommend using the `v3` project in your projects as all onward development will now be within this project.
+
+[GoDoc API Documentation](https://godoc.org/github.com/adampointer/go-deribit/v3)
+
 ## Overview
 
 Go library for using the [Deribit's](https://www.deribit.com/reg-3027.8327) **v2** Websocket API. 
