@@ -70,7 +70,7 @@ func (e *Exchange) Connect() error {
 	if err != nil {
 		return err
 	}
-	e.conn = c
+	e.connMgr.conn = c
 	// Start listening for responses
 	go e.read()
 	go e.heartbeat()
@@ -101,7 +101,7 @@ func (e *Exchange) Reconnect(core *RPCCore) {
 	} else {
 		// This seems to have worked
 		log.Printf("Reconnected to the API...")
-		e.conn = c
+		e.connMgr.conn = c
 		go e.read()
 
 		// We re-authenticated

@@ -87,6 +87,8 @@ func (c *callManager) getSubscriptions() map[string]*RPCSubscription {
 type connManager struct {
 	closedMutex sync.Mutex
 	isClosed    bool
+	writeMutex  sync.Mutex
+	conn        *websocket.Conn
 }
 
 func (c *connManager) closed() bool {
@@ -95,16 +97,35 @@ func (c *connManager) closed() bool {
 	return c.isClosed
 }
 
-func (c *connManager) close() {
+func (c *connManager) close() error {
 	c.closedMutex.Lock()
 	c.isClosed = true
 	c.closedMutex.Unlock()
+	if err := c.writeMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, "")); err != nil {
+		return err
+	}
+	return c.conn.Close()
+}
+
+func (c *connManager) writeJSON(msg interface{}) error {
+	c.writeMutex.Lock()
+	defer c.writeMutex.Unlock()
+	return c.conn.WriteJSON(msg)
+}
+
+func (c *connManager) writeMessage(msgType int, msg []byte) error {
+	c.writeMutex.Lock()
+	defer c.writeMutex.Unlock()
+	return c.conn.WriteJSON(msg)
+}
+
+func (c *connManager) readJSON(msg interface{}) error {
+	return c.conn.ReadJSON(msg)
 }
 
 // RPCCore actually sends and receives messages
 type RPCCore struct {
 	calls        *callManager
-	conn         *websocket.Conn
 	connMgr      *connManager
 	onDisconnect func(*RPCCore)
 	errors       chan error
@@ -129,18 +150,14 @@ func (r *RPCCore) Submit(operation *runtime.ClientOperation) (interface{}, error
 }
 
 func (r *RPCCore) close() error {
-	r.connMgr.close()
-	if err := r.conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, "")); err != nil {
-		return err
-	}
-	return r.conn.Close()
+	return r.connMgr.close()
 }
 
 func (r *RPCCore) rpcRequest(req *RPCRequest) (*RPCResponse, error) {
 	call := NewRPCCall(req)
 	r.calls.addCall(call)
 	// Send
-	if err := r.conn.WriteJSON(&req); err != nil {
+	if err := r.connMgr.writeJSON(&req); err != nil {
 		r.calls.deleteCall(call)
 		return nil, err
 	}
@@ -170,7 +187,7 @@ Loop:
 			break Loop
 		default:
 			var raw composite
-			if err := r.conn.ReadJSON(&raw); err != nil {
+			if err := r.connMgr.readJSON(&raw); err != nil {
 				// fix for `use of closed network connection`
 				if r.connMgr.closed() {
 					break Loop
