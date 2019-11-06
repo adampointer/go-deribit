@@ -87,7 +87,7 @@ func (e *Exchange) SetLogOutput(w io.Writer) {
 	log.SetOutput(w)
 }
 
-// Override the default disconnect handler
+// SetDisconnectHandler overrides the default disconnect handler
 func (e *Exchange) SetDisconnectHandler(f func(*RPCCore)) {
 	e.onDisconnect = f
 }
