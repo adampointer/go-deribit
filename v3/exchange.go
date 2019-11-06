@@ -105,31 +105,9 @@ func (e *Exchange) SetDisconnectHandler(f func(*RPCCore)) {
 
 // Reconnect reconnect is already built-in on OnDisconnect. Use this method only within OnDisconnect to override it
 func (e *Exchange) Reconnect(core *RPCCore) {
-	// Rebuild the connection and the subscriptions
-	c, _, err := websocket.DefaultDialer.Dial(e.url, nil)
-	if err != nil {
-		log.Printf("Error in the default dialer %v", err)
-	} else {
-		// This seems to have worked
-		log.Printf("Reconnected to the API...")
-		e.connMgr.conn = c
-		go e.read()
-
-		// We re-authenticated
-		if err := e.Authenticate(); err != nil {
-			log.Fatalf("Error re-authenticating: %s", err)
-		}
-
-		// We re-wire the subscriptions
-		for chan0 := range e.calls.getSubscriptions() {
-			log.Printf("Attempt at reconnecting subscription: %v", chan0)
-			if _, err := e.Client().GetPrivateSubscribe(&operations.GetPrivateSubscribeParams{Channels: []string{chan0}}); err != nil {
-				log.Printf("Reconnection failed: %v", err)
-				e.calls.deleteSubscription(chan0)
-			} else {
-				log.Printf("Subscription %v successfully re-wired", chan0)
-			}
-		}
+	if err := e.Connect(); err != nil {
+		log.Printf("reconnect failed %v", err)
+		e.errors <- fmt.Errorf("reconnect failed: %w", err)
 	}
 }
 
