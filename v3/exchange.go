@@ -8,6 +8,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/cenkalti/backoff"
 	"github.com/go-openapi/strfmt"
 
 	"github.com/adampointer/go-deribit/v3/client/operations"
@@ -126,9 +127,9 @@ func (e *Exchange) SetDisconnectHandler(f func(*RPCCore)) {
 // Reconnect reconnect is already built-in on OnDisconnect. Use this method only within OnDisconnect to override it
 func (e *Exchange) Reconnect(core *RPCCore) {
 	e.connMgr.stopPinging()
-	if err := e.Connect(); err != nil {
-		log.Printf("reconnect failed %v", err)
-		e.errors <- fmt.Errorf("reconnect failed: %w", err)
+	if err := retry(e.Connect); err != nil {
+		log.Printf("retry to reconnect failed %v", err)
+		e.errors <- fmt.Errorf("retry to reconnect failed: %w", err)
 	}
 }
 
@@ -187,4 +188,16 @@ func (e *Exchange) resubscribe(authed bool) {
 		}
 		log.Printf("Subscription %v successfully re-wired", chan0)
 	}
+}
+
+func retry(operation func() error) error {
+	b := backoff.NewExponentialBackOff()
+	b.InitialInterval = time.Minute
+	b.MaxInterval = 3 * time.Minute
+	b.MaxElapsedTime = 15 * time.Minute
+
+	notify := func(err error, t time.Duration) {
+		log.Printf("%v retry in %s", err, t.String())
+	}
+	return backoff.RetryNotify(operation, b, notify)
 }
