@@ -126,6 +126,8 @@ func (c *connManager) readJSON(msg interface{}) error {
 
 // RPCCore actually sends and receives messages
 type RPCCore struct {
+	OnConnect func()
+
 	calls        *callManager
 	connMgr      *connManager
 	onDisconnect func(*RPCCore)

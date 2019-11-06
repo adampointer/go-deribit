@@ -100,6 +100,10 @@ func (e *Exchange) Connect() error {
 		}
 		authed = true
 	}
+
+	if f := e.OnConnect; f != nil {
+		f()
+	}
 	e.resubscribe(authed)
 	return nil
 }
