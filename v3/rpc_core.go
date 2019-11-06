@@ -116,7 +116,7 @@ func (c *connManager) writeJSON(msg interface{}) error {
 func (c *connManager) writeMessage(msgType int, msg []byte) error {
 	c.writeMutex.Lock()
 	defer c.writeMutex.Unlock()
-	return c.conn.WriteJSON(msg)
+	return c.conn.WriteMessage(msgType, msg)
 }
 
 func (c *connManager) readJSON(msg interface{}) error {
