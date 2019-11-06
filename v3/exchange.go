@@ -1,6 +1,7 @@
 package deribit
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -16,6 +17,17 @@ import (
 const (
 	liveURL = "wss://www.deribit.com/ws/api/v2/"
 	testURL = "wss://test.deribit.com/ws/api/v2/"
+)
+
+const (
+	// Time allowed to write a message to the peer.
+	writeWait = 10 * time.Second
+
+	// Time allowed to read the next pong message from the peer.
+	pongWait = 60 * time.Second
+
+	// Send pings to peer with this period. Must be less than pongWait.
+	pingPeriod = (pongWait * 9) / 10
 )
 
 // ErrTimeout - request timed out
@@ -71,10 +83,14 @@ func (e *Exchange) Connect() error {
 	if err != nil {
 		return err
 	}
+	c.SetPongHandler(func(string) error { c.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	e.connMgr.conn = c
 	// Start listening for responses
 	go e.read()
-	go e.heartbeat()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	e.connMgr.stopPinging = cancel
+	go e.pinging(ctx)
 
 	authed := false
 	if clientID != "" && clientSecret != "" {
@@ -105,6 +121,7 @@ func (e *Exchange) SetDisconnectHandler(f func(*RPCCore)) {
 
 // Reconnect reconnect is already built-in on OnDisconnect. Use this method only within OnDisconnect to override it
 func (e *Exchange) Reconnect(core *RPCCore) {
+	e.connMgr.stopPinging()
 	if err := e.Connect(); err != nil {
 		log.Printf("reconnect failed %v", err)
 		e.errors <- fmt.Errorf("reconnect failed: %w", err)
@@ -119,24 +136,21 @@ func (e *Exchange) Client() *operations.Client {
 	return e.client
 }
 
-func (e *Exchange) heartbeat() {
-	ticker := time.NewTicker(10 * time.Second)
-	go func() {
-		for {
-			select {
-			case <-ticker.C:
-				e.testConnection()
-			case <-e.stop:
-				ticker.Stop()
+func (e *Exchange) pinging(ctx context.Context) {
+	ticker := time.NewTicker(pingPeriod)
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-e.stop:
+			ticker.Stop()
+			return
+		case <-ticker.C:
+			e.connMgr.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			if err := e.connMgr.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+				return
 			}
 		}
-	}()
-}
-
-func (e *Exchange) testConnection() {
-	if _, err := e.Client().GetPublicTest(&operations.GetPublicTestParams{}); err != nil {
-		// We've got an error, so we reconnect
-		e.onDisconnect(&e.RPCCore)
 	}
 }
 
