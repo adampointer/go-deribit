@@ -2,6 +2,7 @@ package deribit
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"time"
@@ -74,6 +75,16 @@ func (e *Exchange) Connect() error {
 	// Start listening for responses
 	go e.read()
 	go e.heartbeat()
+
+	authed := false
+	if clientID != "" && clientSecret != "" {
+		// re-authenticate on reconnect
+		if err := e.Authenticate(); err != nil {
+			return fmt.Errorf("Error re-authenticating: %s", err)
+		}
+		authed = true
+	}
+	e.resubscribe(authed)
 	return nil
 }
 
@@ -148,5 +159,36 @@ func (e *Exchange) testConnection() {
 	if _, err := e.Client().GetPublicTest(&operations.GetPublicTestParams{}); err != nil {
 		// We've got an error, so we reconnect
 		e.onDisconnect(&e.RPCCore)
+	}
+}
+
+func (e *Exchange) resubscribe(authed bool) {
+	if !authed {
+		// We re-wire public subscriptions
+		for chan0 := range e.calls.getSubscriptions() {
+			log.Printf("Attempt at reconnecting subscription: %v", chan0)
+			req := &operations.GetPublicSubscribeParams{Channels: []string{chan0}}
+
+			if _, err := e.Client().GetPublicSubscribe(req); err != nil {
+				log.Printf("Reconnection failed: %v", err)
+				e.calls.deleteSubscription(chan0)
+				continue
+			}
+			log.Printf("Subscription %v successfully re-wired", chan0)
+		}
+		return
+	}
+
+	// We re-wire private subscriptions
+	for chan0 := range e.calls.getSubscriptions() {
+		log.Printf("Attempt at reconnecting subscription: %v", chan0)
+		req := &operations.GetPrivateSubscribeParams{Channels: []string{chan0}}
+
+		if _, err := e.Client().GetPrivateSubscribe(req); err != nil {
+			log.Printf("Reconnection failed: %v", err)
+			e.calls.deleteSubscription(chan0)
+			continue
+		}
+		log.Printf("Subscription %v successfully re-wired", chan0)
 	}
 }
