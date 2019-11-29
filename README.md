@@ -18,11 +18,22 @@ I recommend using the `v3` project in your projects as all onward development wi
 
 Go library for using the [Deribit's](https://www.deribit.com/reg-3027.8327) **v2** Websocket API. 
 
-Deribit is a modern, fast BitCoin derivatives exchange. If you are using BitMex then you are doing it wrong! Deribit does not freeze up during higher than average load. Also, it is peer-to-peer, not run by market makers on lucrative contracts who want to liquidate you.
+Deribit is a modern, fast BitCoin derivatives exchange. 
 
 This library is a port of the [official wrapper libraries](https://github.com/deribit) to Go.
 
 If you wish to try it out, be kind and use my affiliate link [https://www.deribit.com/reg-3027.8327](https://www.deribit.com/reg-3027.8327)
+
+Or tip me!
+
+btc: 3HmLfHJvrJuM48zHFY6HstUCxbuwV3dvxd
+
+eth: 0x9Dc9129185E79211534D0039Af1C6f1ff585F5e3
+
+ltc: MEpFjCdR3uXd6QjuJTSu3coLtcSWY3S2Hg
+
+
+*p.s.* If you want a good BitMEX client library then try [go-bitmex](https://github.com/adampointer/go-bitmex)
 
 [V2 API Documentation](http://docs.deribit.com/v2/?javascript#deribit-api-v2-0-0)
 
