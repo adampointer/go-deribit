@@ -197,7 +197,7 @@ func retry(operation func() error) error {
 	b.MaxElapsedTime = 15 * time.Minute
 
 	notify := func(err error, t time.Duration) {
-		log.Printf("%v retry in %s", err, t.String())
+		log.Printf("%v retry in %s", err, t.Round(time.Second).String())
 	}
 	return backoff.RetryNotify(operation, b, notify)
 }
