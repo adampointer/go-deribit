@@ -85,6 +85,7 @@ func (c *callManager) getSubscriptions() map[string]*RPCSubscription {
 }
 
 type connManager struct {
+	stopPinging func()
 	closedMutex sync.Mutex
 	isClosed    bool
 	writeMutex  sync.Mutex
@@ -116,7 +117,7 @@ func (c *connManager) writeJSON(msg interface{}) error {
 func (c *connManager) writeMessage(msgType int, msg []byte) error {
 	c.writeMutex.Lock()
 	defer c.writeMutex.Unlock()
-	return c.conn.WriteJSON(msg)
+	return c.conn.WriteMessage(msgType, msg)
 }
 
 func (c *connManager) readJSON(msg interface{}) error {
@@ -125,6 +126,8 @@ func (c *connManager) readJSON(msg interface{}) error {
 
 // RPCCore actually sends and receives messages
 type RPCCore struct {
+	OnConnect func()
+
 	calls        *callManager
 	connMgr      *connManager
 	onDisconnect func(*RPCCore)
@@ -157,6 +160,7 @@ func (r *RPCCore) rpcRequest(req *RPCRequest) (*RPCResponse, error) {
 	call := NewRPCCall(req)
 	r.calls.addCall(call)
 	// Send
+	r.connMgr.conn.SetWriteDeadline(time.Now().Add(writeWait))
 	if err := r.connMgr.writeJSON(&req); err != nil {
 		r.calls.deleteCall(call)
 		return nil, err
@@ -187,6 +191,7 @@ Loop:
 			break Loop
 		default:
 			var raw composite
+			r.connMgr.conn.SetReadDeadline(time.Now().Add(pongWait))
 			if err := r.connMgr.readJSON(&raw); err != nil {
 				// fix for `use of closed network connection`
 				if r.connMgr.closed() {
