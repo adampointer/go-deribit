@@ -237,6 +237,35 @@
         "summary": "Cancel an order, specified by order id"
       }
     },
+    "/private/cancel_by_label": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "The order label",
+            "in": "query",
+            "name": "label",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/private_cancel_all_response"
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "trading",
+          "private"
+        ],
+        "summary": "Cancel an order, specified by order label"
+      }
+    },
     "/private/cancel_all": {
       "get": {
         "produces": [
