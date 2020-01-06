@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/adampointer/go-deribit/v3/client/operations"
-	flag "github.com/spf13/pflag"
-
 	"github.com/adampointer/go-deribit/v3"
+	"github.com/adampointer/go-deribit/v3/client/account_management"
+	"github.com/adampointer/go-deribit/v3/client/private"
+	"github.com/adampointer/go-deribit/v3/client/public"
+	flag "github.com/spf13/pflag"
 )
 
 func main() {
@@ -31,7 +32,7 @@ func main() {
 	}()
 	client := e.Client()
 	// Hit the test RPC endpoint
-	res, err := client.GetPublicTest(&operations.GetPublicTestParams{})
+	res, err := client.Public.GetPublicTest(&public.GetPublicTestParams{})
 	if err != nil {
 		log.Fatalf("Error testing connection: %s", err)
 	}
@@ -41,19 +42,19 @@ func main() {
 	}
 
 	// Account summary
-	summary, err := client.GetPrivateGetAccountSummary(&operations.GetPrivateGetAccountSummaryParams{Currency: "BTC"})
+	summary, err := client.AccountManagement.GetPrivateGetAccountSummary(&account_management.GetPrivateGetAccountSummaryParams{Currency: "BTC"})
 	if err != nil {
 		log.Fatalf("Error getting account summary: %s", err)
 	}
 	fmt.Printf("Available funds: %f\n", *summary.Payload.Result.AvailableFunds)
 
 	// Buy
-	buyParams := &operations.GetPrivateBuyParams{
+	buyParams := &private.GetPrivateBuyParams{
 		Amount:         10,
 		InstrumentName: "BTC-PERPETUAL",
 		Type:           strPointer("market"),
 	}
-	buy, err := client.GetPrivateBuy(buyParams)
+	buy, err := client.Private.GetPrivateBuy(buyParams)
 	if err != nil {
 		log.Fatalf("Error submitting buy order: %s", err)
 	}
