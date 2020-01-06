@@ -24,7 +24,6 @@ type GetPublicGetOptionMarkPricesReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetPublicGetOptionMarkPricesReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetPublicGetOptionMarkPricesOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -52,6 +51,10 @@ type GetPublicGetOptionMarkPricesOK struct {
 
 func (o *GetPublicGetOptionMarkPricesOK) Error() string {
 	return fmt.Sprintf("[GET /public/get_option_mark_prices][%d] getPublicGetOptionMarkPricesOK  %+v", 200, o.Payload)
+}
+
+func (o *GetPublicGetOptionMarkPricesOK) GetPayload() models.PublicGetOptionMarkPricesResponse {
+	return o.Payload
 }
 
 func (o *GetPublicGetOptionMarkPricesOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

@@ -6,6 +6,8 @@ package internal
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"fmt"
+
 	"github.com/go-openapi/runtime"
 
 	strfmt "github.com/go-openapi/strfmt"
@@ -22,6 +24,40 @@ Client for internal API
 type Client struct {
 	transport runtime.ClientTransport
 	formats   strfmt.Registry
+}
+
+/*
+GetPrivateDisableTfaWithRecoveryCode disables t f a with one time recovery code
+*/
+func (a *Client) GetPrivateDisableTfaWithRecoveryCode(params *GetPrivateDisableTfaWithRecoveryCodeParams) (*GetPrivateDisableTfaWithRecoveryCodeOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetPrivateDisableTfaWithRecoveryCodeParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "GetPrivateDisableTfaWithRecoveryCode",
+		Method:             "GET",
+		PathPattern:        "/private/disable_tfa_with_recovery_code",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{""},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetPrivateDisableTfaWithRecoveryCodeReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetPrivateDisableTfaWithRecoveryCodeOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for GetPrivateDisableTfaWithRecoveryCode: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -48,8 +84,14 @@ func (a *Client) GetPublicGetFooter(params *GetPublicGetFooterParams) (*GetPubli
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetPublicGetFooterOK), nil
-
+	success, ok := result.(*GetPublicGetFooterOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for GetPublicGetFooter: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -76,8 +118,14 @@ func (a *Client) GetPublicGetOptionMarkPrices(params *GetPublicGetOptionMarkPric
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetPublicGetOptionMarkPricesOK), nil
-
+	success, ok := result.(*GetPublicGetOptionMarkPricesOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for GetPublicGetOptionMarkPrices: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 // SetTransport changes the transport on the client

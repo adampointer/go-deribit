@@ -10,7 +10,7 @@ import (
 )
 
 type data struct {
-	FuncName, Args, Format, Type, AccessLevel, Channel string
+	FuncName, Args, Format, Type, AccessLevel, Channel, Package string
 }
 
 var subscriptions = map[string]struct {
@@ -47,8 +47,10 @@ func main() {
 		d.FuncName = "Subscribe" + params.funcName
 		d.Type = params.notificationType
 		d.AccessLevel = "Public"
+		d.Package = "public"
 		if params.isPrivate {
 			d.AccessLevel = "Private"
+			d.Package = "private"
 		}
 		re := regexp.MustCompile(`\{(.*?)\}`)
 		match := re.FindAllStringSubmatch(c, -1)
@@ -78,11 +80,11 @@ func (e *Exchange) {{.FuncName}}({{.Args}}{{if .Args}} string{{end}}) (chan *mod
 	c := make(chan *RPCNotification)
 	out := make(chan *models.{{.Type}})
 	sub := &RPCSubscription{Data: c, Channel: chans[0]}
-	e.subscriptions[chans[0]] = sub
+	e.calls.addSubscription(sub)
 
-    client := e.Client()
-	if _, err := client.Get{{.AccessLevel}}Subscribe(&operations.Get{{.AccessLevel}}SubscribeParams{Channels: chans}); err != nil {
-		delete(e.subscriptions, chans[0])
+    client := e.Client().{{.AccessLevel}}
+	if _, err := client.Get{{.AccessLevel}}Subscribe(&{{.Package}}.Get{{.AccessLevel}}SubscribeParams{Channels: chans}); err != nil {
+		e.calls.deleteSubscription(chans[0])
 		return nil, fmt.Errorf("error subscribing to channel: %s", err)
 	}
 

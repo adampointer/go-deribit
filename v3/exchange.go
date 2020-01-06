@@ -8,10 +8,11 @@ import (
 	"log"
 	"time"
 
+	"github.com/adampointer/go-deribit/v3/client"
+	"github.com/adampointer/go-deribit/v3/client/private"
+	"github.com/adampointer/go-deribit/v3/client/public"
 	"github.com/cenkalti/backoff"
 	"github.com/go-openapi/strfmt"
-
-	"github.com/adampointer/go-deribit/v3/client/operations"
 	"github.com/gorilla/websocket"
 )
 
@@ -38,7 +39,7 @@ var ErrTimeout = errors.New("timed out waiting for a response")
 type Exchange struct {
 	url    string
 	test   bool
-	client *operations.Client
+	client *client.Deribit
 	RPCCore
 }
 
@@ -84,7 +85,7 @@ func (e *Exchange) Connect() error {
 	if err != nil {
 		return err
 	}
-	c.SetPongHandler(func(string) error { c.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+	c.SetPongHandler(func(string) error { return c.SetReadDeadline(time.Now().Add(pongWait)) })
 	e.connMgr.conn = c
 	// Start listening for responses
 	go e.read()
@@ -134,9 +135,9 @@ func (e *Exchange) Reconnect(core *RPCCore) {
 }
 
 // Client returns an initialised API client
-func (e *Exchange) Client() *operations.Client {
+func (e *Exchange) Client() *client.Deribit {
 	if e.client == nil {
-		e.client = operations.New(e, strfmt.Default)
+		e.client = client.New(e, strfmt.Default)
 	}
 	return e.client
 }
@@ -151,7 +152,9 @@ func (e *Exchange) pinging(ctx context.Context) {
 			ticker.Stop()
 			return
 		case <-ticker.C:
-			e.connMgr.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			if err := e.connMgr.conn.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
+				panic(err)
+			}
 			if err := e.connMgr.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
 				return
 			}
@@ -164,9 +167,9 @@ func (e *Exchange) resubscribe(authed bool) {
 		// We re-wire public subscriptions
 		for chan0 := range e.calls.getSubscriptions() {
 			log.Printf("Attempt at reconnecting subscription: %v", chan0)
-			req := &operations.GetPublicSubscribeParams{Channels: []string{chan0}}
+			req := &public.GetPublicSubscribeParams{Channels: []string{chan0}}
 
-			if _, err := e.Client().GetPublicSubscribe(req); err != nil {
+			if _, err := e.Client().Public.GetPublicSubscribe(req); err != nil {
 				log.Printf("Reconnection failed: %v", err)
 				e.calls.deleteSubscription(chan0)
 				continue
@@ -179,9 +182,9 @@ func (e *Exchange) resubscribe(authed bool) {
 	// We re-wire private subscriptions
 	for chan0 := range e.calls.getSubscriptions() {
 		log.Printf("Attempt at reconnecting subscription: %v", chan0)
-		req := &operations.GetPrivateSubscribeParams{Channels: []string{chan0}}
+		req := &private.GetPrivateSubscribeParams{Channels: []string{chan0}}
 
-		if _, err := e.Client().GetPrivateSubscribe(req); err != nil {
+		if _, err := e.Client().Private.GetPrivateSubscribe(req); err != nil {
 			log.Printf("Reconnection failed: %v", err)
 			e.calls.deleteSubscription(chan0)
 			continue

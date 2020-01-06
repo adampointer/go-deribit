@@ -11,8 +11,15 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
+	"github.com/adampointer/go-deribit/v3/client/account_management"
 	"github.com/adampointer/go-deribit/v3/client/internal"
-	"github.com/adampointer/go-deribit/v3/client/operations"
+	"github.com/adampointer/go-deribit/v3/client/market_data"
+	"github.com/adampointer/go-deribit/v3/client/private"
+	"github.com/adampointer/go-deribit/v3/client/public"
+	"github.com/adampointer/go-deribit/v3/client/supporting"
+	"github.com/adampointer/go-deribit/v3/client/trading"
+	"github.com/adampointer/go-deribit/v3/client/wallet"
+	"github.com/adampointer/go-deribit/v3/client/websocket_only"
 )
 
 // Default deribit HTTP client.
@@ -58,9 +65,23 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Deribit {
 	cli := new(Deribit)
 	cli.Transport = transport
 
+	cli.AccountManagement = account_management.New(transport, formats)
+
 	cli.Internal = internal.New(transport, formats)
 
-	cli.Operations = operations.New(transport, formats)
+	cli.MarketData = market_data.New(transport, formats)
+
+	cli.Private = private.New(transport, formats)
+
+	cli.Public = public.New(transport, formats)
+
+	cli.Supporting = supporting.New(transport, formats)
+
+	cli.Trading = trading.New(transport, formats)
+
+	cli.Wallet = wallet.New(transport, formats)
+
+	cli.WebsocketOnly = websocket_only.New(transport, formats)
 
 	return cli
 }
@@ -106,9 +127,23 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // Deribit is a client for deribit
 type Deribit struct {
+	AccountManagement *account_management.Client
+
 	Internal *internal.Client
 
-	Operations *operations.Client
+	MarketData *market_data.Client
+
+	Private *private.Client
+
+	Public *public.Client
+
+	Supporting *supporting.Client
+
+	Trading *trading.Client
+
+	Wallet *wallet.Client
+
+	WebsocketOnly *websocket_only.Client
 
 	Transport runtime.ClientTransport
 }
@@ -117,8 +152,22 @@ type Deribit struct {
 func (c *Deribit) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
 
+	c.AccountManagement.SetTransport(transport)
+
 	c.Internal.SetTransport(transport)
 
-	c.Operations.SetTransport(transport)
+	c.MarketData.SetTransport(transport)
+
+	c.Private.SetTransport(transport)
+
+	c.Public.SetTransport(transport)
+
+	c.Supporting.SetTransport(transport)
+
+	c.Trading.SetTransport(transport)
+
+	c.Wallet.SetTransport(transport)
+
+	c.WebsocketOnly.SetTransport(transport)
 
 }

@@ -7,27 +7,33 @@ import (
 	"os"
 	"testing"
 
-	"github.com/adampointer/go-deribit/v3/client/operations"
+	"github.com/adampointer/go-deribit/v3/client/account_management"
+	"github.com/adampointer/go-deribit/v3/client/market_data"
+	"github.com/adampointer/go-deribit/v3/client/public"
+	"github.com/adampointer/go-deribit/v3/client/supporting"
+
+	"github.com/adampointer/go-deribit/v3/client"
+	"github.com/adampointer/go-deribit/v3/client/websocket_only"
 	"github.com/iancoleman/strcase"
 	"github.com/stretchr/testify/assert"
 )
 
 type testCase struct {
 	method string
-	f      func(*operations.Client, []byte) ([]byte, error)
+	f      func(*client.Deribit, []byte) ([]byte, error)
 }
 
 var publicMethods = []*testCase{
 	{
 		"DisableHeartbeat",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicDisableHeartbeatParams
+				Params websocket_only.GetPublicDisableHeartbeatParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicDisableHeartbeat(&params.Params)
+			res, err := c.WebsocketOnly.GetPublicDisableHeartbeat(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -36,14 +42,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"GetAnnouncements",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicGetAnnouncementsParams
+				Params account_management.GetPublicGetAnnouncementsParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicGetAnnouncements(&params.Params)
+			res, err := c.AccountManagement.GetPublicGetAnnouncements(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -52,14 +58,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"GetBookSummaryByCurrency",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicGetBookSummaryByCurrencyParams
+				Params market_data.GetPublicGetBookSummaryByCurrencyParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicGetBookSummaryByCurrency(&params.Params)
+			res, err := c.MarketData.GetPublicGetBookSummaryByCurrency(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -68,14 +74,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"GetBookSummaryByInstrument",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicGetBookSummaryByInstrumentParams
+				Params market_data.GetPublicGetBookSummaryByInstrumentParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicGetBookSummaryByInstrument(&params.Params)
+			res, err := c.MarketData.GetPublicGetBookSummaryByInstrument(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -84,14 +90,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"GetCurrencies",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicGetCurrenciesParams
+				Params public.GetPublicGetCurrenciesParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicGetCurrencies(&params.Params)
+			res, err := c.Public.GetPublicGetCurrencies(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -100,14 +106,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"GetHistoricalVolatility",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicGetHistoricalVolatilityParams
+				Params public.GetPublicGetHistoricalVolatilityParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicGetHistoricalVolatility(&params.Params)
+			res, err := c.Public.GetPublicGetHistoricalVolatility(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -116,14 +122,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"GetInstruments",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicGetInstrumentsParams
+				Params public.GetPublicGetInstrumentsParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicGetInstruments(&params.Params)
+			res, err := c.Public.GetPublicGetInstruments(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -132,14 +138,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"GetLastSettlementsByCurrency",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicGetLastSettlementsByCurrencyParams
+				Params market_data.GetPublicGetLastSettlementsByCurrencyParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicGetLastSettlementsByCurrency(&params.Params)
+			res, err := c.MarketData.GetPublicGetLastSettlementsByCurrency(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -148,14 +154,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"GetLastSettlementsByInstrument",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicGetLastSettlementsByInstrumentParams
+				Params market_data.GetPublicGetLastSettlementsByInstrumentParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicGetLastSettlementsByInstrument(&params.Params)
+			res, err := c.MarketData.GetPublicGetLastSettlementsByInstrument(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -164,14 +170,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"GetLastTradesByCurrency",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicGetLastTradesByCurrencyParams
+				Params market_data.GetPublicGetLastTradesByCurrencyParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicGetLastTradesByCurrency(&params.Params)
+			res, err := c.MarketData.GetPublicGetLastTradesByCurrency(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -180,14 +186,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"GetLastTradesByCurrencyAndTime",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicGetLastTradesByCurrencyAndTimeParams
+				Params market_data.GetPublicGetLastTradesByCurrencyAndTimeParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicGetLastTradesByCurrencyAndTime(&params.Params)
+			res, err := c.MarketData.GetPublicGetLastTradesByCurrencyAndTime(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -196,14 +202,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"GetLastTradesByInstrument",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicGetLastTradesByInstrumentParams
+				Params market_data.GetPublicGetLastTradesByInstrumentParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicGetLastTradesByInstrument(&params.Params)
+			res, err := c.MarketData.GetPublicGetLastTradesByInstrument(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -212,14 +218,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"GetLastTradesByInstrumentAndTime",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicGetLastTradesByInstrumentAndTimeParams
+				Params market_data.GetPublicGetLastTradesByInstrumentAndTimeParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicGetLastTradesByInstrumentAndTime(&params.Params)
+			res, err := c.MarketData.GetPublicGetLastTradesByInstrumentAndTime(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -228,14 +234,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"GetOrderBook",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicGetOrderBookParams
+				Params market_data.GetPublicGetOrderBookParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicGetOrderBook(&params.Params)
+			res, err := c.MarketData.GetPublicGetOrderBook(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -244,14 +250,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"GetTime",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicGetTimeParams
+				Params supporting.GetPublicGetTimeParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicGetTime(&params.Params)
+			res, err := c.Supporting.GetPublicGetTime(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -260,14 +266,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"GetTradeVolumes",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicGetTradeVolumesParams
+				Params market_data.GetPublicGetTradeVolumesParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicGetTradeVolumes(&params.Params)
+			res, err := c.MarketData.GetPublicGetTradeVolumes(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -276,14 +282,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"GetTradingviewChartData",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicGetTradingviewChartDataParams
+				Params public.GetPublicGetTradingviewChartDataParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicGetTradingviewChartData(&params.Params)
+			res, err := c.Public.GetPublicGetTradingviewChartData(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -292,48 +298,30 @@ var publicMethods = []*testCase{
 	},
 	{
 		"Hello",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicHelloParams
+				Params public.GetPublicHelloParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicHello(&params.Params)
+			res, err := c.Public.GetPublicHello(&params.Params)
 			if err != nil {
 				return nil, err
 			}
 			return json.Marshal(res.Payload)
 		},
 	},
-	// This fails with invalid parameters but it is not clear why
-	//{
-	//	"SetHeartbeat",
-	//	func(c *operations.Client, req []byte) ([]byte, error) {
-	//		var params = struct {
-	//			Params operations.GetPublicSetHeartbeatParams
-	//		}{}
-	//		if err := json.Unmarshal(req, &params); err != nil {
-	//			return nil, err
-	//		}
-	//		spew.Dump(params)
-	//		res, err := c.GetPublicSetHeartbeat(&params.Params)
-	//		if err != nil {
-	//			return nil, err
-	//		}
-	//		return json.Marshal(res.Payload)
-	//	},
-	//},
 	{
 		"Test",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicTestParams
+				Params public.GetPublicTestParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicTest(&params.Params)
+			res, err := c.Public.GetPublicTest(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -342,14 +330,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"Ticker",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicTickerParams
+				Params public.GetPublicTickerParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicTicker(&params.Params)
+			res, err := c.Public.GetPublicTicker(&params.Params)
 			if err != nil {
 				return nil, err
 			}
@@ -358,14 +346,14 @@ var publicMethods = []*testCase{
 	},
 	{
 		"Unsubscribe",
-		func(c *operations.Client, req []byte) ([]byte, error) {
+		func(c *client.Deribit, req []byte) ([]byte, error) {
 			var params = struct {
-				Params operations.GetPublicUnsubscribeParams
+				Params websocket_only.GetPublicUnsubscribeParams
 			}{}
 			if err := json.Unmarshal(req, &params); err != nil {
 				return nil, err
 			}
-			res, err := c.GetPublicUnsubscribe(&params.Params)
+			res, err := c.WebsocketOnly.GetPublicUnsubscribe(&params.Params)
 			if err != nil {
 				return nil, err
 			}

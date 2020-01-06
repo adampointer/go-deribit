@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/adampointer/go-deribit/v3/client/operations"
+	"github.com/adampointer/go-deribit/v3/client/public"
 )
 
 // Renew login 10 minutes before we have to
@@ -26,7 +26,7 @@ func (e *Exchange) Authenticate(keys ...string) error {
 			return fmt.Errorf("API Key and Secret must be provided")
 		}
 	}
-	auth, err := e.Client().GetPublicAuth(&operations.GetPublicAuthParams{ClientID: clientID, ClientSecret: clientSecret, GrantType: "client_credentials"})
+	auth, err := e.Client().Public.GetPublicAuth(&public.GetPublicAuthParams{ClientID: clientID, ClientSecret: clientSecret, GrantType: "client_credentials"})
 	if err != nil {
 		return fmt.Errorf("error authenticating: %s", err)
 	}
@@ -41,7 +41,7 @@ func (e *Exchange) Authenticate(keys ...string) error {
 
 func (e *Exchange) refreshAuth(d time.Duration) {
 	time.Sleep(d)
-	auth, err := e.Client().GetPublicAuth(&operations.GetPublicAuthParams{RefreshToken: *e.auth.Result.RefreshToken, GrantType: "refresh_token"})
+	auth, err := e.Client().Public.GetPublicAuth(&public.GetPublicAuthParams{RefreshToken: *e.auth.Result.RefreshToken, GrantType: "refresh_token"})
 	if err != nil {
 		e.errors <- fmt.Errorf("error authenticating: %s", err)
 	}

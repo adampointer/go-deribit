@@ -24,7 +24,6 @@ type GetPublicGetFooterReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetPublicGetFooterReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetPublicGetFooterOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -52,6 +51,10 @@ type GetPublicGetFooterOK struct {
 
 func (o *GetPublicGetFooterOK) Error() string {
 	return fmt.Sprintf("[GET /public/get_footer][%d] getPublicGetFooterOK  %+v", 200, o.Payload)
+}
+
+func (o *GetPublicGetFooterOK) GetPayload() *models.PublicGetFooterResponse {
+	return o.Payload
 }
 
 func (o *GetPublicGetFooterOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
